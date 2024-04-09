@@ -5,7 +5,7 @@ import { getDomainUrl } from '#app/utils/misc.tsx'
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
-	const user = await prisma.user.findUniqueOrThrow({
+	const user = await prisma.account.findUniqueOrThrow({
 		where: { id: userId },
 		// this is one of the *few* instances where you can use "include" because
 		// the goal is to literally get *everything*. Normally you should be

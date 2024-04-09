@@ -19,24 +19,24 @@ import { z } from 'zod'
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import {
+	NameSchema,
+	PasswordAndConfirmPasswordSchema,
+	HandleSchema,
+} from '#app/utils/account-validation.js'
 import { requireAnonymous, sessionKey, signup } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import {
-	NameSchema,
-	PasswordAndConfirmPasswordSchema,
-	UsernameSchema,
-} from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 
 export const onboardingEmailSessionKey = 'onboardingEmail'
 
 const SignupFormSchema = z
 	.object({
-		username: UsernameSchema,
+		handle: HandleSchema,
 		name: NameSchema,
 		agreeToTermsOfServiceAndPrivacyPolicy: z.boolean({
 			required_error:
@@ -71,15 +71,15 @@ export async function action({ request }: ActionFunctionArgs) {
 	const submission = await parseWithZod(formData, {
 		schema: intent =>
 			SignupFormSchema.superRefine(async (data, ctx) => {
-				const existingUser = await prisma.user.findUnique({
-					where: { username: data.username },
+				const existingUser = await prisma.account.findUnique({
+					where: { handle: data.handle },
 					select: { id: true },
 				})
 				if (existingUser) {
 					ctx.addIssue({
-						path: ['username'],
+						path: ['handle'],
 						code: z.ZodIssueCode.custom,
-						message: 'A user already exists with this username',
+						message: 'A user already exists with this handle',
 					})
 					return
 				}
@@ -164,13 +164,13 @@ export default function SignupRoute() {
 				>
 					<HoneypotInputs />
 					<Field
-						labelProps={{ htmlFor: fields.username.id, children: 'Username' }}
+						labelProps={{ htmlFor: fields.handle.id, children: 'Handle' }}
 						inputProps={{
-							...getInputProps(fields.username, { type: 'text' }),
-							autoComplete: 'username',
+							...getInputProps(fields.handle, { type: 'text' }),
+							autoComplete: 'handle',
 							className: 'lowercase',
 						}}
-						errors={fields.username.errors}
+						errors={fields.handle.errors}
 					/>
 					<Field
 						labelProps={{ htmlFor: fields.name.id, children: 'Name' }}

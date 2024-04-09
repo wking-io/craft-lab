@@ -18,7 +18,7 @@ import { prisma } from '#app/utils/db.server.ts'
 import { getUserImgSrc, useDoubleCheck } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
+import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
 
 export const handle: SEOHandle = {
@@ -27,17 +27,17 @@ export const handle: SEOHandle = {
 
 const ProfileFormSchema = z.object({
 	name: NameSchema.optional(),
-	username: UsernameSchema,
+	handle: HandleSchema,
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
-	const user = await prisma.user.findUniqueOrThrow({
+	const user = await prisma.account.findUniqueOrThrow({
 		where: { id: userId },
 		select: {
 			id: true,
 			name: true,
-			username: true,
+			handle: true,
 			email: true,
 			image: {
 				select: { id: true },
@@ -109,7 +109,7 @@ export default function EditUserProfile() {
 				<div className="relative h-52 w-52">
 					<img
 						src={getUserImgSrc(data.user.image?.id)}
-						alt={data.user.username}
+						alt={data.user.handle}
 						className="h-full w-full rounded-full object-cover"
 					/>
 					<Button
@@ -179,16 +179,16 @@ export default function EditUserProfile() {
 async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
 	const submission = await parseWithZod(formData, {
 		async: true,
-		schema: ProfileFormSchema.superRefine(async ({ username }, ctx) => {
-			const existingUsername = await prisma.user.findUnique({
-				where: { username },
+		schema: ProfileFormSchema.superRefine(async ({ handle }, ctx) => {
+			const existingHandle = await prisma.account.findUnique({
+				where: { handle },
 				select: { id: true },
 			})
-			if (existingUsername && existingUsername.id !== userId) {
+			if (existingHandle && existingHandle.id !== userId) {
 				ctx.addIssue({
-					path: ['username'],
+					path: ['handle'],
 					code: z.ZodIssueCode.custom,
-					message: 'A user already exists with this username',
+					message: 'A user already exists with this handle',
 				})
 			}
 		}),
@@ -202,12 +202,12 @@ async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
 
 	const data = submission.value
 
-	await prisma.user.update({
-		select: { username: true },
+	await prisma.account.update({
+		select: { handle: true },
 		where: { id: userId },
 		data: {
 			name: data.name,
-			username: data.username,
+			handle: data.handle,
 		},
 	})
 
@@ -229,7 +229,7 @@ function UpdateProfile() {
 			return parseWithZod(formData, { schema: ProfileFormSchema })
 		},
 		defaultValue: {
-			username: data.user.username,
+			handle: data.user.handle,
 			name: data.user.name,
 		},
 	})
@@ -240,11 +240,11 @@ function UpdateProfile() {
 				<Field
 					className="col-span-3"
 					labelProps={{
-						htmlFor: fields.username.id,
-						children: 'Username',
+						htmlFor: fields.handle.id,
+						children: 'Handle',
 					}}
-					inputProps={getInputProps(fields.username, { type: 'text' })}
-					errors={fields.username.errors}
+					inputProps={getInputProps(fields.handle, { type: 'text' })}
+					errors={fields.handle.errors}
 				/>
 				<Field
 					className="col-span-3"
@@ -327,7 +327,7 @@ function SignOutOfSessions() {
 }
 
 async function deleteDataAction({ userId }: ProfileActionArgs) {
-	await prisma.user.delete({ where: { id: userId } })
+	await prisma.account.delete({ where: { id: userId } })
 	return redirectWithToast('/', {
 		type: 'success',
 		title: 'Data Deleted',

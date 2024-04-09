@@ -139,7 +139,7 @@ test('when a user exists with the same email, create connection and make session
 
 test('gives an error if the account is already connected to another user', async () => {
 	const githubUser = await insertGitHubUser()
-	await prisma.user.create({
+	await prisma.account.create({
 		data: {
 			...createUser(),
 			connections: {

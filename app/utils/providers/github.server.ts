@@ -31,12 +31,12 @@ export class GitHubProvider implements AuthProvider {
 			},
 			async ({ profile }) => {
 				const email = profile.emails[0].value.trim().toLowerCase()
-				const username = profile.displayName
+				const handle = profile.displayName
 				const imageUrl = profile.photos[0].value
 				return {
 					email,
 					id: profile.id,
-					username,
+					handle,
 					name: profile.name.givenName,
 					imageUrl,
 				}

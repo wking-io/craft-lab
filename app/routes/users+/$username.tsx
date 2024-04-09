@@ -5,21 +5,21 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { useOptionalUser } from '#app/utils/account.js'
 import { prisma } from '#app/utils/db.server.ts'
 import { getUserImgSrc } from '#app/utils/misc.tsx'
-import { useOptionalUser } from '#app/utils/user.ts'
 
 export async function loader({ params }: LoaderFunctionArgs) {
-	const user = await prisma.user.findFirst({
+	const user = await prisma.account.findFirst({
 		select: {
 			id: true,
 			name: true,
-			username: true,
+			handle: true,
 			createdAt: true,
 			image: { select: { id: true } },
 		},
 		where: {
-			username: params.username,
+			handle: params.handle,
 		},
 	})
 
@@ -31,7 +31,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 export default function ProfileRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = data.user
-	const userDisplayName = user.name ?? user.username
+	const userDisplayName = user.name ?? user.handle
 	const loggedInUser = useOptionalUser()
 	const isLoggedInUser = data.user.id === loggedInUser?.id
 
@@ -99,7 +99,7 @@ export default function ProfileRoute() {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
-	const displayName = data?.user.name ?? params.username
+	const displayName = data?.user.name ?? params.handle
 	return [
 		{ title: `${displayName} | Epic Notes` },
 		{
@@ -114,7 +114,7 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				404: ({ params }) => (
-					<p>No user with the username "{params.username}" exists</p>
+					<p>No user with the handle "{params.handle}" exists</p>
 				),
 			}}
 		/>

@@ -20,7 +20,7 @@ import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { sendEmail } from '#app/utils/email.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { EmailSchema } from '#app/utils/user-validation.ts'
+import { EmailSchema } from '#app/utils/account-validation.js'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { EmailChangeEmail } from './profile.change-email.server.tsx'
 import { type BreadcrumbHandle } from './profile.tsx'
@@ -39,7 +39,7 @@ const ChangeEmailSchema = z.object({
 export async function loader({ request }: LoaderFunctionArgs) {
 	await requireRecentVerification(request)
 	const userId = await requireUserId(request)
-	const user = await prisma.user.findUnique({
+	const user = await prisma.account.findUnique({
 		where: { id: userId },
 		select: { email: true },
 	})
@@ -55,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData()
 	const submission = await parseWithZod(formData, {
 		schema: ChangeEmailSchema.superRefine(async (data, ctx) => {
-			const existingUser = await prisma.user.findUnique({
+			const existingUser = await prisma.account.findUnique({
 				where: { email: data.email },
 			})
 			if (existingUser) {

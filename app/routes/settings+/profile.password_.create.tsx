@@ -15,7 +15,7 @@ import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { getPasswordHash, requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { PasswordAndConfirmPasswordSchema } from '#app/utils/user-validation.ts'
+import { PasswordAndConfirmPasswordSchema } from '#app/utils/account-validation.js'
 import { type BreadcrumbHandle } from './profile.tsx'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
@@ -62,8 +62,8 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const { password } = submission.value
 
-	await prisma.user.update({
-		select: { username: true },
+	await prisma.account.update({
+		select: { handle: true },
 		where: { id: userId },
 		data: {
 			password: {

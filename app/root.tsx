@@ -42,18 +42,22 @@ import {
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'
-import { getUserId, logout } from './utils/auth.server.ts'
+import { useOptionalAccount, useAccount } from './utils/account.ts'
+import { getAccountId, logout } from './utils/auth.server.ts'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
 import { prisma } from './utils/db.server.ts'
 import { getEnv } from './utils/env.server.ts'
 import { honeypot } from './utils/honeypot.server.ts'
-import { combineHeaders, getDomainUrl, getUserImgSrc } from './utils/misc.tsx'
+import {
+	combineHeaders,
+	getDomainUrl,
+	getAccountImgSrc,
+} from './utils/misc.tsx'
 import { useNonce } from './utils/nonce-provider.ts'
 import { useRequestInfo } from './utils/request-info.ts'
 import { type Theme, setTheme, getTheme } from './utils/theme.server.ts'
 import { makeTimings, time } from './utils/timing.server.ts'
 import { getToast } from './utils/toast.server.ts'
-import { useOptionalUser, useUser } from './utils/user.ts'
 
 export const links: LinksFunction = () => {
 	return [
@@ -87,38 +91,62 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const timings = makeTimings('root loader')
-	const userId = await time(() => getUserId(request), {
+	const accountId = await time(() => getAccountId(request), {
 		timings,
-		type: 'getUserId',
-		desc: 'getUserId in root',
+		type: 'getAccountId',
+		desc: 'getAccountId in root',
 	})
 
-	const user = userId
+	const group = await time(() => prisma.group.findFirstOrThrow(), {
+		timings,
+		type: 'find group',
+		desc: 'find group in root',
+	})
+
+	const account = accountId
 		? await time(
 				() =>
-					prisma.user.findUniqueOrThrow({
-						select: {
-							id: true,
-							name: true,
-							username: true,
-							image: { select: { id: true } },
-							roles: {
-								select: {
-									name: true,
-									permissions: {
-										select: { entity: true, action: true, access: true },
+					prisma.profile
+						.findUniqueOrThrow({
+							select: {
+								id: true,
+								name: true,
+								image: { select: { id: true } },
+								roles: {
+									select: {
+										name: true,
+										permissions: {
+											select: { entity: true, action: true, access: true },
+										},
+									},
+								},
+								account: {
+									select: {
+										id: true,
+										name: true,
+										handle: true,
 									},
 								},
 							},
-						},
-						where: { id: userId },
-					}),
-				{ timings, type: 'find user', desc: 'find user in root' },
+							where: {
+								accountId_groupId: {
+									accountId,
+									groupId: group.id,
+								},
+							},
+						})
+						.then(({ account, id, name, ...profile }) => ({
+							...account,
+							...profile,
+							profileId: id,
+							displayName: name,
+						})),
+				{ timings, type: 'find account', desc: 'find account in root' },
 			)
 		: null
-	if (userId && !user) {
+	if (accountId && !account) {
 		console.info('something weird happened')
-		// something weird happened... The user is authenticated but we can't find
+		// something weird happened... The account is authenticated but we can't find
 		// them in the database. Maybe they were deleted? Let's log them out.
 		await logout({ request, redirectTo: '/' })
 	}
@@ -127,12 +155,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	return json(
 		{
-			user,
+			account,
 			requestInfo: {
 				hints: getHints(request),
 				origin: getDomainUrl(request),
 				path: new URL(request.url).pathname,
-				userPrefs: {
+				accountPrefs: {
 					theme: getTheme(request),
 				},
 			},
@@ -219,10 +247,10 @@ function Document({
 function App() {
 	const data = useLoaderData<typeof loader>()
 	const nonce = useNonce()
-	const user = useOptionalUser()
+	const account = useOptionalAccount()
 	const theme = useTheme()
 	const matches = useMatches()
-	const isOnSearchPage = matches.find(m => m.id === 'routes/users+/index')
+	const isOnSearchPage = matches.find(m => m.id === 'routes/accounts+/index')
 	const searchBar = isOnSearchPage ? null : <SearchBar status="idle" />
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
@@ -242,8 +270,8 @@ function App() {
 							{searchBar}
 						</div>
 						<div className="flex items-center gap-10">
-							{user ? (
-								<UserDropdown />
+							{account ? (
+								<AccountDropdown />
 							) : (
 								<Button asChild variant="default" size="lg">
 									<Link to="/login">Log In</Link>
@@ -260,7 +288,9 @@ function App() {
 
 				<div className="container flex justify-between pb-5">
 					<Logo />
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+					<ThemeSwitch
+						accountPreference={data.requestInfo.accountPrefs.theme}
+					/>
 				</div>
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />
@@ -293,8 +323,8 @@ function AppWithProviders() {
 
 export default withSentry(AppWithProviders)
 
-function UserDropdown() {
-	const user = useUser()
+function AccountDropdown() {
+	const account = useAccount()
 	const submit = useSubmit()
 	const formRef = useRef<HTMLFormElement>(null)
 	return (
@@ -302,18 +332,18 @@ function UserDropdown() {
 			<DropdownMenuTrigger asChild>
 				<Button asChild variant="secondary">
 					<Link
-						to={`/users/${user.username}`}
+						to={`/accounts/${account.handle}`}
 						// this is for progressive enhancement
 						onClick={e => e.preventDefault()}
 						className="flex items-center gap-2"
 					>
 						<img
 							className="h-8 w-8 rounded-full object-cover"
-							alt={user.name ?? user.username}
-							src={getUserImgSrc(user.image?.id)}
+							alt={account.name ?? account.handle}
+							src={getAccountImgSrc(account.image?.id)}
 						/>
 						<span className="text-body-sm font-bold">
-							{user.name ?? user.username}
+							{account.name ?? account.handle}
 						</span>
 					</Link>
 				</Button>
@@ -321,14 +351,14 @@ function UserDropdown() {
 			<DropdownMenuPortal>
 				<DropdownMenuContent sideOffset={8} align="start">
 					<DropdownMenuItem asChild>
-						<Link prefetch="intent" to={`/users/${user.username}`}>
+						<Link prefetch="intent" to={`/accounts/${account.handle}`}>
 							<Icon className="text-body-md" name="avatar">
 								Profile
 							</Icon>
 						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem asChild>
-						<Link prefetch="intent" to={`/users/${user.username}/notes`}>
+						<Link prefetch="intent" to={`/accounts/${account.handle}/notes`}>
 							<Icon className="text-body-md" name="pencil-2">
 								Notes
 							</Icon>
@@ -355,7 +385,7 @@ function UserDropdown() {
 }
 
 /**
- * @returns the user's theme preference, or the client hint theme if the user
+ * @returns the account's theme preference, or the client hint theme if the account
  * has not set a preference.
  */
 export function useTheme() {
@@ -365,11 +395,11 @@ export function useTheme() {
 	if (optimisticMode) {
 		return optimisticMode === 'system' ? hints.theme : optimisticMode
 	}
-	return requestInfo.userPrefs.theme ?? hints.theme
+	return requestInfo.accountPrefs.theme ?? hints.theme
 }
 
 /**
- * If the user's changing their theme mode preference, this will return the
+ * If the account's changing their theme mode preference, this will return the
  * value it's being changed to.
  */
 export function useOptimisticThemeMode() {
@@ -387,7 +417,11 @@ export function useOptimisticThemeMode() {
 	}
 }
 
-function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
+function ThemeSwitch({
+	accountPreference,
+}: {
+	accountPreference?: Theme | null
+}) {
 	const fetcher = useFetcher<typeof action>()
 
 	const [form] = useForm({
@@ -396,7 +430,7 @@ function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
 	})
 
 	const optimisticMode = useOptimisticThemeMode()
-	const mode = optimisticMode ?? userPreference ?? 'system'
+	const mode = optimisticMode ?? accountPreference ?? 'system'
 	const nextMode =
 		mode === 'system' ? 'light' : mode === 'light' ? 'dark' : 'system'
 	const modeLabel = {
@@ -442,7 +476,7 @@ export function ErrorBoundary() {
 	// This would require a change in Remix.
 
 	// Just make sure your root route never errors out and you'll always be able
-	// to give the user a better UX.
+	// to give the account a better UX.
 
 	return (
 		<Document nonce={nonce}>

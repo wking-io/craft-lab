@@ -23,7 +23,7 @@ for (const [providerName, provider] of Object.entries(providers)) {
 	authenticator.use(provider.getAuthStrategy(), providerName)
 }
 
-export async function getUserId(request: Request) {
+export async function getAccountId(request: Request) {
 	const authSession = await authSessionStorage.getSession(
 		request.headers.get('cookie'),
 	)
@@ -47,7 +47,7 @@ export async function requireUserId(
 	request: Request,
 	{ redirectTo }: { redirectTo?: string | null } = {},
 ) {
-	const userId = await getUserId(request)
+	const userId = await getAccountId(request)
 	if (!userId) {
 		const requestUrl = new URL(request.url)
 		redirectTo =
@@ -64,20 +64,20 @@ export async function requireUserId(
 }
 
 export async function requireAnonymous(request: Request) {
-	const userId = await getUserId(request)
+	const userId = await getAccountId(request)
 	if (userId) {
 		throw redirect('/')
 	}
 }
 
 export async function login({
-	username,
+	handle,
 	password,
 }: {
-	username: User['username']
+	handle: User['handle']
 	password: string
 }) {
-	const user = await verifyUserPassword({ username }, password)
+	const user = await verifyUserPassword({ handle }, password)
 	if (!user) return null
 	const session = await prisma.session.create({
 		select: { id: true, expirationDate: true, userId: true },
@@ -90,15 +90,15 @@ export async function login({
 }
 
 export async function resetUserPassword({
-	username,
+	handle,
 	password,
 }: {
-	username: User['username']
+	handle: User['handle']
 	password: string
 }) {
 	const hashedPassword = await getPasswordHash(password)
-	return prisma.user.update({
-		where: { username },
+	return prisma.account.update({
+		where: { handle },
 		data: {
 			password: {
 				update: {
@@ -111,12 +111,12 @@ export async function resetUserPassword({
 
 export async function signup({
 	email,
-	username,
+	handle,
 	password,
 	name,
 }: {
 	email: User['email']
-	username: User['username']
+	handle: User['handle']
 	name: User['name']
 	password: string
 }) {
@@ -128,7 +128,7 @@ export async function signup({
 			user: {
 				create: {
 					email: email.toLowerCase(),
-					username: username.toLowerCase(),
+					handle: handle.toLowerCase(),
 					name,
 					roles: { connect: { name: 'user' } },
 					password: {
@@ -147,14 +147,14 @@ export async function signup({
 
 export async function signupWithConnection({
 	email,
-	username,
+	handle,
 	name,
 	providerId,
 	providerName,
 	imageUrl,
 }: {
 	email: User['email']
-	username: User['username']
+	handle: User['handle']
 	name: User['name']
 	providerId: Connection['providerId']
 	providerName: Connection['providerName']
@@ -166,7 +166,7 @@ export async function signupWithConnection({
 			user: {
 				create: {
 					email: email.toLowerCase(),
-					username: username.toLowerCase(),
+					handle: handle.toLowerCase(),
 					name,
 					roles: { connect: { name: 'user' } },
 					connections: { create: { providerId, providerName } },
@@ -218,10 +218,10 @@ export async function getPasswordHash(password: string) {
 }
 
 export async function verifyUserPassword(
-	where: Pick<User, 'username'> | Pick<User, 'id'>,
+	where: Pick<User, 'handle'> | Pick<User, 'id'>,
 	password: Password['hash'],
 ) {
-	const userWithPassword = await prisma.user.findUnique({
+	const userWithPassword = await prisma.account.findUnique({
 		where,
 		select: { id: true, password: { select: { hash: true } } },
 	})

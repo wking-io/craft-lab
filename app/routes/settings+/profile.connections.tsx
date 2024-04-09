@@ -37,7 +37,7 @@ export const handle: BreadcrumbHandle & SEOHandle = {
 }
 
 async function userCanDeleteConnections(userId: string) {
-	const user = await prisma.user.findUnique({
+	const user = await prisma.account.findUnique({
 		select: {
 			password: { select: { userId: true } },
 			_count: { select: { connections: true } },

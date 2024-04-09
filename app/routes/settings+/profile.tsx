@@ -8,7 +8,7 @@ import { Icon } from '#app/components/ui/icon.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { cn } from '#app/utils/misc.tsx'
-import { useUser } from '#app/utils/user.ts'
+import { useUser } from '#app/utils/account.js'
 
 export const BreadcrumbHandle = z.object({ breadcrumb: z.any() })
 export type BreadcrumbHandle = z.infer<typeof BreadcrumbHandle>
@@ -20,9 +20,9 @@ export const handle: BreadcrumbHandle & SEOHandle = {
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
-	const user = await prisma.user.findUnique({
+	const user = await prisma.account.findUnique({
 		where: { id: userId },
-		select: { username: true },
+		select: { handle: true },
 	})
 	invariantResponse(user, 'User not found', { status: 404 })
 	return json({})
@@ -54,7 +54,7 @@ export default function EditUserProfile() {
 					<li>
 						<Link
 							className="text-muted-foreground"
-							to={`/users/${user.username}`}
+							to={`/users/${user.handle}`}
 						>
 							Profile
 						</Link>

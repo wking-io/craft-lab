@@ -11,25 +11,25 @@ import { getSessionExpirationDate, sessionKey } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { createUser, getUserImages } from '#tests/db-utils.ts'
-import { default as UsernameRoute, loader } from './$username.tsx'
+import { default as HandleRoute, loader } from './$handle.tsx'
 
 test('The user profile when not logged in as self', async () => {
 	const userImages = await getUserImages()
 	const userImage =
 		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const user = await prisma.user.create({
-		select: { id: true, username: true, name: true },
+	const user = await prisma.account.create({
+		select: { id: true, handle: true, name: true },
 		data: { ...createUser(), image: { create: userImage } },
 	})
 	const App = createRemixStub([
 		{
-			path: '/users/:username',
-			Component: UsernameRoute,
+			path: '/users/:handle',
+			Component: HandleRoute,
 			loader,
 		},
 	])
 
-	const routeUrl = `/users/${user.username}`
+	const routeUrl = `/users/${user.handle}`
 	render(<App initialEntries={[routeUrl]} />)
 
 	await screen.findByRole('heading', { level: 1, name: user.name! })
@@ -41,8 +41,8 @@ test('The user profile when logged in as self', async () => {
 	const userImages = await getUserImages()
 	const userImage =
 		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const user = await prisma.user.create({
-		select: { id: true, username: true, name: true },
+	const user = await prisma.account.create({
+		select: { id: true, handle: true, name: true },
 		data: { ...createUser(), image: { create: userImage } },
 	})
 	const session = await prisma.session.create({
@@ -72,8 +72,8 @@ test('The user profile when logged in as self', async () => {
 			},
 			children: [
 				{
-					path: 'users/:username',
-					Component: UsernameRoute,
+					path: 'users/:handle',
+					Component: HandleRoute,
 					loader: async args => {
 						// add the cookie header to the request
 						args.request.headers.set('cookie', cookieHeader)
@@ -84,7 +84,7 @@ test('The user profile when logged in as self', async () => {
 		},
 	])
 
-	const routeUrl = `/users/${user.username}`
+	const routeUrl = `/users/${user.handle}`
 	await render(<App initialEntries={[routeUrl]} />)
 
 	await screen.findByRole('heading', { level: 1, name: user.name! })

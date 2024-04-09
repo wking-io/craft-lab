@@ -73,7 +73,7 @@ expect.extend({
 				)} but got ${this.utils.printReceived(location)}`,
 		}
 	},
-	async toHaveSessionForUser(response: Response, userId: string) {
+	async toHaveSessionForAccount(response: Response, accountId: string) {
 		const setCookies = getSetCookie(response.headers)
 		const sessionSetCookie = setCookies.find(
 			c => setCookieParser.parseString(c).name === 'en_session',
@@ -103,7 +103,7 @@ expect.extend({
 
 		const session = await prisma.session.findUnique({
 			select: { id: true },
-			where: { userId, id: sessionValue },
+			where: { accountId, id: sessionValue },
 		})
 
 		return {
@@ -111,7 +111,7 @@ expect.extend({
 			message: () =>
 				`A session was${
 					this.isNot ? ' not' : ''
-				} created in the database for ${userId}`,
+				} created in the database for ${accountId}`,
 		}
 	},
 	async toSendToast(response: Response, toast: ToastInput) {
@@ -156,7 +156,7 @@ expect.extend({
 
 interface CustomMatchers<R = unknown> {
 	toHaveRedirect(redirectTo: string | null): R
-	toHaveSessionForUser(userId: string): Promise<R>
+	toHaveSessionForAccount(accountId: string): Promise<R>
 	toSendToast(toast: ToastInput): Promise<R>
 }
 

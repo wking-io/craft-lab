@@ -1,101 +1,147 @@
-import { type MetaFunction } from '@remix-run/node'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
-import { cn } from '#app/utils/misc.tsx'
-import { logos } from './logos/logos.ts'
+import { getFormProps, getInputProps, useForm } from '@conform-to/react'
+import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import * as E from '@react-email/components'
+import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
+import { Form, json, useActionData } from '@remix-run/react'
+import { HoneypotInputs } from 'remix-utils/honeypot/react'
+import { z } from 'zod'
+import { ErrorList, Field } from '#app/components/forms.js'
+import { StatusButton } from '#app/components/ui/status-button.js'
+import { EmailSchema } from '#app/utils/account-validation.js'
+import { prisma } from '#app/utils/db.server.js'
+import { checkHoneypot } from '#app/utils/honeypot.server.js'
+import { useIsPending } from '#app/utils/misc.js'
 
-export const meta: MetaFunction = () => [{ title: 'Epic Notes' }]
+export const meta: MetaFunction = () => [{ title: 'Craft Lab' }]
 
-// Tailwind Grid cell classes lookup
-const columnClasses: Record<(typeof logos)[number]['column'], string> = {
-	1: 'xl:col-start-1',
-	2: 'xl:col-start-2',
-	3: 'xl:col-start-3',
-	4: 'xl:col-start-4',
-	5: 'xl:col-start-5',
+const WaitlistFormSchema = z.object({
+	email: EmailSchema,
+})
+
+export async function action({ request }: ActionFunctionArgs) {
+	const formData = await request.formData()
+
+	checkHoneypot(formData)
+
+	const submission = await parseWithZod(formData, {
+		schema: WaitlistFormSchema.superRefine(async (data, ctx) => {
+			const existingUser = await prisma.account.findUnique({
+				where: { email: data.email },
+				select: { id: true },
+			})
+			if (existingUser) {
+				ctx.addIssue({
+					path: ['email'],
+					code: z.ZodIssueCode.custom,
+					message: 'A user already exists with this email',
+				})
+				return
+			}
+		}),
+		async: true,
+	})
+	if (submission.status !== 'success') {
+		return json(
+			{ result: submission.reply() },
+			{ status: submission.status === 'error' ? 400 : 200 },
+		)
+	}
+	const { email } = submission.value
+	const { verifyUrl, redirectTo, otp } = await prepareVerification({
+		period: 10 * 60,
+		request,
+		type: 'onboarding',
+		target: email,
+	})
+
+	const response = await sendEmail({
+		to: email,
+		subject: `Welcome to Epic Notes!`,
+		react: <SignupEmail onboardingUrl={verifyUrl.toString()} otp={otp} />,
+	})
+
+	if (response.status === 'success') {
+		return redirect(redirectTo.toString())
+	} else {
+		return json(
+			{
+				result: submission.reply({ formErrors: [response.error.message] }),
+			},
+			{
+				status: 500,
+			},
+		)
+	}
 }
-const rowClasses: Record<(typeof logos)[number]['row'], string> = {
-	1: 'xl:row-start-1',
-	2: 'xl:row-start-2',
-	3: 'xl:row-start-3',
-	4: 'xl:row-start-4',
-	5: 'xl:row-start-5',
-	6: 'xl:row-start-6',
+
+export function WaitlistEmail({
+	onboardingUrl,
+	otp,
+}: {
+	onboardingUrl: string
+	otp: string
+}) {
+	return (
+		<E.Html lang="en" dir="ltr">
+			<E.Container>
+				<h1>
+					<E.Text>Welcome to Epic Notes!</E.Text>
+				</h1>
+				<p>
+					<E.Text>
+						Here's your verification code: <strong>{otp}</strong>
+					</E.Text>
+				</p>
+				<p>
+					<E.Text>Or click the link to get started:</E.Text>
+				</p>
+				<E.Link href={onboardingUrl}>{onboardingUrl}</E.Link>
+			</E.Container>
+		</E.Html>
+	)
 }
 
 export default function Index() {
+	const actionData = useActionData<typeof action>()
+	const isPending = useIsPending()
+
+	const [form, fields] = useForm({
+		id: 'waitlist-form',
+		constraint: getZodConstraint(WaitlistFormSchema),
+		lastResult: actionData?.result,
+		onValidate({ formData }) {
+			return parseWithZod(formData, { schema: WaitlistFormSchema })
+		},
+		shouldRevalidate: 'onBlur',
+	})
+
 	return (
 		<main className="font-poppins grid h-full place-items-center">
-			<div className="grid place-items-center px-4 py-16 xl:grid-cols-2 xl:gap-24">
-				<div className="flex max-w-md flex-col items-center text-center xl:order-2 xl:items-start xl:text-left">
-					<a
-						href="https://www.epicweb.dev/stack"
-						className="animate-slide-top [animation-fill-mode:backwards] xl:animate-slide-left xl:[animation-delay:0.5s] xl:[animation-fill-mode:backwards]"
-					>
-						<svg
-							className="size-20 text-foreground xl:-mt-4"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 65 65"
-						>
-							<path
-								fill="currentColor"
-								d="M39.445 25.555 37 17.163 65 0 47.821 28l-8.376-2.445Zm-13.89 0L28 17.163 0 0l17.179 28 8.376-2.445Zm13.89 13.89L37 47.837 65 65 47.821 37l-8.376 2.445Zm-13.89 0L28 47.837 0 65l17.179-28 8.376 2.445Z"
-							></path>
-						</svg>
-					</a>
-					<h1
-						data-heading
-						className="mt-8 animate-slide-top text-4xl font-medium text-foreground [animation-fill-mode:backwards] [animation-delay:0.3s] md:text-5xl xl:mt-4 xl:animate-slide-left xl:text-6xl xl:[animation-fill-mode:backwards] xl:[animation-delay:0.8s]"
-					>
-						<a href="https://www.epicweb.dev/stack">The Epic Stack</a>
-					</h1>
-					<p
-						data-paragraph
-						className="mt-6 animate-slide-top text-xl/7 text-muted-foreground [animation-fill-mode:backwards] [animation-delay:0.8s] xl:mt-8 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-fill-mode:backwards] xl:[animation-delay:1s]"
-					>
-						Check the{' '}
-						<a
-							className="underline hover:no-underline"
-							href="https://github.com/epicweb-dev/epic-stack/blob/main/docs/getting-started.md"
-						>
-							Getting Started guide
-						</a>{' '}
-						file for how to get your project off the ground!
-					</p>
-				</div>
-				<ul className="mt-16 flex max-w-3xl flex-wrap justify-center gap-2 sm:gap-4 xl:mt-0 xl:grid xl:grid-flow-col xl:grid-cols-5 xl:grid-rows-6">
-					<TooltipProvider>
-						{logos.map((logo, i) => (
-							<li
-								key={logo.href}
-								className={cn(
-									columnClasses[logo.column],
-									rowClasses[logo.row],
-									'animate-roll-reveal [animation-fill-mode:backwards]',
-								)}
-								style={{ animationDelay: `${i * 0.07}s` }}
-							>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<a
-											href={logo.href}
-											className="grid size-20 place-items-center rounded-2xl bg-violet-600/10 p-4 transition hover:-rotate-6 hover:bg-violet-600/15 dark:bg-violet-200 dark:hover:bg-violet-100 sm:size-24"
-										>
-											<img src={logo.src} alt="" />
-										</a>
-									</TooltipTrigger>
-									<TooltipContent>{logo.alt}</TooltipContent>
-								</Tooltip>
-							</li>
-						))}
-					</TooltipProvider>
-				</ul>
-			</div>
+			<h1>A community for Design Engineers by Design Engineers.</h1>
+			<Form method="POST" {...getFormProps(form)}>
+				<HoneypotInputs />
+				<Field
+					labelProps={{
+						htmlFor: fields.email.id,
+						children: 'Email',
+					}}
+					inputProps={{
+						...getInputProps(fields.email, { type: 'email' }),
+						autoFocus: true,
+						autoComplete: 'email',
+					}}
+					errors={fields.email.errors}
+				/>
+				<ErrorList errors={form.errors} id={form.errorId} />
+				<StatusButton
+					className="w-full"
+					status={isPending ? 'pending' : form.status ?? 'idle'}
+					type="submit"
+					disabled={isPending}
+				>
+					Submit
+				</StatusButton>
+			</Form>
 		</main>
 	)
 }

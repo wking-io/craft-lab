@@ -1,13 +1,13 @@
 import { z } from 'zod'
 
-export const UsernameSchema = z
-	.string({ required_error: 'Username is required' })
-	.min(3, { message: 'Username is too short' })
-	.max(20, { message: 'Username is too long' })
+export const HandleSchema = z
+	.string({ required_error: 'Handle is required' })
+	.min(3, { message: 'Handle is too short' })
+	.max(20, { message: 'Handle is too long' })
 	.regex(/^[a-zA-Z0-9_]+$/, {
-		message: 'Username can only include letters, numbers, and underscores',
+		message: 'Handle can only include letters, numbers, and underscores',
 	})
-	// users can type the username in any case, but we store it in lowercase
+	// users can type the handle in any case, but we store it in lowercase
 	.transform(value => value.toLowerCase())
 
 export const PasswordSchema = z

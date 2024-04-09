@@ -14,7 +14,7 @@ const githubUserFixturePath = path.join(
 		'..',
 		'fixtures',
 		'github',
-		`users.${process.env.VITEST_POOL_ID || 0}.local.json`,
+		`accounts.${process.env.VITEST_POOL_ID || 0}.local.json`,
 	),
 )
 

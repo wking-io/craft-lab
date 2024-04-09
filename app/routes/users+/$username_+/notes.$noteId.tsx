@@ -21,12 +21,12 @@ import { ErrorList } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { userHasPermission, useOptionalUser } from '#app/utils/account.js'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { getNoteImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
 import { type loader as notesLoader } from './notes.tsx'
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -79,7 +79,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	const { noteId } = submission.value
 
 	const note = await prisma.note.findFirst({
-		select: { id: true, ownerId: true, owner: { select: { username: true } } },
+		select: { id: true, ownerId: true, owner: { select: { handle: true } } },
 		where: { id: noteId },
 	})
 	invariantResponse(note, 'Not found', { status: 404 })
@@ -92,7 +92,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	await prisma.note.delete({ where: { id: note.id } })
 
-	return redirectWithToast(`/users/${note.owner.username}/notes`, {
+	return redirectWithToast(`/users/${note.owner.handle}/notes`, {
 		type: 'success',
 		title: 'Success',
 		description: 'Your note has been deleted.',
@@ -187,12 +187,10 @@ export function DeleteNote({ id }: { id: string }) {
 
 export const meta: MetaFunction<
 	typeof loader,
-	{ 'routes/users+/$username_+/notes': typeof notesLoader }
+	{ 'routes/users+/$handle_+/notes': typeof notesLoader }
 > = ({ data, params, matches }) => {
-	const notesMatch = matches.find(
-		m => m.id === 'routes/users+/$username_+/notes',
-	)
-	const displayName = notesMatch?.data?.owner.name ?? params.username
+	const notesMatch = matches.find(m => m.id === 'routes/users+/$handle_+/notes')
+	const displayName = notesMatch?.data?.owner.name ?? params.handle
 	const noteTitle = data?.note.title ?? 'Note'
 	const noteContentsSummary =
 		data && data.note.content.length > 100

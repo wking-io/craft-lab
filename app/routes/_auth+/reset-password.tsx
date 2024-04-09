@@ -13,34 +13,32 @@ import { ErrorList, Field } from '#app/components/forms.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireAnonymous, resetUserPassword } from '#app/utils/auth.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { PasswordAndConfirmPasswordSchema } from '#app/utils/user-validation.ts'
+import { PasswordAndConfirmPasswordSchema } from '#app/utils/account-validation.js'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 
-export const resetPasswordUsernameSessionKey = 'resetPasswordUsername'
+export const resetPasswordHandleSessionKey = 'resetPasswordHandle'
 
 const ResetPasswordSchema = PasswordAndConfirmPasswordSchema
 
-async function requireResetPasswordUsername(request: Request) {
+async function requireResetPasswordHandle(request: Request) {
 	await requireAnonymous(request)
 	const verifySession = await verifySessionStorage.getSession(
 		request.headers.get('cookie'),
 	)
-	const resetPasswordUsername = verifySession.get(
-		resetPasswordUsernameSessionKey,
-	)
-	if (typeof resetPasswordUsername !== 'string' || !resetPasswordUsername) {
+	const resetPasswordHandle = verifySession.get(resetPasswordHandleSessionKey)
+	if (typeof resetPasswordHandle !== 'string' || !resetPasswordHandle) {
 		throw redirect('/login')
 	}
-	return resetPasswordUsername
+	return resetPasswordHandle
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const resetPasswordUsername = await requireResetPasswordUsername(request)
-	return json({ resetPasswordUsername })
+	const resetPasswordHandle = await requireResetPasswordHandle(request)
+	return json({ resetPasswordHandle })
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const resetPasswordUsername = await requireResetPasswordUsername(request)
+	const resetPasswordHandle = await requireResetPasswordHandle(request)
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, {
 		schema: ResetPasswordSchema,
@@ -53,7 +51,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 	const { password } = submission.value
 
-	await resetUserPassword({ username: resetPasswordUsername, password })
+	await resetUserPassword({ handle: resetPasswordHandle, password })
 	const verifySession = await verifySessionStorage.getSession()
 	return redirect('/login', {
 		headers: {
@@ -86,7 +84,7 @@ export default function ResetPasswordPage() {
 			<div className="text-center">
 				<h1 className="text-h1">Password Reset</h1>
 				<p className="mt-3 text-body-md text-muted-foreground">
-					Hi, {data.resetPasswordUsername}. No worries. It happens all the time.
+					Hi, {data.resetPasswordHandle}. No worries. It happens all the time.
 				</p>
 			</div>
 			<div className="mx-auto mt-16 min-w-full max-w-sm sm:min-w-[368px]">

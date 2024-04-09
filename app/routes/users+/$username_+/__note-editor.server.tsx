@@ -103,7 +103,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	} = submission.value
 
 	const updatedNote = await prisma.note.upsert({
-		select: { id: true, owner: { select: { username: true } } },
+		select: { id: true, owner: { select: { handle: true } } },
 		where: { id: noteId ?? '__new_note__' },
 		create: {
 			ownerId: userId,
@@ -125,7 +125,5 @@ export async function action({ request }: ActionFunctionArgs) {
 		},
 	})
 
-	return redirect(
-		`/users/${updatedNote.owner.username}/notes/${updatedNote.id}`,
-	)
+	return redirect(`/users/${updatedNote.owner.handle}/notes/${updatedNote.id}`)
 }

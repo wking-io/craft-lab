@@ -5,7 +5,7 @@ import { type Timings } from '../timing.server.ts'
 export type ProviderUser = {
 	id: string
 	email: string
-	username?: string
+	handle?: string
 	name?: string
 	imageUrl?: string
 }

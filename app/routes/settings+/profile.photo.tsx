@@ -57,12 +57,12 @@ const PhotoFormSchema = z.discriminatedUnion('intent', [
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
-	const user = await prisma.user.findUnique({
+	const user = await prisma.account.findUnique({
 		where: { id: userId },
 		select: {
 			id: true,
 			name: true,
-			username: true,
+			handle: true,
 			image: { select: { id: true } },
 		},
 	})
@@ -102,13 +102,13 @@ export async function action({ request }: ActionFunctionArgs) {
 	const { image, intent } = submission.value
 
 	if (intent === 'delete') {
-		await prisma.userImage.deleteMany({ where: { userId } })
+		await prisma.accountImage.deleteMany({ where: { userId } })
 		return redirect('/settings/profile')
 	}
 
 	await prisma.$transaction(async $prisma => {
-		await $prisma.userImage.deleteMany({ where: { userId } })
-		await $prisma.user.update({
+		await $prisma.accountImage.deleteMany({ where: { userId } })
+		await $prisma.account.update({
 			where: { id: userId },
 			data: { image: { create: image } },
 		})
@@ -155,7 +155,7 @@ export default function PhotoRoute() {
 						newImageSrc ?? (data.user ? getUserImgSrc(data.user.image?.id) : '')
 					}
 					className="h-52 w-52 rounded-full object-cover"
-					alt={data.user?.name ?? data.user?.username}
+					alt={data.user?.name ?? data.user?.handle}
 				/>
 				<ErrorList errors={fields.photoFile.errors} id={fields.photoFile.id} />
 				<div className="flex gap-4">

@@ -2,7 +2,7 @@ import { redirect, type LoaderFunctionArgs } from '@remix-run/node'
 import {
 	authenticator,
 	getSessionExpirationDate,
-	getUserId,
+	getAccountId,
 } from '#app/utils/auth.server.ts'
 import { ProviderNameSchema, providerLabels } from '#app/utils/connections.tsx'
 import { prisma } from '#app/utils/db.server.ts'
@@ -56,7 +56,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		},
 	})
 
-	const userId = await getUserId(request)
+	const userId = await getAccountId(request)
 
 	if (existingConnection && userId) {
 		if (existingConnection.userId === userId) {
@@ -64,7 +64,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 				'/settings/profile/connections',
 				{
 					title: 'Already Connected',
-					description: `Your "${profile.username}" ${label} account is already connected.`,
+					description: `Your "${profile.handle}" ${label} account is already connected.`,
 				},
 				{ headers: destroyRedirectTo },
 			)
@@ -73,7 +73,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 				'/settings/profile/connections',
 				{
 					title: 'Already Connected',
-					description: `The "${profile.username}" ${label} account is already connected to another account.`,
+					description: `The "${profile.handle}" ${label} account is already connected to another account.`,
 				},
 				{ headers: destroyRedirectTo },
 			)
@@ -94,7 +94,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 			{
 				title: 'Connected',
 				type: 'success',
-				description: `Your "${profile.username}" ${label} account has been connected.`,
+				description: `Your "${profile.handle}" ${label} account has been connected.`,
 			},
 			{ headers: destroyRedirectTo },
 		)
@@ -107,7 +107,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 	// if the email matches a user in the db, then link the account and
 	// make a new session
-	const user = await prisma.user.findUnique({
+	const user = await prisma.account.findUnique({
 		select: { id: true },
 		where: { email: profile.email.toLowerCase() },
 	})
@@ -124,7 +124,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 			{
 				headers: await createToastHeaders({
 					title: 'Connected',
-					description: `Your "${profile.username}" ${label} account has been connected.`,
+					description: `Your "${profile.handle}" ${label} account has been connected.`,
 				}),
 			},
 		)
@@ -136,7 +136,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	verifySession.set(prefilledProfileKey, {
 		...profile,
 		email: profile.email.toLowerCase(),
-		username: profile.username?.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase(),
+		handle: profile.handle?.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase(),
 	})
 	verifySession.set(providerIdKey, profile.id)
 	const onboardingRedirect = [

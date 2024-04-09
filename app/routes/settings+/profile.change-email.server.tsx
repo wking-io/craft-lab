@@ -37,13 +37,13 @@ export async function handleVerification({
 			{ status: 400 },
 		)
 	}
-	const preUpdateUser = await prisma.user.findFirstOrThrow({
+	const preUpdateUser = await prisma.account.findFirstOrThrow({
 		select: { email: true },
 		where: { id: submission.value.target },
 	})
-	const user = await prisma.user.update({
+	const user = await prisma.account.update({
 		where: { id: submission.value.target },
-		select: { id: true, email: true, username: true },
+		select: { id: true, email: true, handle: true },
 		data: { email: newEmail },
 	})
 

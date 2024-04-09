@@ -2,30 +2,34 @@ import { type SerializeFrom } from '@remix-run/node'
 import { useRouteLoaderData } from '@remix-run/react'
 import { type loader as rootLoader } from '#app/root.tsx'
 
-function isUser(user: any): user is SerializeFrom<typeof rootLoader>['user'] {
-	return user && typeof user === 'object' && typeof user.id === 'string'
+function isAccount(
+	account: any,
+): account is SerializeFrom<typeof rootLoader>['account'] {
+	return (
+		account && typeof account === 'object' && typeof account.id === 'string'
+	)
 }
 
-export function useOptionalUser() {
+export function useOptionalAccount() {
 	const data = useRouteLoaderData<typeof rootLoader>('root')
-	if (!data || !isUser(data.user)) {
+	if (!data || !isAccount(data.account)) {
 		return undefined
 	}
-	return data.user
+	return data.account
 }
 
-export function useUser() {
-	const maybeUser = useOptionalUser()
-	if (!maybeUser) {
+export function useAccount() {
+	const maybeAccount = useOptionalAccount()
+	if (!maybeAccount) {
 		throw new Error(
-			'No user found in root loader, but user is required by useUser. If user is optional, try useOptionalUser instead.',
+			'No account found in root loader, but account is required by useAccount. If account is optional, try useOptionalAccount instead.',
 		)
 	}
-	return maybeUser
+	return maybeAccount
 }
 
 type Action = 'create' | 'read' | 'update' | 'delete'
-type Entity = 'user' | 'note'
+type Entity = 'account' | 'note'
 type Access = 'own' | 'any' | 'own,any' | 'any,own'
 export type PermissionString =
 	| `${Action}:${Entity}`
@@ -44,13 +48,13 @@ export function parsePermissionString(permissionString: PermissionString) {
 	}
 }
 
-export function userHasPermission(
-	user: Pick<ReturnType<typeof useUser>, 'roles'> | null | undefined,
+export function accountHasPermission(
+	account: Pick<ReturnType<typeof useAccount>, 'roles'> | null | undefined,
 	permission: PermissionString,
 ) {
-	if (!user) return false
+	if (!account) return false
 	const { action, entity, access } = parsePermissionString(permission)
-	return user.roles.some(role =>
+	return account.roles.some(role =>
 		role.permissions.some(
 			permission =>
 				permission.entity === entity &&
@@ -60,10 +64,10 @@ export function userHasPermission(
 	)
 }
 
-export function userHasRole(
-	user: Pick<ReturnType<typeof useUser>, 'roles'> | null,
+export function accountHasRole(
+	account: Pick<ReturnType<typeof useAccount>, 'roles'> | null,
 	role: string,
 ) {
-	if (!user) return false
-	return user.roles.some(r => r.name === role)
+	if (!account) return false
+	return account.roles.some(r => r.name === role)
 }

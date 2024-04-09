@@ -11,12 +11,10 @@ export default function NotesIndexRoute() {
 
 export const meta: MetaFunction<
 	null,
-	{ 'routes/users+/$username_+/notes': typeof notesLoader }
+	{ 'routes/users+/$handle_+/notes': typeof notesLoader }
 > = ({ params, matches }) => {
-	const notesMatch = matches.find(
-		m => m.id === 'routes/users+/$username_+/notes',
-	)
-	const displayName = notesMatch?.data?.owner.name ?? params.username
+	const notesMatch = matches.find(m => m.id === 'routes/users+/$handle_+/notes')
+	const displayName = notesMatch?.data?.owner.name ?? params.handle
 	const noteCount = notesMatch?.data?.owner.notes.length ?? 0
 	const notesText = noteCount === 1 ? 'note' : 'notes'
 	return [

@@ -62,7 +62,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	if (!verification) {
 		return redirect('/settings/profile/two-factor')
 	}
-	const user = await prisma.user.findUniqueOrThrow({
+	const user = await prisma.account.findUniqueOrThrow({
 		where: { id: userId },
 		select: { email: true },
 	})

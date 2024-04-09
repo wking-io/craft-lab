@@ -20,11 +20,11 @@ import {
 } from '#app/utils/connections.tsx'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { PasswordSchema, UsernameSchema } from '#app/utils/user-validation.ts'
+import { PasswordSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { handleNewSession } from './login.server.ts'
 
 const LoginFormSchema = z.object({
-	username: UsernameSchema,
+	handle: HandleSchema,
 	password: PasswordSchema,
 	redirectTo: z.string().optional(),
 	remember: z.boolean().optional(),
@@ -48,7 +48,7 @@ export async function action({ request }: ActionFunctionArgs) {
 				if (!session) {
 					ctx.addIssue({
 						code: z.ZodIssueCode.custom,
-						message: 'Invalid username or password',
+						message: 'Invalid handle or password',
 					})
 					return z.NEVER
 				}
@@ -108,14 +108,14 @@ export default function LoginPage() {
 						<Form method="POST" {...getFormProps(form)}>
 							<HoneypotInputs />
 							<Field
-								labelProps={{ children: 'Username' }}
+								labelProps={{ children: 'Handle' }}
 								inputProps={{
-									...getInputProps(fields.username, { type: 'text' }),
+									...getInputProps(fields.handle, { type: 'text' }),
 									autoFocus: true,
 									className: 'lowercase',
-									autoComplete: 'username',
+									autoComplete: 'handle',
 								}}
-								errors={fields.username.errors}
+								errors={fields.handle.errors}
 							/>
 
 							<Field

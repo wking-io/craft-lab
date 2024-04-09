@@ -9,7 +9,7 @@ import { cn, getUserImgSrc, useDelayedIsPending } from '#app/utils/misc.tsx'
 
 const UserSearchResultSchema = z.object({
 	id: z.string(),
-	username: z.string(),
+	handle: z.string(),
 	name: z.string().nullable(),
 	imageId: z.string().nullable(),
 })
@@ -24,10 +24,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const like = `%${searchTerm ?? ''}%`
 	const rawUsers = await prisma.$queryRaw`
-		SELECT User.id, User.username, User.name, UserImage.id AS imageId
+		SELECT User.id, User.handle, User.name, UserImage.id AS imageId
 		FROM User
 		LEFT JOIN UserImage ON User.id = UserImage.userId
-		WHERE User.username LIKE ${like}
+		WHERE User.handle LIKE ${like}
 		OR User.name LIKE ${like}
 		ORDER BY (
 			SELECT Note.updatedAt
@@ -77,11 +77,11 @@ export default function UsersRoute() {
 							{data.users.map(user => (
 								<li key={user.id}>
 									<Link
-										to={user.username}
+										to={user.handle}
 										className="flex h-36 w-44 flex-col items-center justify-center rounded-lg bg-muted px-5 py-3"
 									>
 										<img
-											alt={user.name ?? user.username}
+											alt={user.name ?? user.handle}
 											src={getUserImgSrc(user.imageId)}
 											className="h-16 w-16 rounded-full"
 										/>
@@ -91,7 +91,7 @@ export default function UsersRoute() {
 											</span>
 										) : null}
 										<span className="w-full overflow-hidden text-ellipsis text-center text-body-sm text-muted-foreground">
-											{user.username}
+											{user.handle}
 										</span>
 									</Link>
 								</li>

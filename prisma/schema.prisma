@@ -10,43 +10,54 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String  @id @default(cuid())
-  email    String  @unique
-  username String  @unique
-  name     String?
+model WaitlistMember {
+  id    String @id @default(cuid())
+  email String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
-  image       UserImage?
+model Account {
+  id     String @id @default(cuid())
+  email  String @unique
+  handle String @unique
+  name   String
+
   password    Password?
-  notes       Note[]
-  roles       Role[]
   sessions    Session[]
+  profiles    Profile[]
+  groups      Group[]
   connections Connection[]
 }
 
-model Note {
-  id      String @id @default(cuid())
-  title   String
-  content String
+model Group {
+  id   String @id @default(cuid())
+  name String
+
+  members   Profile[]
+  account   Account   @relation(fields: [accountId], references: [id])
+  accountId String
+}
+
+model Profile {
+  id   String  @id @default(cuid())
+  name String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ownerId String
+  image     ProfileImage?
+  roles     Role[]
+  account   Account       @relation(fields: [accountId], references: [id])
+  accountId String
+  group     Group         @relation(fields: [groupId], references: [id])
+  groupId   String
 
-  images NoteImage[]
-
-  // non-unique foreign key
-  @@index([ownerId])
-  // This helps our order by in the user search a LOT
-  @@index([ownerId, updatedAt])
+  @@unique([accountId, groupId], name: "accountId_groupId")
 }
 
-model NoteImage {
+model ProfileImage {
   id          String  @id @default(cuid())
   altText     String?
   contentType String
@@ -55,31 +66,15 @@ model NoteImage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  noteId String
-
-  // non-unique foreign key
-  @@index([noteId])
-}
-
-model UserImage {
-  id          String  @id @default(cuid())
-  altText     String?
-  contentType String
-  blob        Bytes
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  profileId String  @unique
 }
 
 model Password {
   hash String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId String  @unique
 }
 
 model Session {
@@ -89,11 +84,11 @@ model Session {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId String
 
   // non-unique foreign key
-  @@index([userId])
+  @@index([accountId])
 }
 
 model Permission {
@@ -119,7 +114,7 @@ model Role {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users       User[]
+  profiles    Profile[]
   permissions Permission[]
 }
 
@@ -162,8 +157,8 @@ model Connection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId String
 
   @@unique([providerName, providerId])
 }

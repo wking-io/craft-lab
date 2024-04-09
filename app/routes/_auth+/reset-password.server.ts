@@ -2,7 +2,7 @@ import { invariant } from '@epic-web/invariant'
 import { json, redirect } from '@remix-run/node'
 import { prisma } from '#app/utils/db.server.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
-import { resetPasswordUsernameSessionKey } from './reset-password.tsx'
+import { resetPasswordHandleSessionKey } from './reset-password.tsx'
 import { type VerifyFunctionArgs } from './verify.server.ts'
 
 export async function handleVerification({ submission }: VerifyFunctionArgs) {
@@ -11,9 +11,9 @@ export async function handleVerification({ submission }: VerifyFunctionArgs) {
 		'Submission should be successful by now',
 	)
 	const target = submission.value.target
-	const user = await prisma.user.findFirst({
-		where: { OR: [{ email: target }, { username: target }] },
-		select: { email: true, username: true },
+	const user = await prisma.account.findFirst({
+		where: { OR: [{ email: target }, { handle: target }] },
+		select: { email: true, handle: true },
 	})
 	// we don't want to say the user is not found if the email is not found
 	// because that would allow an attacker to check if an email is registered
@@ -25,7 +25,7 @@ export async function handleVerification({ submission }: VerifyFunctionArgs) {
 	}
 
 	const verifySession = await verifySessionStorage.getSession()
-	verifySession.set(resetPasswordUsernameSessionKey, user.username)
+	verifySession.set(resetPasswordHandleSessionKey, user.handle)
 	return redirect('/reset-password', {
 		headers: {
 			'set-cookie': await verifySessionStorage.commitSession(verifySession),

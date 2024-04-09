@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test'
-import { type User as UserModel } from '@prisma/client'
+import { type Profile, type Account as AccountModel } from '@prisma/client'
 import * as setCookieParser from 'set-cookie-parser'
 import {
 	getPasswordHash,
@@ -8,76 +8,104 @@ import {
 } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { authSessionStorage } from '#app/utils/session.server.ts'
-import { createUser } from './db-utils.ts'
+import { createAccount } from './db-utils.ts'
 
 export * from './db-utils.ts'
 
-type GetOrInsertUserOptions = {
+type GetOrInsertAccountOptions = {
 	id?: string
-	username?: UserModel['username']
+	handle?: AccountModel['handle']
 	password?: string
-	email?: UserModel['email']
+	email?: AccountModel['email']
 }
 
-type User = {
+type Account = {
 	id: string
 	email: string
-	username: string
-	name: string | null
+	handle: string
 }
 
-async function getOrInsertUser({
+async function getOrInsertAccount({
 	id,
-	username,
+	handle,
 	password,
 	email,
-}: GetOrInsertUserOptions = {}): Promise<User> {
-	const select = { id: true, email: true, username: true, name: true }
+}: GetOrInsertAccountOptions = {}): Promise<Account & Pick<Profile, 'name'>> {
+	const select = { id: true, email: true, handle: true, name: true }
 	if (id) {
-		return await prisma.user.findUniqueOrThrow({
+		return await prisma.profile.findUniqueOrThrow({
 			select,
 			where: { id: id },
 		})
 	} else {
-		const userData = createUser()
-		username ??= userData.username
-		password ??= userData.username
-		email ??= userData.email
-		return await prisma.user.create({
-			select,
-			data: {
-				...userData,
-				email,
-				username,
-				roles: { connect: { name: 'user' } },
-				password: { create: { hash: await getPasswordHash(password) } },
-			},
+		const accountData = createAccount()
+		handle ??= accountData.handle
+		password ??= accountData.handle
+		email ??= accountData.email
+
+		// Start a transaction
+		return await prisma.$transaction(async tx => {
+			const account = await tx.account.create({
+				select,
+				data: {
+					email: email!,
+					handle: handle!,
+					name: accountData.name,
+					password: { create: { hash: await getPasswordHash(password!) } },
+				},
+			})
+
+			const group = await tx.group.create({
+				data: {
+					name: `${accountData.name}'s Group`,
+					account: {
+						connect: { id: account.id },
+					},
+				},
+			})
+
+			// Create the profile and link to both the account and the group
+			await tx.profile.create({
+				select: { name: true },
+				data: {
+					account: {
+						connect: { id: account.id },
+					},
+					group: {
+						connect: { id: group.id },
+					},
+				},
+			})
+
+			return account
 		})
 	}
 }
 
 export const test = base.extend<{
-	insertNewUser(options?: GetOrInsertUserOptions): Promise<User>
-	login(options?: GetOrInsertUserOptions): Promise<User>
+	insertNewAccount(options?: GetOrInsertAccountOptions): Promise<Account>
+	login(
+		options?: GetOrInsertAccountOptions,
+	): Promise<Account & Pick<Profile, 'name'>>
 }>({
-	insertNewUser: async ({}, use) => {
-		let userId: string | undefined = undefined
+	insertNewAccount: async ({}, use) => {
+		let accountId: string | undefined = undefined
 		await use(async options => {
-			const user = await getOrInsertUser(options)
-			userId = user.id
-			return user
+			const account = await getOrInsertAccount(options)
+			accountId = account.id
+			return account
 		})
-		await prisma.user.delete({ where: { id: userId } }).catch(() => {})
+		await prisma.account.delete({ where: { id: accountId } }).catch(() => {})
 	},
 	login: async ({ page }, use) => {
-		let userId: string | undefined = undefined
+		let accountId: string | undefined = undefined
 		await use(async options => {
-			const user = await getOrInsertUser(options)
-			userId = user.id
+			const account = await getOrInsertAccount(options)
+			accountId = account.id
 			const session = await prisma.session.create({
 				data: {
 					expirationDate: getSessionExpirationDate(),
-					userId: user.id,
+					accountId: account.id,
 				},
 				select: { id: true },
 			})
@@ -90,9 +118,9 @@ export const test = base.extend<{
 			await page
 				.context()
 				.addCookies([{ ...cookieConfig, domain: 'localhost' }])
-			return user
+			return account
 		})
-		await prisma.user.deleteMany({ where: { id: userId } })
+		await prisma.account.deleteMany({ where: { id: accountId } })
 	},
 })
 export const { expect } = test
