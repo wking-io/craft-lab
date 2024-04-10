@@ -1,5 +1,6 @@
 import { invariant } from '@epic-web/invariant'
 import { redirect } from '@remix-run/node'
+import { generatePath } from '@remix-run/react'
 import { safeRedirect } from 'remix-utils/safe-redirect'
 import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx'
 import { getAccountId, sessionKey } from '#app/utils/auth.server.ts'
@@ -64,8 +65,12 @@ export async function handleNewSession(
 		)
 		authSession.set(sessionKey, session.id)
 
+		const group = await prisma.group.findFirstOrThrow()
 		return redirect(
-			safeRedirect(redirectTo),
+			safeRedirect(
+				redirectTo,
+				generatePath('/:groupId/dashboard', { groupId: group.id }),
+			),
 			combineResponseInits(
 				{
 					headers: {

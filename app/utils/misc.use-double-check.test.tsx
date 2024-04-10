@@ -1,8 +1,8 @@
 /**
  * @vitest-environment jsdom
  */
-import { accountEvent } from '@testing-library/account-event'
 import { render, screen } from '@testing-library/react'
+import { userEvent } from '@testing-library/user-event'
 import { useState } from 'react'
 import { expect, test } from 'vitest'
 import { useDoubleCheck } from './misc.tsx'
@@ -27,7 +27,7 @@ function TestComponent() {
 }
 
 test('prevents default on the first click, and does not on the second', async () => {
-	const account = accountEvent.setup()
+	const account = userEvent.setup()
 	render(<TestComponent />)
 
 	const status = screen.getByRole('status')
@@ -46,7 +46,7 @@ test('prevents default on the first click, and does not on the second', async ()
 })
 
 test('blurring the button starts things over', async () => {
-	const account = accountEvent.setup()
+	const account = userEvent.setup()
 	render(<TestComponent />)
 
 	const status = screen.getByRole('status')
@@ -64,7 +64,7 @@ test('blurring the button starts things over', async () => {
 })
 
 test('hitting "escape" on the input starts things over', async () => {
-	const account = accountEvent.setup()
+	const account = userEvent.setup()
 	render(<TestComponent />)
 
 	const status = screen.getByRole('status')

@@ -9,7 +9,7 @@ import { GITHUB_PROVIDER_NAME } from '#app/utils/connections.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { generateTOTP } from '#app/utils/totp.server.ts'
-import { createUser } from '#tests/db-utils.ts'
+import { createAccount } from '#tests/db-utils.ts'
 import { insertGitHubUser, deleteGitHubUsers } from '#tests/mocks/github.ts'
 import { server } from '#tests/mocks/index.ts'
 import { consoleError } from '#tests/setup/setup-test-env.ts'
@@ -109,7 +109,7 @@ test(`when a account is logged in and has already connected, it doesn't do anyth
 test('when a account exists with the same email, create connection and make session', async () => {
 	const githubUser = await insertGitHubUser()
 	const email = githubUser.primaryEmail.toLowerCase()
-	const { accountId } = await setupUser({ ...createUser(), email })
+	const { accountId } = await setupUser({ ...createAccount(), email })
 	const request = await setupRequest({ code: githubUser.code })
 	const response = await loader({ request, params: PARAMS, context: {} })
 
@@ -134,14 +134,14 @@ test('when a account exists with the same email, create connection and make sess
 		'the connection was not created in the database',
 	).toBeTruthy()
 
-	await expect(response).toHaveSessionForUser(accountId)
+	await expect(response).toHaveSessionForAccount(accountId)
 })
 
 test('gives an error if the account is already connected to another account', async () => {
 	const githubUser = await insertGitHubUser()
 	await prisma.account.create({
 		data: {
-			...createUser(),
+			...createAccount(),
 			connections: {
 				create: {
 					providerName: GITHUB_PROVIDER_NAME,
@@ -180,7 +180,7 @@ test('if a account is not logged in, but the connection exists, make a session',
 	const request = await setupRequest({ code: githubUser.code })
 	const response = await loader({ request, params: PARAMS, context: {} })
 	expect(response).toHaveRedirect('/')
-	await expect(response).toHaveSessionForUser(accountId)
+	await expect(response).toHaveSessionForAccount(accountId)
 })
 
 test('if a account is not logged in, but the connection exists and they have enabled 2FA, send them to verify their 2FA and do not make a session', async () => {
@@ -239,7 +239,7 @@ async function setupRequest({
 	return request
 }
 
-async function setupUser(accountData = createUser()) {
+async function setupUser(accountData = createAccount()) {
 	const session = await prisma.session.create({
 		data: {
 			expirationDate: getSessionExpirationDate(),

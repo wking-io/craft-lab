@@ -13,6 +13,7 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { PasswordSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { login, requireAnonymous } from '#app/utils/auth.server.ts'
 import {
 	ProviderConnectionForm,
@@ -20,7 +21,6 @@ import {
 } from '#app/utils/connections.tsx'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { PasswordSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { handleNewSession } from './login.server.ts'
 
 const LoginFormSchema = z.object({
@@ -166,7 +166,7 @@ export default function LoginPage() {
 								</StatusButton>
 							</div>
 						</Form>
-						<ul className="mt-5 flex flex-col gap-5 border-b-2 border-t-2 border-border py-3">
+						<ul className="mt-5 flex flex-col gap-5 border-b-2 border-t-2 py-3">
 							{providerNames.map(providerName => (
 								<li key={providerName}>
 									<ProviderConnectionForm
@@ -177,18 +177,6 @@ export default function LoginPage() {
 								</li>
 							))}
 						</ul>
-						<div className="flex items-center justify-center gap-2 pt-6">
-							<span className="text-muted-foreground">New here?</span>
-							<Link
-								to={
-									redirectTo
-										? `/signup?${encodeURIComponent(redirectTo)}`
-										: '/signup'
-								}
-							>
-								Create an account
-							</Link>
-						</div>
 					</div>
 				</div>
 			</div>

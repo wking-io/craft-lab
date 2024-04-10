@@ -9,6 +9,7 @@ import {
 	type MetaFunction,
 } from '@remix-run/node'
 import {
+	Form,
 	Links,
 	Meta,
 	Outlet,
@@ -25,6 +26,7 @@ import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { makeFavicon, type Seed } from './components/logo.tsx'
 import { EpicProgress } from './components/progress-bar.tsx'
 import { useToast } from './components/toaster.tsx'
+import { Button } from './components/ui/button.tsx'
 import { href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'
@@ -257,6 +259,11 @@ function App() {
 			allowIndexing={allowIndexing}
 			env={data.ENV}
 		>
+			{data.account ? (
+				<Form action="/logout" method="POST">
+					<Button>Logout</Button>
+				</Form>
+			) : null}
 			<div>
 				<Outlet />
 			</div>

@@ -6,10 +6,10 @@ import {
 	getInstanceInfo,
 	ensureInstance,
 } from '#app/utils/litefs.server.ts'
-import { requireUserWithRole } from '#app/utils/permissions.server.ts'
+import { requireProfileWithRole } from '#app/utils/permissions.server.ts'
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-	await requireUserWithRole(request, 'admin')
+	await requireProfileWithRole(request, 'admin')
 	const searchParams = new URL(request.url).searchParams
 	const currentInstanceInfo = await getInstanceInfo()
 	const allInstances = await getAllInstances()

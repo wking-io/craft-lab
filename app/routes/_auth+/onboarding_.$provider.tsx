@@ -125,16 +125,18 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				ctx.addIssue({
 					path: ['handle'],
 					code: z.ZodIssueCode.custom,
-					message: 'A account already exists with this handle',
+					message: 'An account already exists with this handle',
 				})
 				return
 			}
 		}).transform(async data => {
+			const group = await prisma.group.findFirstOrThrow()
 			const session = await signupWithConnection({
 				...data,
 				email,
 				providerId,
 				providerName,
+				groupId: group.id,
 			})
 			return { ...data, session }
 		}),

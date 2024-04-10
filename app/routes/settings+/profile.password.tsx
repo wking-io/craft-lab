@@ -16,8 +16,8 @@ import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { PasswordSchema } from '#app/utils/account-validation.js'
 import {
 	getPasswordHash,
-	requireUserId,
-	verifyUserPassword,
+	requireAccountId,
+	verifyAccountPassword,
 } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
@@ -56,13 +56,13 @@ async function requirePassword(accountId: string) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	await requirePassword(accountId)
 	return json({})
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	await requirePassword(accountId)
 	const formData = await request.formData()
 	const submission = await parseWithZod(formData, {
@@ -70,7 +70,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		schema: ChangePasswordForm.superRefine(
 			async ({ currentPassword, newPassword }, ctx) => {
 				if (currentPassword && newPassword) {
-					const account = await verifyUserPassword(
+					const account = await verifyAccountPassword(
 						{ id: accountId },
 						currentPassword,
 					)

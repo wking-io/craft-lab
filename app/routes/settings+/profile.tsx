@@ -5,8 +5,8 @@ import { Link, Outlet, useMatches } from '@remix-run/react'
 import { z } from 'zod'
 import { Spacer } from '#app/components/spacer.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
-import { useUser } from '#app/utils/account.js'
-import { requireUserId } from '#app/utils/auth.server.ts'
+import { useAccount } from '#app/utils/account.js'
+import { requireAccountId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { cn } from '#app/utils/misc.tsx'
 
@@ -19,7 +19,7 @@ export const handle: BreadcrumbHandle & SEOHandle = {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	const account = await prisma.account.findUnique({
 		where: { id: accountId },
 		select: { handle: true },
@@ -33,7 +33,7 @@ const BreadcrumbHandleMatch = z.object({
 })
 
 export default function EditUserProfile() {
-	const account = useUser()
+	const account = useAccount()
 	const matches = useMatches()
 	const breadcrumbs = matches
 		.map(m => {

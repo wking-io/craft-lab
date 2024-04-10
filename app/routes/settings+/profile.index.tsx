@@ -10,13 +10,12 @@ import {
 import { Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.tsx'
-import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
-import { requireUserId, sessionKey } from '#app/utils/auth.server.ts'
+import { requireAccountId, sessionKey } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { getUserImgSrc, useDoubleCheck } from '#app/utils/misc.tsx'
+import { useDoubleCheck } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
@@ -31,7 +30,7 @@ const ProfileFormSchema = z.object({
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	const account = await prisma.account.findUniqueOrThrow({
 		where: { id: accountId },
 		select: {
@@ -39,9 +38,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			name: true,
 			handle: true,
 			email: true,
-			image: {
-				select: { id: true },
-			},
 			_count: {
 				select: {
 					sessions: {
@@ -81,7 +77,7 @@ const signOutOfSessionsActionIntent = 'sign-out-of-sessions'
 const deleteDataActionIntent = 'delete-data'
 
 export async function action({ request }: ActionFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	const formData = await request.formData()
 	const intent = formData.get('intent')
 	switch (intent) {
@@ -105,29 +101,6 @@ export default function EditUserProfile() {
 
 	return (
 		<div className="flex flex-col gap-12">
-			<div className="flex justify-center">
-				<div className="relative h-52 w-52">
-					<img
-						src={getUserImgSrc(data.account.image?.id)}
-						alt={data.account.handle}
-						className="h-full w-full rounded-full object-cover"
-					/>
-					<Button
-						asChild
-						variant="outline"
-						className="absolute -right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full p-0"
-					>
-						<Link
-							preventScrollReset
-							to="photo"
-							title="Change profile photo"
-							aria-label="Change profile photo"
-						>
-							<Icon name="camera" className="h-4 w-4" />
-						</Link>
-					</Button>
-				</div>
-			</div>
 			<UpdateProfile />
 
 			<div className="col-span-6 my-6 h-1 border-b-[1.5px] border-foreground" />
@@ -158,15 +131,6 @@ export default function EditUserProfile() {
 				<div>
 					<Link to="connections">
 						<Icon name="link-2">Manage connections</Icon>
-					</Link>
-				</div>
-				<div>
-					<Link
-						reloadDocument
-						download="my-epic-notes-data.json"
-						to="/resources/download-account-data"
-					>
-						<Icon name="download">Download your data</Icon>
 					</Link>
 				</div>
 				<SignOutOfSessions />

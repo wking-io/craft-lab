@@ -13,7 +13,7 @@ import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { PasswordAndConfirmPasswordSchema } from '#app/utils/account-validation.js'
-import { getPasswordHash, requireUserId } from '#app/utils/auth.server.ts'
+import { getPasswordHash, requireAccountId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { type BreadcrumbHandle } from './profile.tsx'
@@ -36,13 +36,13 @@ async function requireNoPassword(accountId: string) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	await requireNoPassword(accountId)
 	return json({})
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const accountId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	await requireNoPassword(accountId)
 	const formData = await request.formData()
 	const submission = await parseWithZod(formData, {
