@@ -1,6 +1,6 @@
 import { invariant } from '@epic-web/invariant'
 import { faker } from '@faker-js/faker'
-import { verifyUserPassword } from '#app/utils/auth.server.ts'
+import { verifyAccountPassword } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { readEmail } from '#tests/mocks/utils.ts'
 import {
@@ -46,11 +46,11 @@ test('Users can update their password', async ({ page, login }) => {
 
 	const { handle } = account
 	expect(
-		await verifyUserPassword({ handle }, oldPassword),
+		await verifyAccountPassword({ handle }, oldPassword),
 		'Old password still works',
 	).toEqual(null)
 	expect(
-		await verifyUserPassword({ handle }, newPassword),
+		await verifyAccountPassword({ handle }, newPassword),
 		'New password does not work',
 	).toEqual({ id: account.id })
 })

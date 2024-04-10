@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test'
-import { type Profile, type Account as AccountModel } from '@prisma/client'
+import { type Account as AccountModel } from '@prisma/client'
 import * as setCookieParser from 'set-cookie-parser'
 import {
 	getPasswordHash,
@@ -23,6 +23,7 @@ type Account = {
 	id: string
 	email: string
 	handle: string
+	name: string
 }
 
 async function getOrInsertAccount({
@@ -30,10 +31,10 @@ async function getOrInsertAccount({
 	handle,
 	password,
 	email,
-}: GetOrInsertAccountOptions = {}): Promise<Account & Pick<Profile, 'name'>> {
+}: GetOrInsertAccountOptions = {}): Promise<Account> {
 	const select = { id: true, email: true, handle: true, name: true }
 	if (id) {
-		return await prisma.profile.findUniqueOrThrow({
+		return await prisma.account.findUniqueOrThrow({
 			select,
 			where: { id: id },
 		})
@@ -84,9 +85,7 @@ async function getOrInsertAccount({
 
 export const test = base.extend<{
 	insertNewAccount(options?: GetOrInsertAccountOptions): Promise<Account>
-	login(
-		options?: GetOrInsertAccountOptions,
-	): Promise<Account & Pick<Profile, 'name'>>
+	login(options?: GetOrInsertAccountOptions): Promise<Account>
 }>({
 	insertNewAccount: async ({}, use) => {
 		let accountId: string | undefined = undefined
