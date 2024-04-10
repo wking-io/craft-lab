@@ -24,6 +24,7 @@ import { z } from 'zod'
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
 import {
 	authenticator,
 	sessionKey,
@@ -35,7 +36,6 @@ import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { onboardingEmailSessionKey } from './onboarding'
 
@@ -125,7 +125,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 				ctx.addIssue({
 					path: ['handle'],
 					code: z.ZodIssueCode.custom,
-					message: 'A user already exists with this handle',
+					message: 'A account already exists with this handle',
 				})
 				return
 			}

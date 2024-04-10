@@ -13,6 +13,7 @@ import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { PasswordSchema } from '#app/utils/account-validation.js'
 import {
 	getPasswordHash,
 	requireUserId,
@@ -21,7 +22,6 @@ import {
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import { PasswordSchema } from '#app/utils/account-validation.js'
 import { type BreadcrumbHandle } from './profile.tsx'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
@@ -45,10 +45,10 @@ const ChangePasswordForm = z
 		}
 	})
 
-async function requirePassword(userId: string) {
+async function requirePassword(accountId: string) {
 	const password = await prisma.password.findUnique({
-		select: { userId: true },
-		where: { userId },
+		select: { accountId: true },
+		where: { accountId },
 	})
 	if (!password) {
 		throw redirect('/settings/profile/password/create')
@@ -56,22 +56,25 @@ async function requirePassword(userId: string) {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
-	await requirePassword(userId)
+	const accountId = await requireUserId(request)
+	await requirePassword(accountId)
 	return json({})
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
-	await requirePassword(userId)
+	const accountId = await requireUserId(request)
+	await requirePassword(accountId)
 	const formData = await request.formData()
 	const submission = await parseWithZod(formData, {
 		async: true,
 		schema: ChangePasswordForm.superRefine(
 			async ({ currentPassword, newPassword }, ctx) => {
 				if (currentPassword && newPassword) {
-					const user = await verifyUserPassword({ id: userId }, currentPassword)
-					if (!user) {
+					const account = await verifyUserPassword(
+						{ id: accountId },
+						currentPassword,
+					)
+					if (!account) {
 						ctx.addIssue({
 							path: ['currentPassword'],
 							code: z.ZodIssueCode.custom,
@@ -97,7 +100,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	await prisma.account.update({
 		select: { handle: true },
-		where: { id: userId },
+		where: { id: accountId },
 		data: {
 			password: {
 				update: {

@@ -22,7 +22,7 @@ export async function handleNewSession(
 		remember,
 	}: {
 		request: Request
-		session: { userId: string; id: string; expirationDate: Date }
+		session: { accountId: string; id: string; expirationDate: Date }
 		redirectTo?: string
 		remember: boolean
 	},
@@ -31,19 +31,19 @@ export async function handleNewSession(
 	const verification = await prisma.verification.findUnique({
 		select: { id: true },
 		where: {
-			target_type: { target: session.userId, type: twoFAVerificationType },
+			target_type: { target: session.accountId, type: twoFAVerificationType },
 		},
 	})
-	const userHasTwoFactor = Boolean(verification)
+	const accountHasTwoFactor = Boolean(verification)
 
-	if (userHasTwoFactor) {
+	if (accountHasTwoFactor) {
 		const verifySession = await verifySessionStorage.getSession()
 		verifySession.set(unverifiedSessionIdKey, session.id)
 		verifySession.set(rememberKey, remember)
 		const redirectUrl = getRedirectToUrl({
 			request,
 			type: twoFAVerificationType,
-			target: session.userId,
+			target: session.accountId,
 			redirectTo,
 		})
 		return redirect(
@@ -144,14 +144,14 @@ export async function shouldRequestTwoFA(request: Request) {
 		request.headers.get('cookie'),
 	)
 	if (verifySession.has(unverifiedSessionIdKey)) return true
-	const userId = await getAccountId(request)
-	if (!userId) return false
+	const accountId = await getAccountId(request)
+	if (!accountId) return false
 	// if it's over two hours since they last verified, we should request 2FA again
-	const userHasTwoFA = await prisma.verification.findUnique({
+	const accountHasTwoFA = await prisma.verification.findUnique({
 		select: { id: true },
-		where: { target_type: { target: userId, type: twoFAVerificationType } },
+		where: { target_type: { target: accountId, type: twoFAVerificationType } },
 	})
-	if (!userHasTwoFA) return false
+	if (!accountHasTwoFA) return false
 	const verifiedTime = authSession.get(verifiedTimeKey) ?? new Date(0)
 	const twoHours = 1000 * 60 * 2
 	return Date.now() - verifiedTime > twoHours

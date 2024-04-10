@@ -7,7 +7,7 @@ export const HandleSchema = z
 	.regex(/^[a-zA-Z0-9_]+$/, {
 		message: 'Handle can only include letters, numbers, and underscores',
 	})
-	// users can type the handle in any case, but we store it in lowercase
+	// accounts can type the handle in any case, but we store it in lowercase
 	.transform(value => value.toLowerCase())
 
 export const PasswordSchema = z
@@ -23,7 +23,7 @@ export const EmailSchema = z
 	.email({ message: 'Email is invalid' })
 	.min(3, { message: 'Email is too short' })
 	.max(100, { message: 'Email is too long' })
-	// users can type the email in any case, but we store it in lowercase
+	// accounts can type the email in any case, but we store it in lowercase
 	.transform(value => value.toLowerCase())
 
 export const PasswordAndConfirmPasswordSchema = z

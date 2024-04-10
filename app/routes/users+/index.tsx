@@ -19,14 +19,14 @@ const UserSearchResultsSchema = z.array(UserSearchResultSchema)
 export async function loader({ request }: LoaderFunctionArgs) {
 	const searchTerm = new URL(request.url).searchParams.get('search')
 	if (searchTerm === '') {
-		return redirect('/users')
+		return redirect('/accounts')
 	}
 
 	const like = `%${searchTerm ?? ''}%`
 	const rawUsers = await prisma.$queryRaw`
 		SELECT User.id, User.handle, User.name, UserImage.id AS imageId
 		FROM User
-		LEFT JOIN UserImage ON User.id = UserImage.userId
+		LEFT JOIN UserImage ON User.id = UserImage.accountId
 		WHERE User.handle LIKE ${like}
 		OR User.name LIKE ${like}
 		ORDER BY (
@@ -45,14 +45,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			status: 400,
 		})
 	}
-	return json({ status: 'idle', users: result.data } as const)
+	return json({ status: 'idle', accounts: result.data } as const)
 }
 
 export default function UsersRoute() {
 	const data = useLoaderData<typeof loader>()
 	const isPending = useDelayedIsPending({
 		formMethod: 'GET',
-		formAction: '/users',
+		formAction: '/accounts',
 	})
 
 	if (data.status === 'error') {
@@ -67,38 +67,38 @@ export default function UsersRoute() {
 			</div>
 			<main>
 				{data.status === 'idle' ? (
-					data.users.length ? (
+					data.accounts.length ? (
 						<ul
 							className={cn(
 								'flex w-full flex-wrap items-center justify-center gap-4 delay-200',
 								{ 'opacity-50': isPending },
 							)}
 						>
-							{data.users.map(user => (
-								<li key={user.id}>
+							{data.accounts.map(account => (
+								<li key={account.id}>
 									<Link
-										to={user.handle}
+										to={account.handle}
 										className="flex h-36 w-44 flex-col items-center justify-center rounded-lg bg-muted px-5 py-3"
 									>
 										<img
-											alt={user.name ?? user.handle}
-											src={getUserImgSrc(user.imageId)}
+											alt={account.name ?? account.handle}
+											src={getUserImgSrc(account.imageId)}
 											className="h-16 w-16 rounded-full"
 										/>
-										{user.name ? (
+										{account.name ? (
 											<span className="w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-body-md">
-												{user.name}
+												{account.name}
 											</span>
 										) : null}
 										<span className="w-full overflow-hidden text-ellipsis text-center text-body-sm text-muted-foreground">
-											{user.handle}
+											{account.handle}
 										</span>
 									</Link>
 								</li>
 							))}
 						</ul>
 					) : (
-						<p>No users found</p>
+						<p>No accounts found</p>
 					)
 				) : data.status === 'error' ? (
 					<ErrorList errors={['There was an error parsing the results']} />

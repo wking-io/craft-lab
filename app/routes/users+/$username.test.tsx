@@ -13,43 +13,43 @@ import { authSessionStorage } from '#app/utils/session.server.ts'
 import { createUser, getUserImages } from '#tests/db-utils.ts'
 import { default as HandleRoute, loader } from './$handle.tsx'
 
-test('The user profile when not logged in as self', async () => {
-	const userImages = await getUserImages()
-	const userImage =
-		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const user = await prisma.account.create({
+test('The account profile when not logged in as self', async () => {
+	const accountImages = await getUserImages()
+	const accountImage =
+		accountImages[faker.number.int({ min: 0, max: accountImages.length - 1 })]
+	const account = await prisma.account.create({
 		select: { id: true, handle: true, name: true },
-		data: { ...createUser(), image: { create: userImage } },
+		data: { ...createUser(), image: { create: accountImage } },
 	})
 	const App = createRemixStub([
 		{
-			path: '/users/:handle',
+			path: '/accounts/:handle',
 			Component: HandleRoute,
 			loader,
 		},
 	])
 
-	const routeUrl = `/users/${user.handle}`
+	const routeUrl = `/accounts/${account.handle}`
 	render(<App initialEntries={[routeUrl]} />)
 
-	await screen.findByRole('heading', { level: 1, name: user.name! })
-	await screen.findByRole('img', { name: user.name! })
-	await screen.findByRole('link', { name: `${user.name}'s notes` })
+	await screen.findByRole('heading', { level: 1, name: account.name! })
+	await screen.findByRole('img', { name: account.name! })
+	await screen.findByRole('link', { name: `${account.name}'s notes` })
 })
 
-test('The user profile when logged in as self', async () => {
-	const userImages = await getUserImages()
-	const userImage =
-		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const user = await prisma.account.create({
+test('The account profile when logged in as self', async () => {
+	const accountImages = await getUserImages()
+	const accountImage =
+		accountImages[faker.number.int({ min: 0, max: accountImages.length - 1 })]
+	const account = await prisma.account.create({
 		select: { id: true, handle: true, name: true },
-		data: { ...createUser(), image: { create: userImage } },
+		data: { ...createUser(), image: { create: accountImage } },
 	})
 	const session = await prisma.session.create({
 		select: { id: true },
 		data: {
 			expirationDate: getSessionExpirationDate(),
-			userId: user.id,
+			accountId: account.id,
 		},
 	})
 
@@ -72,7 +72,7 @@ test('The user profile when logged in as self', async () => {
 			},
 			children: [
 				{
-					path: 'users/:handle',
+					path: 'accounts/:handle',
 					Component: HandleRoute,
 					loader: async args => {
 						// add the cookie header to the request
@@ -84,11 +84,11 @@ test('The user profile when logged in as self', async () => {
 		},
 	])
 
-	const routeUrl = `/users/${user.handle}`
+	const routeUrl = `/accounts/${account.handle}`
 	await render(<App initialEntries={[routeUrl]} />)
 
-	await screen.findByRole('heading', { level: 1, name: user.name! })
-	await screen.findByRole('img', { name: user.name! })
+	await screen.findByRole('heading', { level: 1, name: account.name! })
+	await screen.findByRole('img', { name: account.name! })
 	await screen.findByRole('button', { name: /logout/i })
 	await screen.findByRole('link', { name: /my notes/i })
 	await screen.findByRole('link', { name: /edit profile/i })

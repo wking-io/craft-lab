@@ -41,7 +41,7 @@ export async function handleVerification({
 		select: { email: true },
 		where: { id: submission.value.target },
 	})
-	const user = await prisma.account.update({
+	const account = await prisma.account.update({
 		where: { id: submission.value.target },
 		select: { id: true, email: true, handle: true },
 		data: { email: newEmail },
@@ -50,7 +50,7 @@ export async function handleVerification({
 	void sendEmail({
 		to: preUpdateUser.email,
 		subject: 'Epic Stack email changed',
-		react: <EmailChangeNoticeEmail userId={user.id} />,
+		react: <EmailChangeNoticeEmail accountId={account.id} />,
 	})
 
 	return redirectWithToast(
@@ -58,7 +58,7 @@ export async function handleVerification({
 		{
 			title: 'Email Changed',
 			type: 'success',
-			description: `Your email has been changed to ${user.email}`,
+			description: `Your email has been changed to ${account.email}`,
 		},
 		{
 			headers: {
@@ -95,7 +95,7 @@ export function EmailChangeEmail({
 	)
 }
 
-function EmailChangeNoticeEmail({ userId }: { userId: string }) {
+function EmailChangeNoticeEmail({ accountId }: { accountId: string }) {
 	return (
 		<E.Html lang="en" dir="ltr">
 			<E.Container>
@@ -116,7 +116,7 @@ function EmailChangeNoticeEmail({ userId }: { userId: string }) {
 					</E.Text>
 				</p>
 				<p>
-					<E.Text>Your Account ID: {userId}</E.Text>
+					<E.Text>Your Account ID: {accountId}</E.Text>
 				</p>
 			</E.Container>
 		</E.Html>

@@ -26,8 +26,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function NotesRoute() {
 	const data = useLoaderData<typeof loader>()
-	const user = useOptionalUser()
-	const isOwner = user?.id === data.owner.id
+	const account = useOptionalUser()
+	const isOwner = account?.id === data.owner.id
 	const ownerDisplayName = data.owner.name ?? data.owner.handle
 	const navLinkDefaultClassName =
 		'line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl'
@@ -37,7 +37,7 @@ export default function NotesRoute() {
 				<div className="relative col-span-1">
 					<div className="absolute inset-0 flex flex-col">
 						<Link
-							to={`/users/${data.owner.handle}`}
+							to={`/accounts/${data.owner.handle}`}
 							className="flex flex-col items-center justify-center gap-2 bg-muted pb-4 pl-8 pr-4 pt-12 lg:flex-row lg:justify-start lg:gap-4"
 						>
 							<img
@@ -92,7 +92,7 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				404: ({ params }) => (
-					<p>No user with the handle "{params.handle}" exists</p>
+					<p>No account with the handle "{params.handle}" exists</p>
 				),
 			}}
 		/>

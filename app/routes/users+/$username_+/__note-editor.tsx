@@ -88,7 +88,7 @@ export function NoteEditor({
 					encType="multipart/form-data"
 				>
 					{/*
-					This hidden submit button is here to ensure that when the user hits
+					This hidden submit button is here to ensure that when the account hits
 					"enter" on an input field, the primary form function is submitted
 					rather than the first button in the form (which is delete/add image).
 				*/}

@@ -50,16 +50,16 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	const { data: profile } = authResult
 
 	const existingConnection = await prisma.connection.findUnique({
-		select: { userId: true },
+		select: { accountId: true },
 		where: {
 			providerName_providerId: { providerName, providerId: profile.id },
 		},
 	})
 
-	const userId = await getAccountId(request)
+	const accountId = await getAccountId(request)
 
-	if (existingConnection && userId) {
-		if (existingConnection.userId === userId) {
+	if (existingConnection && accountId) {
+		if (existingConnection.accountId === accountId) {
 			return redirectWithToast(
 				'/settings/profile/connections',
 				{
@@ -81,12 +81,12 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	}
 
 	// If we're already logged in, then link the account
-	if (userId) {
+	if (accountId) {
 		await prisma.connection.create({
 			data: {
 				providerName,
 				providerId: profile.id,
-				userId,
+				accountId,
 			},
 		})
 		return redirectWithToast(
@@ -102,25 +102,25 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
 	// Connection exists already? Make a new session
 	if (existingConnection) {
-		return makeSession({ request, userId: existingConnection.userId })
+		return makeSession({ request, accountId: existingConnection.accountId })
 	}
 
-	// if the email matches a user in the db, then link the account and
+	// if the email matches a account in the db, then link the account and
 	// make a new session
-	const user = await prisma.account.findUnique({
+	const account = await prisma.account.findUnique({
 		select: { id: true },
 		where: { email: profile.email.toLowerCase() },
 	})
-	if (user) {
+	if (account) {
 		await prisma.connection.create({
 			data: {
 				providerName,
 				providerId: profile.id,
-				userId: user.id,
+				accountId: account.id,
 			},
 		})
 		return makeSession(
-			{ request, userId: user.id },
+			{ request, accountId: account.id },
 			{
 				headers: await createToastHeaders({
 					title: 'Connected',
@@ -130,7 +130,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 		)
 	}
 
-	// this is a new user, so let's get them onboarded
+	// this is a new account, so let's get them onboarded
 	const verifySession = await verifySessionStorage.getSession()
 	verifySession.set(onboardingEmailSessionKey, profile.email)
 	verifySession.set(prefilledProfileKey, {
@@ -156,17 +156,17 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 async function makeSession(
 	{
 		request,
-		userId,
+		accountId,
 		redirectTo,
-	}: { request: Request; userId: string; redirectTo?: string | null },
+	}: { request: Request; accountId: string; redirectTo?: string | null },
 	responseInit?: ResponseInit,
 ) {
 	redirectTo ??= '/'
 	const session = await prisma.session.create({
-		select: { id: true, expirationDate: true, userId: true },
+		select: { id: true, expirationDate: true, accountId: true },
 		data: {
 			expirationDate: getSessionExpirationDate(),
-			userId,
+			accountId,
 		},
 	})
 	return handleNewSession(

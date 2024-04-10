@@ -4,9 +4,9 @@ import { prisma } from '#app/utils/db.server.ts'
 import { getDomainUrl } from '#app/utils/misc.tsx'
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
-	const user = await prisma.account.findUniqueOrThrow({
-		where: { id: userId },
+	const accountId = await requireUserId(request)
+	const account = await prisma.account.findUniqueOrThrow({
+		where: { id: accountId },
 		// this is one of the *few* instances where you can use "include" because
 		// the goal is to literally get *everything*. Normally you should be
 		// explicit with "select". We're using select for images because we don't
@@ -42,15 +42,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	const domain = getDomainUrl(request)
 
 	return json({
-		user: {
-			...user,
-			image: user.image
+		account: {
+			...account,
+			image: account.image
 				? {
-						...user.image,
-						url: `${domain}/resources/user-images/${user.image.id}`,
+						...account.image,
+						url: `${domain}/resources/account-images/${account.image.id}`,
 					}
 				: null,
-			notes: user.notes.map(note => ({
+			notes: account.notes.map(note => ({
 				...note,
 				images: note.images.map(image => ({
 					...image,

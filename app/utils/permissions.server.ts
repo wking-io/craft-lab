@@ -1,18 +1,18 @@
 import { json } from '@remix-run/node'
+import { type PermissionString, parsePermissionString } from './account.ts'
 import { requireUserId } from './auth.server.ts'
 import { prisma } from './db.server.ts'
-import { type PermissionString, parsePermissionString } from './account.ts'
 
 export async function requireUserWithPermission(
 	request: Request,
 	permission: PermissionString,
 ) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const permissionData = parsePermissionString(permission)
-	const user = await prisma.account.findFirst({
+	const account = await prisma.account.findFirst({
 		select: { id: true },
 		where: {
-			id: userId,
+			id: accountId,
 			roles: {
 				some: {
 					permissions: {
@@ -27,7 +27,7 @@ export async function requireUserWithPermission(
 			},
 		},
 	})
-	if (!user) {
+	if (!account) {
 		throw json(
 			{
 				error: 'Unauthorized',
@@ -37,16 +37,16 @@ export async function requireUserWithPermission(
 			{ status: 403 },
 		)
 	}
-	return user.id
+	return account.id
 }
 
 export async function requireUserWithRole(request: Request, name: string) {
-	const userId = await requireUserId(request)
-	const user = await prisma.account.findFirst({
+	const accountId = await requireUserId(request)
+	const account = await prisma.account.findFirst({
 		select: { id: true },
-		where: { id: userId, roles: { some: { name } } },
+		where: { id: accountId, roles: { some: { name } } },
 	})
-	if (!user) {
+	if (!account) {
 		throw json(
 			{
 				error: 'Unauthorized',
@@ -56,5 +56,5 @@ export async function requireUserWithRole(request: Request, name: string) {
 			{ status: 403 },
 		)
 	}
-	return user.id
+	return account.id
 }

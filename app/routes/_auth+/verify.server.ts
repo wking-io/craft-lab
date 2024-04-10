@@ -4,7 +4,7 @@ import { json } from '@remix-run/node'
 import { z } from 'zod'
 import { handleVerification as handleChangeEmailVerification } from '#app/routes/settings+/profile.change-email.server.tsx'
 import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx'
-import { requireUserId } from '#app/utils/auth.server.ts'
+import { requireAccountId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { ensurePrimary } from '#app/utils/litefs.server.ts'
 import { getDomainUrl } from '#app/utils/misc.tsx'
@@ -57,13 +57,13 @@ export function getRedirectToUrl({
 }
 
 export async function requireRecentVerification(request: Request) {
-	const userId = await requireUserId(request)
+	const accountId = await requireAccountId(request)
 	const shouldReverify = await shouldRequestTwoFA(request)
 	if (shouldReverify) {
 		const reqUrl = new URL(request.url)
 		const redirectUrl = getRedirectToUrl({
 			request,
-			target: userId,
+			target: accountId,
 			type: twoFAVerificationType,
 			redirectTo: reqUrl.pathname + reqUrl.search,
 		})
@@ -90,7 +90,7 @@ export async function prepareVerification({
 
 	const { otp, ...verificationConfig } = generateTOTP({
 		algorithm: 'SHA256',
-		// Leaving off 0 and O on purpose to avoid confusing users.
+		// Leaving off 0 and O on purpose to avoid confusing accounts.
 		charSet: 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789',
 		period,
 	})
@@ -106,7 +106,7 @@ export async function prepareVerification({
 		update: verificationData,
 	})
 
-	// add the otp to the url we'll email the user.
+	// add the otp to the url we'll email the account.
 	verifyUrl.searchParams.set(codeQueryParam, otp)
 
 	return { otp, redirectTo, verifyUrl }

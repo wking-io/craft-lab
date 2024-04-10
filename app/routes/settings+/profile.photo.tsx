@@ -56,9 +56,9 @@ const PhotoFormSchema = z.discriminatedUnion('intent', [
 ])
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
-	const user = await prisma.account.findUnique({
-		where: { id: userId },
+	const accountId = await requireUserId(request)
+	const account = await prisma.account.findUnique({
+		where: { id: accountId },
 		select: {
 			id: true,
 			name: true,
@@ -66,12 +66,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 			image: { select: { id: true } },
 		},
 	})
-	invariantResponse(user, 'User not found', { status: 404 })
-	return json({ user })
+	invariantResponse(account, 'User not found', { status: 404 })
+	return json({ account })
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const formData = await unstable_parseMultipartFormData(
 		request,
 		unstable_createMemoryUploadHandler({ maxPartSize: MAX_SIZE }),
@@ -102,14 +102,14 @@ export async function action({ request }: ActionFunctionArgs) {
 	const { image, intent } = submission.value
 
 	if (intent === 'delete') {
-		await prisma.accountImage.deleteMany({ where: { userId } })
+		await prisma.accountImage.deleteMany({ where: { accountId } })
 		return redirect('/settings/profile')
 	}
 
 	await prisma.$transaction(async $prisma => {
-		await $prisma.accountImage.deleteMany({ where: { userId } })
+		await $prisma.accountImage.deleteMany({ where: { accountId } })
 		await $prisma.account.update({
-			where: { id: userId },
+			where: { id: accountId },
 			data: { image: { create: image } },
 		})
 	})
@@ -152,10 +152,11 @@ export default function PhotoRoute() {
 			>
 				<img
 					src={
-						newImageSrc ?? (data.user ? getUserImgSrc(data.user.image?.id) : '')
+						newImageSrc ??
+						(data.account ? getUserImgSrc(data.account.image?.id) : '')
 					}
 					className="h-52 w-52 rounded-full object-cover"
-					alt={data.user?.name ?? data.user?.handle}
+					alt={data.account?.name ?? data.account?.handle}
 				/>
 				<ErrorList errors={fields.photoFile.errors} id={fields.photoFile.id} />
 				<div className="flex gap-4">
@@ -212,7 +213,7 @@ export default function PhotoRoute() {
 					>
 						<Icon name="trash">Reset</Icon>
 					</Button>
-					{data.user.image?.id ? (
+					{data.account.image?.id ? (
 						<StatusButton
 							className="peer-valid:hidden"
 							variant="destructive"

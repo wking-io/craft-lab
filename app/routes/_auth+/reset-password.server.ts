@@ -11,13 +11,13 @@ export async function handleVerification({ submission }: VerifyFunctionArgs) {
 		'Submission should be successful by now',
 	)
 	const target = submission.value.target
-	const user = await prisma.account.findFirst({
+	const account = await prisma.account.findFirst({
 		where: { OR: [{ email: target }, { handle: target }] },
 		select: { email: true, handle: true },
 	})
-	// we don't want to say the user is not found if the email is not found
+	// we don't want to say the account is not found if the email is not found
 	// because that would allow an attacker to check if an email is registered
-	if (!user) {
+	if (!account) {
 		return json(
 			{ result: submission.reply({ fieldErrors: { code: ['Invalid code'] } }) },
 			{ status: 400 },
@@ -25,7 +25,7 @@ export async function handleVerification({ submission }: VerifyFunctionArgs) {
 	}
 
 	const verifySession = await verifySessionStorage.getSession()
-	verifySession.set(resetPasswordHandleSessionKey, user.handle)
+	verifySession.set(resetPasswordHandleSessionKey, account.handle)
 	return redirect('/reset-password', {
 		headers: {
 			'set-cookie': await verifySessionStorage.commitSession(verifySession),

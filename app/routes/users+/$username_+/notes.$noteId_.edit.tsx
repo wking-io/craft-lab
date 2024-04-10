@@ -9,7 +9,7 @@ import { NoteEditor } from './__note-editor.tsx'
 export { action } from './__note-editor.server.tsx'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const note = await prisma.note.findFirst({
 		select: {
 			id: true,
@@ -24,7 +24,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		},
 		where: {
 			id: params.noteId,
-			ownerId: userId,
+			ownerId: accountId,
 		},
 	})
 	invariantResponse(note, 'Not found', { status: 404 })

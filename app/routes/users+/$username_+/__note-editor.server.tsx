@@ -29,7 +29,7 @@ function imageHasId(
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 
 	const formData = await parseMultipartFormData(
 		request,
@@ -42,7 +42,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 			const note = await prisma.note.findUnique({
 				select: { id: true },
-				where: { id: data.id, ownerId: userId },
+				where: { id: data.id, ownerId: accountId },
 			})
 			if (!note) {
 				ctx.addIssue({
@@ -106,7 +106,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		select: { id: true, owner: { select: { handle: true } } },
 		where: { id: noteId ?? '__new_note__' },
 		create: {
-			ownerId: userId,
+			ownerId: accountId,
 			title,
 			content,
 			images: { create: newImages },
@@ -125,5 +125,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		},
 	})
 
-	return redirect(`/users/${updatedNote.owner.handle}/notes/${updatedNote.id}`)
+	return redirect(
+		`/accounts/${updatedNote.owner.handle}/notes/${updatedNote.id}`,
+	)
 }

@@ -13,12 +13,12 @@ import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { requireUserId, sessionKey } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { getUserImgSrc, useDoubleCheck } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
 
 export const handle: SEOHandle = {
@@ -31,9 +31,9 @@ const ProfileFormSchema = z.object({
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
-	const user = await prisma.account.findUniqueOrThrow({
-		where: { id: userId },
+	const accountId = await requireUserId(request)
+	const account = await prisma.account.findUniqueOrThrow({
+		where: { id: accountId },
 		select: {
 			id: true,
 			name: true,
@@ -56,16 +56,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const twoFactorVerification = await prisma.verification.findUnique({
 		select: { id: true },
-		where: { target_type: { type: twoFAVerificationType, target: userId } },
+		where: { target_type: { type: twoFAVerificationType, target: accountId } },
 	})
 
 	const password = await prisma.password.findUnique({
-		select: { userId: true },
-		where: { userId },
+		select: { accountId: true },
+		where: { accountId },
 	})
 
 	return json({
-		user,
+		account,
 		hasPassword: Boolean(password),
 		isTwoFactorEnabled: Boolean(twoFactorVerification),
 	})
@@ -73,7 +73,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 type ProfileActionArgs = {
 	request: Request
-	userId: string
+	accountId: string
 	formData: FormData
 }
 const profileUpdateActionIntent = 'update-profile'
@@ -81,18 +81,18 @@ const signOutOfSessionsActionIntent = 'sign-out-of-sessions'
 const deleteDataActionIntent = 'delete-data'
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const formData = await request.formData()
 	const intent = formData.get('intent')
 	switch (intent) {
 		case profileUpdateActionIntent: {
-			return profileUpdateAction({ request, userId, formData })
+			return profileUpdateAction({ request, accountId, formData })
 		}
 		case signOutOfSessionsActionIntent: {
-			return signOutOfSessionsAction({ request, userId, formData })
+			return signOutOfSessionsAction({ request, accountId, formData })
 		}
 		case deleteDataActionIntent: {
-			return deleteDataAction({ request, userId, formData })
+			return deleteDataAction({ request, accountId, formData })
 		}
 		default: {
 			throw new Response(`Invalid intent "${intent}"`, { status: 400 })
@@ -108,8 +108,8 @@ export default function EditUserProfile() {
 			<div className="flex justify-center">
 				<div className="relative h-52 w-52">
 					<img
-						src={getUserImgSrc(data.user.image?.id)}
-						alt={data.user.handle}
+						src={getUserImgSrc(data.account.image?.id)}
+						alt={data.account.handle}
 						className="h-full w-full rounded-full object-cover"
 					/>
 					<Button
@@ -135,7 +135,7 @@ export default function EditUserProfile() {
 				<div>
 					<Link to="change-email">
 						<Icon name="envelope-closed">
-							Change email from {data.user.email}
+							Change email from {data.account.email}
 						</Icon>
 					</Link>
 				</div>
@@ -164,7 +164,7 @@ export default function EditUserProfile() {
 					<Link
 						reloadDocument
 						download="my-epic-notes-data.json"
-						to="/resources/download-user-data"
+						to="/resources/download-account-data"
 					>
 						<Icon name="download">Download your data</Icon>
 					</Link>
@@ -176,7 +176,7 @@ export default function EditUserProfile() {
 	)
 }
 
-async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
+async function profileUpdateAction({ accountId, formData }: ProfileActionArgs) {
 	const submission = await parseWithZod(formData, {
 		async: true,
 		schema: ProfileFormSchema.superRefine(async ({ handle }, ctx) => {
@@ -184,11 +184,11 @@ async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
 				where: { handle },
 				select: { id: true },
 			})
-			if (existingHandle && existingHandle.id !== userId) {
+			if (existingHandle && existingHandle.id !== accountId) {
 				ctx.addIssue({
 					path: ['handle'],
 					code: z.ZodIssueCode.custom,
-					message: 'A user already exists with this handle',
+					message: 'A account already exists with this handle',
 				})
 			}
 		}),
@@ -204,7 +204,7 @@ async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
 
 	await prisma.account.update({
 		select: { handle: true },
-		where: { id: userId },
+		where: { id: accountId },
 		data: {
 			name: data.name,
 			handle: data.handle,
@@ -229,8 +229,8 @@ function UpdateProfile() {
 			return parseWithZod(formData, { schema: ProfileFormSchema })
 		},
 		defaultValue: {
-			handle: data.user.handle,
-			name: data.user.name,
+			handle: data.account.handle,
+			name: data.account.name,
 		},
 	})
 
@@ -271,7 +271,10 @@ function UpdateProfile() {
 	)
 }
 
-async function signOutOfSessionsAction({ request, userId }: ProfileActionArgs) {
+async function signOutOfSessionsAction({
+	request,
+	accountId,
+}: ProfileActionArgs) {
 	const authSession = await authSessionStorage.getSession(
 		request.headers.get('cookie'),
 	)
@@ -282,7 +285,7 @@ async function signOutOfSessionsAction({ request, userId }: ProfileActionArgs) {
 	)
 	await prisma.session.deleteMany({
 		where: {
-			userId,
+			accountId,
 			id: { not: sessionId },
 		},
 	})
@@ -294,7 +297,7 @@ function SignOutOfSessions() {
 	const dc = useDoubleCheck()
 
 	const fetcher = useFetcher<typeof signOutOfSessionsAction>()
-	const otherSessionsCount = data.user._count.sessions - 1
+	const otherSessionsCount = data.account._count.sessions - 1
 	return (
 		<div>
 			{otherSessionsCount ? (
@@ -326,8 +329,8 @@ function SignOutOfSessions() {
 	)
 }
 
-async function deleteDataAction({ userId }: ProfileActionArgs) {
-	await prisma.account.delete({ where: { id: userId } })
+async function deleteDataAction({ accountId }: ProfileActionArgs) {
+	await prisma.account.delete({ where: { id: accountId } })
 	return redirectWithToast('/', {
 		type: 'success',
 		title: 'Data Deleted',

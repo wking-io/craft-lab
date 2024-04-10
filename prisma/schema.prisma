@@ -94,7 +94,7 @@ model Session {
 model Permission {
   id          String @id @default(cuid())
   action      String // e.g. create, read, update, delete
-  entity      String // e.g. note, user, etc.
+  entity      String // e.g. group, account, etc.
   access      String // e.g. own or any
   description String @default("")
 
@@ -125,7 +125,7 @@ model Verification {
   /// The type of verification, e.g. "email" or "phone"
   type String
 
-  /// The thing we're trying to verify, e.g. a user's email or phone number
+  /// The thing we're trying to verify, e.g. a account's email or phone number
   target String
 
   /// The secret key used to generate the otp

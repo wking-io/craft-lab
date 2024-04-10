@@ -11,7 +11,7 @@ async function seed() {
 	console.timeEnd('🧹 Cleaned up the database...')
 
 	console.time('🔑 Created permissions...')
-	const entities = ['user', 'note']
+	const entities = ['account', 'profile', 'group']
 	const actions = ['create', 'read', 'update', 'delete']
 	const accesses = ['own', 'any'] as const
 	for (const entity of entities) {
@@ -37,7 +37,7 @@ async function seed() {
 	})
 	await prisma.role.create({
 		data: {
-			name: 'user',
+			name: 'member',
 			permissions: {
 				connect: await prisma.permission.findMany({
 					select: { id: true },
@@ -48,7 +48,7 @@ async function seed() {
 	})
 	console.timeEnd('👑 Created roles...')
 
-	console.time(`🤘 Created admin user "wking"`)
+	console.time(`🤘 Created admin account "wking"`)
 
 	const githubUser = await insertGitHubUser('MOCK_CODE_GITHUB_WKING')
 
@@ -64,7 +64,7 @@ async function seed() {
 			},
 		},
 	})
-	console.timeEnd(`🤘 Created admin user "wking"`)
+	console.timeEnd(`🤘 Created admin account "wking"`)
 
 	console.time('🙌 Created groups...')
 	const group = await prisma.group.create({
@@ -81,7 +81,7 @@ async function seed() {
 			name: 'Squilliam',
 			group: { connect: { id: group.id } },
 			account: { connect: { id: me.id } },
-			roles: { connect: [{ name: 'admin' }, { name: 'user' }] },
+			roles: { connect: [{ name: 'admin' }, { name: 'member' }] },
 		},
 	})
 	console.timeEnd('👨‍🦰 Created profile...')

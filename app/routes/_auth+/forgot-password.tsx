@@ -13,10 +13,10 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { EmailSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { prisma } from '#app/utils/db.server.ts'
 import { sendEmail } from '#app/utils/email.server.ts'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
-import { EmailSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { prepareVerification } from './verify.server.ts'
 
 const ForgotPasswordSchema = z.object({
@@ -28,17 +28,17 @@ export async function action({ request }: ActionFunctionArgs) {
 	checkHoneypot(formData)
 	const submission = await parseWithZod(formData, {
 		schema: ForgotPasswordSchema.superRefine(async (data, ctx) => {
-			const user = await prisma.account.findFirst({
+			const account = await prisma.account.findFirst({
 				where: {
 					OR: [{ email: data.handleOrEmail }, { handle: data.handleOrEmail }],
 				},
 				select: { id: true },
 			})
-			if (!user) {
+			if (!account) {
 				ctx.addIssue({
 					path: ['handleOrEmail'],
 					code: z.ZodIssueCode.custom,
-					message: 'No user exists with this handle or email',
+					message: 'No account exists with this handle or email',
 				})
 				return
 			}
@@ -53,7 +53,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 	const { handleOrEmail } = submission.value
 
-	const user = await prisma.account.findFirstOrThrow({
+	const account = await prisma.account.findFirstOrThrow({
 		where: { OR: [{ email: handleOrEmail }, { handle: handleOrEmail }] },
 		select: { email: true, handle: true },
 	})
@@ -66,7 +66,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	})
 
 	const response = await sendEmail({
-		to: user.email,
+		to: account.email,
 		subject: `Epic Notes Password Reset`,
 		react: (
 			<ForgotPasswordEmail onboardingUrl={verifyUrl.toString()} otp={otp} />

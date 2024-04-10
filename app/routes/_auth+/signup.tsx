@@ -43,7 +43,7 @@ export async function action({ request }: ActionFunctionArgs) {
 				ctx.addIssue({
 					path: ['email'],
 					code: z.ZodIssueCode.custom,
-					message: 'A user already exists with this email',
+					message: 'A account already exists with this email',
 				})
 				return
 			}

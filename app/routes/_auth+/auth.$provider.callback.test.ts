@@ -23,7 +23,7 @@ afterEach(async () => {
 	await deleteGitHubUsers()
 })
 
-test('a new user goes to onboarding', async () => {
+test('a new account goes to onboarding', async () => {
 	const request = await setupRequest()
 	const response = await loader({ request, params: PARAMS, context: {} }).catch(
 		e => e,
@@ -31,7 +31,7 @@ test('a new user goes to onboarding', async () => {
 	expect(response).toHaveRedirect('/onboarding/github')
 })
 
-test('when auth fails, send the user to login with a toast', async () => {
+test('when auth fails, send the account to login with a toast', async () => {
 	consoleError.mockImplementation(() => {})
 	server.use(
 		http.post('https://github.com/login/oauth/access_token', async () => {
@@ -53,7 +53,7 @@ test('when auth fails, send the user to login with a toast', async () => {
 	expect(consoleError).toHaveBeenCalledTimes(1)
 })
 
-test('when a user is logged in, it creates the connection', async () => {
+test('when a account is logged in, it creates the connection', async () => {
 	const githubUser = await insertGitHubUser()
 	const session = await setupUser()
 	const request = await setupRequest({
@@ -72,7 +72,7 @@ test('when a user is logged in, it creates the connection', async () => {
 	const connection = await prisma.connection.findFirst({
 		select: { id: true },
 		where: {
-			userId: session.userId,
+			accountId: session.accountId,
 			providerId: githubUser.profile.id.toString(),
 		},
 	})
@@ -82,13 +82,13 @@ test('when a user is logged in, it creates the connection', async () => {
 	).toBeTruthy()
 })
 
-test(`when a user is logged in and has already connected, it doesn't do anything and just redirects the user back to the connections page`, async () => {
+test(`when a account is logged in and has already connected, it doesn't do anything and just redirects the account back to the connections page`, async () => {
 	const session = await setupUser()
 	const githubUser = await insertGitHubUser()
 	await prisma.connection.create({
 		data: {
 			providerName: GITHUB_PROVIDER_NAME,
-			userId: session.userId,
+			accountId: session.accountId,
 			providerId: githubUser.profile.id.toString(),
 		},
 	})
@@ -106,10 +106,10 @@ test(`when a user is logged in and has already connected, it doesn't do anything
 	)
 })
 
-test('when a user exists with the same email, create connection and make session', async () => {
+test('when a account exists with the same email, create connection and make session', async () => {
 	const githubUser = await insertGitHubUser()
 	const email = githubUser.primaryEmail.toLowerCase()
-	const { userId } = await setupUser({ ...createUser(), email })
+	const { accountId } = await setupUser({ ...createUser(), email })
 	const request = await setupRequest({ code: githubUser.code })
 	const response = await loader({ request, params: PARAMS, context: {} })
 
@@ -125,7 +125,7 @@ test('when a user exists with the same email, create connection and make session
 	const connection = await prisma.connection.findFirst({
 		select: { id: true },
 		where: {
-			userId: userId,
+			accountId: accountId,
 			providerId: githubUser.profile.id.toString(),
 		},
 	})
@@ -134,10 +134,10 @@ test('when a user exists with the same email, create connection and make session
 		'the connection was not created in the database',
 	).toBeTruthy()
 
-	await expect(response).toHaveSessionForUser(userId)
+	await expect(response).toHaveSessionForUser(accountId)
 })
 
-test('gives an error if the account is already connected to another user', async () => {
+test('gives an error if the account is already connected to another account', async () => {
 	const githubUser = await insertGitHubUser()
 	await prisma.account.create({
 		data: {
@@ -167,37 +167,37 @@ test('gives an error if the account is already connected to another user', async
 	)
 })
 
-test('if a user is not logged in, but the connection exists, make a session', async () => {
+test('if a account is not logged in, but the connection exists, make a session', async () => {
 	const githubUser = await insertGitHubUser()
-	const { userId } = await setupUser()
+	const { accountId } = await setupUser()
 	await prisma.connection.create({
 		data: {
 			providerName: GITHUB_PROVIDER_NAME,
 			providerId: githubUser.profile.id.toString(),
-			userId,
+			accountId,
 		},
 	})
 	const request = await setupRequest({ code: githubUser.code })
 	const response = await loader({ request, params: PARAMS, context: {} })
 	expect(response).toHaveRedirect('/')
-	await expect(response).toHaveSessionForUser(userId)
+	await expect(response).toHaveSessionForUser(accountId)
 })
 
-test('if a user is not logged in, but the connection exists and they have enabled 2FA, send them to verify their 2FA and do not make a session', async () => {
+test('if a account is not logged in, but the connection exists and they have enabled 2FA, send them to verify their 2FA and do not make a session', async () => {
 	const githubUser = await insertGitHubUser()
-	const { userId } = await setupUser()
+	const { accountId } = await setupUser()
 	await prisma.connection.create({
 		data: {
 			providerName: GITHUB_PROVIDER_NAME,
 			providerId: githubUser.profile.id.toString(),
-			userId,
+			accountId,
 		},
 	})
 	const { otp: _otp, ...config } = generateTOTP()
 	await prisma.verification.create({
 		data: {
 			type: twoFAVerificationType,
-			target: userId,
+			target: accountId,
 			...config,
 		},
 	})
@@ -205,7 +205,7 @@ test('if a user is not logged in, but the connection exists and they have enable
 	const response = await loader({ request, params: PARAMS, context: {} })
 	const searchParams = new URLSearchParams({
 		type: twoFAVerificationType,
-		target: userId,
+		target: accountId,
 		redirectTo: '/',
 	})
 	expect(response).toHaveRedirect(`/verify?${searchParams}`)
@@ -239,19 +239,19 @@ async function setupRequest({
 	return request
 }
 
-async function setupUser(userData = createUser()) {
+async function setupUser(accountData = createUser()) {
 	const session = await prisma.session.create({
 		data: {
 			expirationDate: getSessionExpirationDate(),
-			user: {
+			account: {
 				create: {
-					...userData,
+					...accountData,
 				},
 			},
 		},
 		select: {
 			id: true,
-			userId: true,
+			accountId: true,
 		},
 	})
 

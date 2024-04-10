@@ -5,10 +5,10 @@ import { Link, Outlet, useMatches } from '@remix-run/react'
 import { z } from 'zod'
 import { Spacer } from '#app/components/spacer.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
+import { useUser } from '#app/utils/account.js'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { cn } from '#app/utils/misc.tsx'
-import { useUser } from '#app/utils/account.js'
 
 export const BreadcrumbHandle = z.object({ breadcrumb: z.any() })
 export type BreadcrumbHandle = z.infer<typeof BreadcrumbHandle>
@@ -19,12 +19,12 @@ export const handle: BreadcrumbHandle & SEOHandle = {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
-	const user = await prisma.account.findUnique({
-		where: { id: userId },
+	const accountId = await requireUserId(request)
+	const account = await prisma.account.findUnique({
+		where: { id: accountId },
 		select: { handle: true },
 	})
-	invariantResponse(user, 'User not found', { status: 404 })
+	invariantResponse(account, 'User not found', { status: 404 })
 	return json({})
 }
 
@@ -33,7 +33,7 @@ const BreadcrumbHandleMatch = z.object({
 })
 
 export default function EditUserProfile() {
-	const user = useUser()
+	const account = useUser()
 	const matches = useMatches()
 	const breadcrumbs = matches
 		.map(m => {
@@ -54,7 +54,7 @@ export default function EditUserProfile() {
 					<li>
 						<Link
 							className="text-muted-foreground"
-							to={`/users/${user.handle}`}
+							to={`/accounts/${account.handle}`}
 						>
 							Profile
 						</Link>

@@ -79,7 +79,7 @@ export async function action({ request }: ActionFunctionArgs) {
 					ctx.addIssue({
 						path: ['handle'],
 						code: z.ZodIssueCode.custom,
-						message: 'A user already exists with this handle',
+						message: 'A account already exists with this handle',
 					})
 					return
 				}

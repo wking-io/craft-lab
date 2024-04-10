@@ -1,8 +1,8 @@
 /**
  * @vitest-environment jsdom
  */
+import { accountEvent } from '@testing-library/account-event'
 import { render, screen } from '@testing-library/react'
-import { userEvent } from '@testing-library/user-event'
 import { useState } from 'react'
 import { expect, test } from 'vitest'
 import { useDoubleCheck } from './misc.tsx'
@@ -27,7 +27,7 @@ function TestComponent() {
 }
 
 test('prevents default on the first click, and does not on the second', async () => {
-	const user = userEvent.setup()
+	const account = accountEvent.setup()
 	render(<TestComponent />)
 
 	const status = screen.getByRole('status')
@@ -36,27 +36,27 @@ test('prevents default on the first click, and does not on the second', async ()
 	expect(status).toHaveTextContent('Default Prevented: idle')
 	expect(button).toHaveTextContent('Click me')
 
-	await user.click(button)
+	await account.click(button)
 	expect(button).toHaveTextContent('You sure?')
 	expect(status).toHaveTextContent('Default Prevented: yes')
 
-	await user.click(button)
+	await account.click(button)
 	expect(button).toHaveTextContent('You sure?')
 	expect(status).toHaveTextContent('Default Prevented: no')
 })
 
 test('blurring the button starts things over', async () => {
-	const user = userEvent.setup()
+	const account = accountEvent.setup()
 	render(<TestComponent />)
 
 	const status = screen.getByRole('status')
 	const button = screen.getByRole('button')
 
-	await user.click(button)
+	await account.click(button)
 	expect(button).toHaveTextContent('You sure?')
 	expect(status).toHaveTextContent('Default Prevented: yes')
 
-	await user.click(document.body)
+	await account.click(document.body)
 	// button goes back to click me
 	expect(button).toHaveTextContent('Click me')
 	// our callback wasn't called, so the status doesn't change
@@ -64,17 +64,17 @@ test('blurring the button starts things over', async () => {
 })
 
 test('hitting "escape" on the input starts things over', async () => {
-	const user = userEvent.setup()
+	const account = accountEvent.setup()
 	render(<TestComponent />)
 
 	const status = screen.getByRole('status')
 	const button = screen.getByRole('button')
 
-	await user.click(button)
+	await account.click(button)
 	expect(button).toHaveTextContent('You sure?')
 	expect(status).toHaveTextContent('Default Prevented: yes')
 
-	await user.keyboard('{Escape}')
+	await account.keyboard('{Escape}')
 	// button goes back to click me
 	expect(button).toHaveTextContent('Click me')
 	// our callback wasn't called, so the status doesn't change

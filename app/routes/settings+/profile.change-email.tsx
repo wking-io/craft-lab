@@ -16,11 +16,11 @@ import {
 	prepareVerification,
 	requireRecentVerification,
 } from '#app/routes/_auth+/verify.server.ts'
+import { EmailSchema } from '#app/utils/account-validation.js'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { sendEmail } from '#app/utils/email.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { EmailSchema } from '#app/utils/account-validation.js'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { EmailChangeEmail } from './profile.change-email.server.tsx'
 import { type BreadcrumbHandle } from './profile.tsx'
@@ -38,20 +38,20 @@ const ChangeEmailSchema = z.object({
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	await requireRecentVerification(request)
-	const userId = await requireUserId(request)
-	const user = await prisma.account.findUnique({
-		where: { id: userId },
+	const accountId = await requireUserId(request)
+	const account = await prisma.account.findUnique({
+		where: { id: accountId },
 		select: { email: true },
 	})
-	if (!user) {
+	if (!account) {
 		const params = new URLSearchParams({ redirectTo: request.url })
 		throw redirect(`/login?${params}`)
 	}
-	return json({ user })
+	return json({ account })
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const formData = await request.formData()
 	const submission = await parseWithZod(formData, {
 		schema: ChangeEmailSchema.superRefine(async (data, ctx) => {
@@ -78,7 +78,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	const { otp, redirectTo, verifyUrl } = await prepareVerification({
 		period: 10 * 60,
 		request,
-		target: userId,
+		target: accountId,
 		type: 'change-email',
 	})
 
@@ -123,7 +123,8 @@ export default function ChangeEmailIndex() {
 			<h1 className="text-h1">Change Email</h1>
 			<p>You will receive an email at the new email address to confirm.</p>
 			<p>
-				An email notice will also be sent to your old address {data.user.email}.
+				An email notice will also be sent to your old address{' '}
+				{data.account.email}.
 			</p>
 			<div className="mx-auto mt-5 max-w-sm">
 				<Form method="POST" {...getFormProps(form)}>

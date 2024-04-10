@@ -2,15 +2,24 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import * as E from '@react-email/components'
 import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
-import { Form, json, useActionData } from '@remix-run/react'
+import {
+	Form,
+	json,
+	redirect,
+	useActionData,
+	useRouteLoaderData,
+} from '@remix-run/react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.js'
+import { Logo, type Seed } from '#app/components/logo.js'
 import { StatusButton } from '#app/components/ui/status-button.js'
 import { EmailSchema } from '#app/utils/account-validation.js'
 import { prisma } from '#app/utils/db.server.js'
+import { sendEmail } from '#app/utils/email.server.js'
 import { checkHoneypot } from '#app/utils/honeypot.server.js'
 import { useIsPending } from '#app/utils/misc.js'
+import { prepareVerification } from '../_auth+/verify.server'
 
 export const meta: MetaFunction = () => [{ title: 'Craft Lab' }]
 
@@ -25,21 +34,41 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const submission = await parseWithZod(formData, {
 		schema: WaitlistFormSchema.superRefine(async (data, ctx) => {
-			const existingUser = await prisma.account.findUnique({
+			const pExistingAccount = prisma.account.findUnique({
 				where: { email: data.email },
 				select: { id: true },
 			})
-			if (existingUser) {
+			const pExistingWaitlistMember = prisma.waitlistMember.findUnique({
+				where: { email: data.email },
+				select: { id: true },
+			})
+
+			const [existingAccount, existingWaitlistMember] = await Promise.all([
+				pExistingAccount,
+				pExistingWaitlistMember,
+			])
+
+			if (existingAccount) {
 				ctx.addIssue({
 					path: ['email'],
 					code: z.ZodIssueCode.custom,
-					message: 'A user already exists with this email',
+					message: 'A account already exists with this email',
+				})
+				return
+			}
+
+			if (existingWaitlistMember) {
+				ctx.addIssue({
+					path: ['email'],
+					code: z.ZodIssueCode.custom,
+					message: 'A waitlist member already exists with this email',
 				})
 				return
 			}
 		}),
 		async: true,
 	})
+
 	if (submission.status !== 'success') {
 		return json(
 			{ result: submission.reply() },
@@ -47,17 +76,20 @@ export async function action({ request }: ActionFunctionArgs) {
 		)
 	}
 	const { email } = submission.value
+
 	const { verifyUrl, redirectTo, otp } = await prepareVerification({
 		period: 10 * 60,
 		request,
-		type: 'onboarding',
+		type: 'waitlist',
 		target: email,
 	})
 
 	const response = await sendEmail({
 		to: email,
 		subject: `Welcome to Epic Notes!`,
-		react: <SignupEmail onboardingUrl={verifyUrl.toString()} otp={otp} />,
+		react: (
+			<WaitlistEmail waitlistVerificationUrl={verifyUrl.toString()} otp={otp} />
+		),
 	})
 
 	if (response.status === 'success') {
@@ -75,18 +107,24 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export function WaitlistEmail({
-	onboardingUrl,
+	waitlistVerificationUrl,
 	otp,
 }: {
-	onboardingUrl: string
+	waitlistVerificationUrl: string
 	otp: string
 }) {
 	return (
 		<E.Html lang="en" dir="ltr">
 			<E.Container>
 				<h1>
-					<E.Text>Welcome to Epic Notes!</E.Text>
+					<E.Text>OHHhh yeah!</E.Text>
 				</h1>
+				<p>
+					<E.Text>
+						This community is going to be a blast, and I cannot wait for you to
+						see it.
+					</E.Text>
+				</p>
 				<p>
 					<E.Text>
 						Here's your verification code: <strong>{otp}</strong>
@@ -95,7 +133,9 @@ export function WaitlistEmail({
 				<p>
 					<E.Text>Or click the link to get started:</E.Text>
 				</p>
-				<E.Link href={onboardingUrl}>{onboardingUrl}</E.Link>
+				<E.Link href={waitlistVerificationUrl}>
+					{waitlistVerificationUrl}
+				</E.Link>
 			</E.Container>
 		</E.Html>
 	)
@@ -103,6 +143,7 @@ export function WaitlistEmail({
 
 export default function Index() {
 	const actionData = useActionData<typeof action>()
+	const rootData = useRouteLoaderData<{ seed: Seed }>('root')
 	const isPending = useIsPending()
 
 	const [form, fields] = useForm({
@@ -116,32 +157,46 @@ export default function Index() {
 	})
 
 	return (
-		<main className="font-poppins grid h-full place-items-center">
-			<h1>A community for Design Engineers by Design Engineers.</h1>
-			<Form method="POST" {...getFormProps(form)}>
-				<HoneypotInputs />
-				<Field
-					labelProps={{
-						htmlFor: fields.email.id,
-						children: 'Email',
-					}}
-					inputProps={{
-						...getInputProps(fields.email, { type: 'email' }),
-						autoFocus: true,
-						autoComplete: 'email',
-					}}
-					errors={fields.email.errors}
-				/>
-				<ErrorList errors={form.errors} id={form.errorId} />
-				<StatusButton
-					className="w-full"
-					status={isPending ? 'pending' : form.status ?? 'idle'}
-					type="submit"
-					disabled={isPending}
-				>
-					Submit
-				</StatusButton>
-			</Form>
+		<main className="mx-auto flex h-full max-w-2xl flex-col items-center justify-center font-mono text-sm">
+			<div>
+				<div className="flex items-center gap-2">
+					<Logo seed={rootData!.seed} className="h-auto w-8" />
+					<p className="font-bold">Craft Lab</p>
+				</div>
+				<h1 className="mt-8 font-bold">
+					# A community for Design Engineers by Design Engineers.
+				</h1>
+				<p className="mt-3">
+					There are only <span className="underline">8</span> spots left for the
+					alpha group to help get this space off of the ground. Get on the
+					waitlist and let's chat 👇
+				</p>
+				<Form method="POST" {...getFormProps(form)} className="mt-6">
+					<HoneypotInputs />
+					<Field
+						labelProps={{
+							htmlFor: fields.email.id,
+							children: 'Email',
+						}}
+						inputProps={{
+							...getInputProps(fields.email, { type: 'email' }),
+							autoFocus: true,
+							autoComplete: 'email',
+							className: 'mt-1',
+						}}
+						errors={fields.email.errors}
+					/>
+					<ErrorList errors={form.errors} id={form.errorId} />
+					<StatusButton
+						className="w-full"
+						status={isPending ? 'pending' : form.status ?? 'idle'}
+						type="submit"
+						disabled={isPending}
+					>
+						Submit
+					</StatusButton>
+				</Form>
+			</div>
 		</main>
 	)
 }

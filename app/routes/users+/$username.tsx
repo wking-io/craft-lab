@@ -10,7 +10,7 @@ import { prisma } from '#app/utils/db.server.ts'
 import { getUserImgSrc } from '#app/utils/misc.tsx'
 
 export async function loader({ params }: LoaderFunctionArgs) {
-	const user = await prisma.account.findFirst({
+	const account = await prisma.account.findFirst({
 		select: {
 			id: true,
 			name: true,
@@ -23,17 +23,20 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		},
 	})
 
-	invariantResponse(user, 'User not found', { status: 404 })
+	invariantResponse(account, 'User not found', { status: 404 })
 
-	return json({ user, userJoinedDisplay: user.createdAt.toLocaleDateString() })
+	return json({
+		account,
+		accountJoinedDisplay: account.createdAt.toLocaleDateString(),
+	})
 }
 
 export default function ProfileRoute() {
 	const data = useLoaderData<typeof loader>()
-	const user = data.user
-	const userDisplayName = user.name ?? user.handle
+	const account = data.account
+	const accountDisplayName = account.name ?? account.handle
 	const loggedInUser = useOptionalUser()
-	const isLoggedInUser = data.user.id === loggedInUser?.id
+	const isLoggedInUser = data.account.id === loggedInUser?.id
 
 	return (
 		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
@@ -44,8 +47,8 @@ export default function ProfileRoute() {
 					<div className="absolute -top-40">
 						<div className="relative">
 							<img
-								src={getUserImgSrc(data.user.image?.id)}
-								alt={userDisplayName}
+								src={getUserImgSrc(data.account.image?.id)}
+								alt={accountDisplayName}
 								className="h-52 w-52 rounded-full object-cover"
 							/>
 						</div>
@@ -56,10 +59,10 @@ export default function ProfileRoute() {
 
 				<div className="flex flex-col items-center">
 					<div className="flex flex-wrap items-center justify-center gap-4">
-						<h1 className="text-center text-h2">{userDisplayName}</h1>
+						<h1 className="text-center text-h2">{accountDisplayName}</h1>
 					</div>
 					<p className="mt-2 text-center text-muted-foreground">
-						Joined {data.userJoinedDisplay}
+						Joined {data.accountJoinedDisplay}
 					</p>
 					{isLoggedInUser ? (
 						<Form action="/logout" method="POST" className="mt-3">
@@ -87,7 +90,7 @@ export default function ProfileRoute() {
 						) : (
 							<Button asChild>
 								<Link to="notes" prefetch="intent">
-									{userDisplayName}'s notes
+									{accountDisplayName}'s notes
 								</Link>
 							</Button>
 						)}
@@ -99,7 +102,7 @@ export default function ProfileRoute() {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
-	const displayName = data?.user.name ?? params.handle
+	const displayName = data?.account.name ?? params.handle
 	return [
 		{ title: `${displayName} | Epic Notes` },
 		{
@@ -114,7 +117,7 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				404: ({ params }) => (
-					<p>No user with the handle "{params.handle}" exists</p>
+					<p>No account with the handle "{params.handle}" exists</p>
 				),
 			}}
 		/>

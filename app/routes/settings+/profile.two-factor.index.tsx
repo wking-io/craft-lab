@@ -19,25 +19,25 @@ export const handle: SEOHandle = {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const verification = await prisma.verification.findUnique({
-		where: { target_type: { type: twoFAVerificationType, target: userId } },
+		where: { target_type: { type: twoFAVerificationType, target: accountId } },
 		select: { id: true },
 	})
 	return json({ is2FAEnabled: Boolean(verification) })
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const { otp: _otp, ...config } = generateTOTP()
 	const verificationData = {
 		...config,
 		type: twoFAVerifyVerificationType,
-		target: userId,
+		target: accountId,
 	}
 	await prisma.verification.upsert({
 		where: {
-			target_type: { target: userId, type: twoFAVerifyVerificationType },
+			target_type: { target: accountId, type: twoFAVerifyVerificationType },
 		},
 		create: verificationData,
 		update: verificationData,

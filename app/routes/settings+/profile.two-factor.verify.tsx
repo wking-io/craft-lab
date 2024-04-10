@@ -46,10 +46,10 @@ const ActionSchema = z.discriminatedUnion('intent', [
 export const twoFAVerifyVerificationType = '2fa-verify'
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const verification = await prisma.verification.findUnique({
 		where: {
-			target_type: { type: twoFAVerifyVerificationType, target: userId },
+			target_type: { type: twoFAVerifyVerificationType, target: accountId },
 		},
 		select: {
 			id: true,
@@ -62,14 +62,14 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	if (!verification) {
 		return redirect('/settings/profile/two-factor')
 	}
-	const user = await prisma.account.findUniqueOrThrow({
-		where: { id: userId },
+	const account = await prisma.account.findUniqueOrThrow({
+		where: { id: accountId },
 		select: { email: true },
 	})
 	const issuer = new URL(getDomainUrl(request)).host
 	const otpUri = getTOTPAuthUri({
 		...verification,
-		accountName: user.email,
+		accountName: account.email,
 		issuer,
 	})
 	const qrCode = await QRCode.toDataURL(otpUri)
@@ -77,7 +77,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const userId = await requireUserId(request)
+	const accountId = await requireUserId(request)
 	const formData = await request.formData()
 
 	const submission = await parseWithZod(formData, {
@@ -87,7 +87,7 @@ export async function action({ request }: ActionFunctionArgs) {
 				const codeIsValid = await isCodeValid({
 					code: data.code,
 					type: twoFAVerifyVerificationType,
-					target: userId,
+					target: accountId,
 				})
 				if (!codeIsValid) {
 					ctx.addIssue({
@@ -111,14 +111,14 @@ export async function action({ request }: ActionFunctionArgs) {
 	switch (submission.value.intent) {
 		case 'cancel': {
 			await prisma.verification.deleteMany({
-				where: { type: twoFAVerifyVerificationType, target: userId },
+				where: { type: twoFAVerifyVerificationType, target: accountId },
 			})
 			return redirect('/settings/profile/two-factor')
 		}
 		case 'verify': {
 			await prisma.verification.update({
 				where: {
-					target_type: { type: twoFAVerifyVerificationType, target: userId },
+					target_type: { type: twoFAVerifyVerificationType, target: accountId },
 				},
 				data: { type: twoFAVerificationType },
 			})
