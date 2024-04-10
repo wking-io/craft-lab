@@ -9,6 +9,7 @@ import {
 	useActionData,
 	useRouteLoaderData,
 } from '@remix-run/react'
+import clsx from 'clsx'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.js'
@@ -141,6 +142,9 @@ export function WaitlistEmail({
 	)
 }
 
+const gridLines =
+	'before:absolute before:left-1/2 before:right-1/2 before:top-0 before:-ml-[50vw] before:-mr-[50vw] before:h-0 before:w-screen before:border-t after:absolute after:left-1/2 after:right-1/2 after:bottom-0 after:-ml-[50vw] after:-mr-[50vw] after:h-0 after:w-screen after:border-t'
+
 export default function Index() {
 	const actionData = useActionData<typeof action>()
 	const rootData = useRouteLoaderData<{ seed: Seed }>('root')
@@ -157,21 +161,27 @@ export default function Index() {
 	})
 
 	return (
-		<main className="mx-auto flex h-full max-w-2xl flex-col items-center justify-center font-mono text-sm">
-			<div>
-				<div className="flex items-center gap-2">
+		<main className="grid h-full grid-cols-[1fr_40px_auto_40px_1fr]">
+			<div></div>
+			<div className="bg-diagonal -mx-px border-x"></div>
+			<div className="self-center">
+				<div className={clsx(gridLines, 'relative flex items-center gap-2')}>
 					<Logo seed={rootData!.seed} className="h-auto w-8" />
 					<p className="font-bold">Craft Lab</p>
 				</div>
-				<h1 className="mt-8 font-bold">
+				<h1 className={clsx(gridLines, 'relative mt-8 font-bold')}>
 					# A community for Design Engineers by Design Engineers.
 				</h1>
-				<p className="mt-3">
+				<p className={clsx(gridLines, 'relative mt-3')}>
 					There are only <span className="underline">8</span> spots left for the
 					alpha group to help get this space off of the ground. Get on the
 					waitlist and let's chat 👇
 				</p>
-				<Form method="POST" {...getFormProps(form)} className="mt-6">
+				<Form
+					method="POST"
+					{...getFormProps(form)}
+					className={clsx(gridLines, 'relative mt-6')}
+				>
 					<HoneypotInputs />
 					<Field
 						labelProps={{
@@ -182,7 +192,8 @@ export default function Index() {
 							...getInputProps(fields.email, { type: 'email' }),
 							autoFocus: true,
 							autoComplete: 'email',
-							className: 'mt-1',
+							placeholder: 'design@engineer.awesome',
+							className: 'placeholder:text-primary/40 mt-1 border-primary',
 						}}
 						errors={fields.email.errors}
 					/>
@@ -197,6 +208,8 @@ export default function Index() {
 					</StatusButton>
 				</Form>
 			</div>
+			<div className="bg-diagonal -mx-px border-x"></div>
+			<div></div>
 		</main>
 	)
 }
