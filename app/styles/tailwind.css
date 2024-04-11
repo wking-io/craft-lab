@@ -7,8 +7,29 @@
 		/* --font-sans: here if you have one */
 		/* --font-mono: here if you got it... */
 
-		/* prefixed with foreground because it should look good on the background */
-		--foreground-destructive: 345 82.7% 40.8%;
+		--red: 350 88% 58%;
+		--red-foreground: 88 88% 95%;
+
+		--pink: 315 87% 67%;
+		--pink-foreground: 315 87% 95%;
+
+		--orange: 19 87% 61%;
+		--orange-foreground: 19 87% 95%;
+
+		--yellow: 45 86% 56%;
+		--yellow-foreground: 45 86% 95%;
+
+		--green: 162 57% 48%;
+		--green-foreground: 162 57% 95%;
+
+		--lime: 87 69% 56%;
+		--lime-foreground: 87 69% 95%;
+
+		--blue: 219 92% 58%;
+		--blue-foreground: 219 92% 95%;
+
+		--purple: 246 91% 62%;
+		--purple-foreground: 246 91% 95%;
 
 		--background: 0 0% 100%;
 		--foreground: 222.2 84% 4.9%;
@@ -24,19 +45,13 @@
 
 		--border: 214.3 31.8% 91.4%;
 		--input: 214.3 31.8% 91.4%;
-		--input-invalid: 0 84.2% 60.2%;
+		--input-invalid: var(--red);
 
 		--primary: 222.2 47.4% 11.2%;
 		--primary-foreground: 210 40% 98%;
 
 		--secondary: 210 20% 83%;
 		--secondary-foreground: 222.2 47.4% 11.2%;
-
-		--accent: 210 40% 90%;
-		--accent-foreground: 222.2 47.4% 11.2%;
-
-		--destructive: 0 70% 50%;
-		--destructive-foreground: 210 40% 98%;
 
 		--ring: 215 20.2% 65.1%;
 
@@ -46,9 +61,6 @@
 	.dark {
 		--background: 222.2 84% 4.9%;
 		--foreground: 210 40% 98%;
-
-		/* prefixed with foreground because it should look good on the background */
-		--foreground-destructive: -4 84% 60%;
 
 		--muted: 217.2 32.6% 12%;
 		--muted-foreground: 215 20.2% 65.1%;

@@ -14,7 +14,6 @@ export const extendedTheme = {
 		background: 'hsl(var(--background))',
 		foreground: {
 			DEFAULT: 'hsl(var(--foreground))',
-			destructive: 'hsl(var(--foreground-destructive))',
 		},
 		primary: {
 			DEFAULT: 'hsl(var(--primary))',
@@ -24,9 +23,37 @@ export const extendedTheme = {
 			DEFAULT: 'hsl(var(--secondary))',
 			foreground: 'hsl(var(--secondary-foreground))',
 		},
-		destructive: {
-			DEFAULT: 'hsl(var(--destructive))',
-			foreground: 'hsl(var(--destructive-foreground))',
+		red: {
+			DEFAULT: 'hsl(var(--red))',
+			foreground: 'hsl(var(--red-foreground))',
+		},
+		pink: {
+			DEFAULT: 'hsl(var(--pink))',
+			foreground: 'hsl(var(--pink-foreground))',
+		},
+		orange: {
+			DEFAULT: 'hsl(var(--orange))',
+			foreground: 'hsl(var(--orange-foreground))',
+		},
+		yellow: {
+			DEFAULT: 'hsl(var(--yellow))',
+			foreground: 'hsl(var(--yellow-foreground))',
+		},
+		green: {
+			DEFAULT: 'hsl(var(--green))',
+			foreground: 'hsl(var(--green-foreground))',
+		},
+		lime: {
+			DEFAULT: 'hsl(var(--lime))',
+			foreground: 'hsl(var(--lime-foreground))',
+		},
+		blue: {
+			DEFAULT: 'hsl(var(--blue))',
+			foreground: 'hsl(var(--blue-foreground))',
+		},
+		purple: {
+			DEFAULT: 'hsl(var(--purple))',
+			foreground: 'hsl(var(--purple-foreground))',
 		},
 		muted: {
 			DEFAULT: 'hsl(var(--muted))',

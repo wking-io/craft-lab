@@ -2,24 +2,20 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import * as E from '@react-email/components'
 import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
-import {
-	Form,
-	json,
-	redirect,
-	useActionData,
-	useRouteLoaderData,
-} from '@remix-run/react'
+import { Form, json, redirect, useActionData } from '@remix-run/react'
 import clsx from 'clsx'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.js'
-import { Logo, type Seed } from '#app/components/logo.js'
+import { Logo } from '#app/components/logo.js'
 import { StatusButton } from '#app/components/ui/status-button.js'
+import { rootRouteId } from '#app/root.js'
 import { EmailSchema } from '#app/utils/account-validation.js'
 import { prisma } from '#app/utils/db.server.js'
 import { sendEmail } from '#app/utils/email.server.js'
 import { checkHoneypot } from '#app/utils/honeypot.server.js'
 import { useIsPending } from '#app/utils/misc.js'
+import { useRouteIdLoaderData } from '#app/utils/route-id.js'
 import { prepareVerification } from '../_auth+/verify.server'
 
 export const meta: MetaFunction = () => [{ title: 'Craft Lab' }]
@@ -147,7 +143,7 @@ const gridLines =
 
 export default function Index() {
 	const actionData = useActionData<typeof action>()
-	const rootData = useRouteLoaderData<{ seed: Seed }>('root')
+	const { seed } = useRouteIdLoaderData(rootRouteId)
 	const isPending = useIsPending()
 
 	const [form, fields] = useForm({
@@ -166,7 +162,7 @@ export default function Index() {
 			<div className="bg-diagonal -mx-px border-x"></div>
 			<div className="self-center">
 				<div className={clsx(gridLines, 'relative flex items-center gap-2')}>
-					<Logo seed={rootData!.seed} className="h-auto w-8" />
+					<Logo seed={seed} className="h-auto w-8" />
 					<p className="font-bold">Craft Lab</p>
 				</div>
 				<h1 className={clsx(gridLines, 'relative mt-8 font-bold')}>
