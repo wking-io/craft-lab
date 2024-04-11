@@ -159,16 +159,21 @@ export default function Index() {
 	return (
 		<main className="grid h-full grid-cols-[1fr_40px_auto_40px_1fr]">
 			<div></div>
-			<div className="bg-diagonal -mx-px border-x"></div>
-			<div className="self-center">
-				<div className={clsx(gridLines, 'relative flex items-center gap-2')}>
+			<div className="-mx-px border-x bg-diagonal"></div>
+			<div className="max-w-2xl self-center">
+				<div
+					className={clsx(
+						gridLines,
+						'relative flex items-center gap-2 px-2 py-1',
+					)}
+				>
 					<Logo seed={seed} className="h-auto w-8" />
-					<p className="font-bold">Craft Lab</p>
+					<p className="text-2xl font-bold">Craft Lab</p>
 				</div>
-				<h1 className={clsx(gridLines, 'relative mt-8 font-bold')}>
+				<h1 className={clsx(gridLines, 'relative mt-8 px-2 py-1 font-bold')}>
 					# A community for Design Engineers by Design Engineers.
 				</h1>
-				<p className={clsx(gridLines, 'relative mt-3')}>
+				<p className={clsx(gridLines, 'relative mt-3 px-2 py-1')}>
 					There are only <span className="underline">8</span> spots left for the
 					alpha group to help get this space off of the ground. Get on the
 					waitlist and let's chat 👇
@@ -176,7 +181,7 @@ export default function Index() {
 				<Form
 					method="POST"
 					{...getFormProps(form)}
-					className={clsx(gridLines, 'relative mt-6')}
+					className={clsx(gridLines, 'relative mt-6 px-2 pb-2 pt-1')}
 				>
 					<HoneypotInputs />
 					<Field
@@ -204,7 +209,7 @@ export default function Index() {
 					</StatusButton>
 				</Form>
 			</div>
-			<div className="bg-diagonal -mx-px border-x"></div>
+			<div className="-mx-px border-x bg-diagonal"></div>
 			<div></div>
 		</main>
 	)
