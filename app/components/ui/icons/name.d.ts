@@ -23,6 +23,7 @@ export type IconName =
 	| 'lock-open-1'
 	| 'magnifying-glass'
 	| 'moon'
+	| 'paper-plane'
 	| 'pencil-1'
 	| 'pencil-2'
 	| 'person'

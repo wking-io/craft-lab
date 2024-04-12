@@ -22,6 +22,7 @@ const types = [
 	'change-email',
 	'2fa',
 	'waitlist',
+	'invite',
 ] as const
 const VerificationTypeSchema = z.enum(types)
 export type VerificationTypes = z.infer<typeof VerificationTypeSchema>
@@ -58,6 +59,7 @@ export default function VerifyRoute() {
 	)
 
 	const headings: Record<VerificationTypes, React.ReactNode> = {
+		invite: checkEmail,
 		waitlist: checkEmail,
 		onboarding: checkEmail,
 		'reset-password': checkEmail,
