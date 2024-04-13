@@ -91,50 +91,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		desc: 'getAccountId in root',
 	})
 
-	const group = await time(() => prisma.group.findFirstOrThrow(), {
-		timings,
-		type: 'find group',
-		desc: 'find group in root',
-	})
-
 	const account = accountId
 		? await time(
 				() =>
-					prisma.profile
-						.findUniqueOrThrow({
-							select: {
-								id: true,
-								name: true,
-								image: { select: { id: true } },
-								roles: {
-									select: {
-										name: true,
-										permissions: {
-											select: { entity: true, action: true, access: true },
-										},
-									},
-								},
-								account: {
-									select: {
-										id: true,
-										name: true,
-										handle: true,
-									},
-								},
-							},
-							where: {
-								accountId_groupId: {
-									accountId,
-									groupId: group.id,
-								},
-							},
-						})
-						.then(({ account, id, name, ...profile }) => ({
-							...account,
-							...profile,
-							profileId: id,
-							displayName: name,
-						})),
+					prisma.account.findUniqueOrThrow({
+						select: {
+							id: true,
+							name: true,
+							handle: true,
+							image: { select: { id: true } },
+						},
+						where: {
+							id: accountId,
+						},
+					}),
 				{ timings, type: 'find account', desc: 'find account in root' },
 			)
 		: null

@@ -33,9 +33,11 @@ import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 
 export const onboardingEmailSessionKey = 'onboardingEmail'
+export const onboardingGroupIdSessionKey = 'onboardingGroupId'
 
 const SignupFormSchema = z
 	.object({
+		groupId: z.string().optional(),
 		handle: HandleSchema,
 		name: NameSchema,
 		agreeToTermsOfServiceAndPrivacyPolicy: z.boolean({
@@ -47,7 +49,7 @@ const SignupFormSchema = z
 	})
 	.and(PasswordAndConfirmPasswordSchema)
 
-async function requireOnboardingEmail(request: Request) {
+async function requireOnboardingData(request: Request) {
 	await requireAnonymous(request)
 	const verifySession = await verifySessionStorage.getSession(
 		request.headers.get('cookie'),
@@ -56,21 +58,30 @@ async function requireOnboardingEmail(request: Request) {
 	if (typeof email !== 'string' || !email) {
 		throw redirect('/signup')
 	}
-	return email
+
+	const groupId = verifySession.get(onboardingGroupIdSessionKey)
+	return { email, groupId: typeof groupId === 'string' ? groupId : undefined }
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const email = await requireOnboardingEmail(request)
+	const { email } = await requireOnboardingData(request)
 	return json({ email })
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-	const email = await requireOnboardingEmail(request)
+	const { groupId, email } = await requireOnboardingData(request)
 	const formData = await request.formData()
 	checkHoneypot(formData)
 	const submission = await parseWithZod(formData, {
 		schema: intent =>
 			SignupFormSchema.superRefine(async (data, ctx) => {
+				if (!groupId) {
+					ctx.addIssue({
+						code: z.ZodIssueCode.custom,
+						message:
+							'There is no group associated with this account. Try your invite link again.',
+					})
+				}
 				const existingUser = await prisma.account.findUnique({
 					where: { handle: data.handle },
 					select: { id: true },
@@ -85,8 +96,7 @@ export async function action({ request }: ActionFunctionArgs) {
 				}
 			}).transform(async data => {
 				if (intent !== null) return { ...data, session: null }
-
-				const session = await signup({ ...data, groupId: '', email })
+				const session = await signup({ ...data, groupId: groupId!, email })
 				return { ...data, session }
 			}),
 		async: true,

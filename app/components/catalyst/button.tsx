@@ -3,7 +3,7 @@ import {
 	type ButtonProps as HeadlessButtonProps,
 } from '@headlessui/react'
 import { clsx } from 'clsx'
-import React from 'react'
+import React, { type ComponentPropsWithoutRef } from 'react'
 import { Link } from '../ui/link'
 
 const styles = {
@@ -233,3 +233,14 @@ export function TouchTarget({ children }: { children: React.ReactNode }) {
 		</>
 	)
 }
+
+export const ButtonGroup = React.forwardRef(function ButtonGroup(
+	{ className, children, ...props }: ComponentPropsWithoutRef<'div'>,
+	ref: React.ForwardedRef<HTMLDivElement>,
+) {
+	return (
+		<div {...props} className={clsx('flex gap-2', className)}>
+			{children}
+		</div>
+	)
+})

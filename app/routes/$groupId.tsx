@@ -8,17 +8,44 @@ import {
 	json,
 	useLoaderData,
 } from '@remix-run/react'
+import clsx from 'clsx'
 import { Logo } from '#app/components/logo.js'
 import { Icon } from '#app/components/ui/icon.js'
 import { rootRouteId } from '#app/root.js'
-import { useRouteIdLoaderData } from '#app/utils/route-id.js'
+import { requireAccountId } from '#app/utils/auth.server.js'
+import { prisma } from '#app/utils/db.server.js'
+import { type RouteID, useRouteIdLoaderData } from '#app/utils/route-id.js'
 
-export async function loader({ params }: LoaderFunctionArgs) {
+const ROUTE_ID = 'root' as RouteID<{ loader: typeof loader }>
+export { ROUTE_ID as groupRouteId }
+
+export async function loader({ request, params }: LoaderFunctionArgs) {
 	const { groupId } = params
 	invariant(groupId, 'Missing groupId.')
+	const accountId = await requireAccountId(request)
+
+	const member = await prisma.member.findUnique({
+		where: {
+			accountId_groupId: {
+				groupId,
+				accountId,
+			},
+		},
+		select: {
+			roles: {
+				select: {
+					name: true,
+					permissions: {
+						select: { entity: true, action: true, access: true },
+					},
+				},
+			},
+		},
+	})
 
 	return json({
 		groupId,
+		member,
 	})
 }
 
@@ -33,12 +60,12 @@ export default function Screen() {
 					<Logo seed={seed} className="h-auto w-6" />
 					<p className="font-semibold">Craft Lab</p>
 				</div>
-				<div className="flex flex-1 flex-col pt-8">
+				<div className="flex flex-1 flex-col gap-1 pt-8">
 					<NavLink
 						to={generatePath('/:groupId/objectives', { groupId })}
 						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
 					>
-						<span className="group-hover:bg-pink group-hover:text-pink-foreground inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white">
+						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-pink group-hover:text-pink-foreground">
 							<Icon name="columns" size="sm" />
 						</span>
 						Objectives
@@ -47,7 +74,7 @@ export default function Screen() {
 						to={generatePath('/:groupId/milestones', { groupId })}
 						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
 					>
-						<span className="group-hover:bg-yellow inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white">
+						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-yellow">
 							<Icon name="lightning-bolt" size="sm" />
 						</span>
 						Milestones
@@ -56,7 +83,7 @@ export default function Screen() {
 						to={generatePath('/:groupId/signals', { groupId })}
 						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
 					>
-						<span className="group-hover:bg-lime inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white">
+						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-lime">
 							<Icon name="target" size="sm" />
 						</span>
 						Signals
@@ -65,19 +92,35 @@ export default function Screen() {
 						to={generatePath('/:groupId/threads', { groupId })}
 						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
 					>
-						<span className="group-hover:bg-blue inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white">
+						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-blue">
 							<Icon name="chat-bubble" size="sm" />
 						</span>
 						Threads
 					</NavLink>
 					<NavLink
 						to={generatePath('/:groupId/members', { groupId })}
-						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
+						className={({ isActive }) =>
+							clsx(
+								isActive
+									? 'bg-primary/5 text-primary'
+									: 'text-primary/60 hover:bg-primary/5',
+								'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+							)
+						}
 					>
-						<span className="group-hover:bg-orange inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white">
-							<Icon name="person" size="sm" />
-						</span>
-						Members
+						{({ isActive }) => (
+							<>
+								<span
+									className={clsx(
+										isActive ? 'bg-orange' : 'bg-primary group-hover:bg-orange',
+										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
+									)}
+								>
+									<Icon name="person" size="sm" />
+								</span>
+								Members
+							</>
+						)}
 					</NavLink>
 				</div>
 				<div className="flex items-center justify-between p-2">
@@ -87,7 +130,7 @@ export default function Screen() {
 					<Form action="/logout" method="POST">
 						<button
 							type="submit"
-							className="hover:bg-red/15 hover:text-red flex h-6 w-6 items-center justify-center rounded"
+							className="flex h-6 w-6 items-center justify-center rounded hover:bg-red/15 hover:text-red"
 						>
 							<Icon name="exit" size="xs">
 								<span className="sr-only">Logout</span>

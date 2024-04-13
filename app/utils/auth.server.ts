@@ -145,8 +145,8 @@ export async function signup({
 		})
 
 		// Create the profile and link to both the account and the group
-		tx.profile.create({
-			select: { name: true },
+		tx.member.create({
+			select: { id: true },
 			data: {
 				roles: { connect: { name: 'member' } },
 				account: {
@@ -198,16 +198,16 @@ export async function signupWithConnection({
 				email: email.toLowerCase(),
 				handle: handle.toLowerCase(),
 				name,
+				image: imageUrl ? { create: await downloadFile(imageUrl) } : undefined,
 
 				connections: { create: { providerId, providerName } },
 			},
 		})
 
 		// Create the profile and link to both the account and the group
-		tx.profile.create({
-			select: { name: true },
+		tx.member.create({
+			select: { id: true },
 			data: {
-				image: imageUrl ? { create: await downloadFile(imageUrl) } : undefined,
 				roles: { connect: { name: 'member' } },
 				account: {
 					connect: { id: account.id },

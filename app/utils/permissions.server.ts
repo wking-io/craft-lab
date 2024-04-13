@@ -1,20 +1,21 @@
 import { json } from '@remix-run/node'
-import { type PermissionString, parsePermissionString } from './account.ts'
 import { requireAccountId } from './auth.server.ts'
 import { prisma } from './db.server.ts'
+import { type PermissionString, parsePermissionString } from './member.ts'
 
-export async function requireProfileWithPermission(
+export async function requireMemberWithPermission(
 	request: Request,
 	permission: PermissionString,
+	groupId: string,
 ) {
 	const accountId = await requireAccountId(request)
 	const permissionData = parsePermissionString(permission)
-	const account = await prisma.profile.findFirst({
+	const account = await prisma.member.findFirst({
 		select: { id: true },
 		where: {
 			accountId,
 			// FIXME: This will require coming back and adding group id
-			groupId: '',
+			groupId,
 			roles: {
 				some: {
 					permissions: {
@@ -42,12 +43,16 @@ export async function requireProfileWithPermission(
 	return account.id
 }
 
-export async function requireProfileWithRole(request: Request, name: string) {
+export async function requireMemberWithRole(
+	request: Request,
+	name: string,
+	groupId: string,
+) {
 	const accountId = await requireAccountId(request)
-	const account = await prisma.profile.findFirst({
+	const account = await prisma.member.findFirst({
 		select: { id: true },
 		// FIXME: This will require coming back and adding group id
-		where: { accountId, groupId: '', roles: { some: { name } } },
+		where: { accountId, groupId, roles: { some: { name } } },
 	})
 	if (!account) {
 		throw json(
@@ -59,5 +64,27 @@ export async function requireProfileWithRole(request: Request, name: string) {
 			{ status: 403 },
 		)
 	}
+	return account.id
+}
+
+export async function requireSuperAdmin(request: Request) {
+	const accountId = await requireAccountId(request)
+	const account = await prisma.account.findFirst({
+		select: { id: true },
+		// FIXME: This will require coming back and adding group id
+		where: { id: accountId, email: 'contact@wking.dev' },
+	})
+
+	if (!account) {
+		throw json(
+			{
+				error: 'Unauthorized',
+				requiredRole: name,
+				message: `Unauthorized: required role: ${name}`,
+			},
+			{ status: 403 },
+		)
+	}
+
 	return account.id
 }

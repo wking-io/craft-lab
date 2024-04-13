@@ -66,8 +66,8 @@ async function getOrInsertAccount({
 			})
 
 			// Create the profile and link to both the account and the group
-			await tx.profile.create({
-				select: { name: true },
+			await tx.member.create({
+				select: { id: true },
 				data: {
 					account: {
 						connect: { id: account.id },

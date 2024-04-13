@@ -76,9 +76,8 @@ async function seed() {
 	console.timeEnd('🙌 Created groups...')
 
 	console.time('👨‍🦰 Created profile...')
-	await prisma.profile.create({
+	await prisma.member.create({
 		data: {
-			name: 'Squilliam',
 			group: { connect: { id: group.id } },
 			account: { connect: { id: me.id } },
 			roles: { connect: [{ name: 'admin' }, { name: 'member' }] },

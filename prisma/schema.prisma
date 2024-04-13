@@ -19,45 +19,46 @@ model WaitlistMember {
 }
 
 model Account {
-  id     String @id @default(cuid())
-  email  String @unique
-  handle String @unique
+  id     String        @id @default(cuid())
+  email  String        @unique
+  handle String        @unique
   name   String
+  image  AccountImage?
 
   password    Password?
   sessions    Session[]
-  profiles    Profile[]
+  memberships Member[]
   groups      Group[]
   connections Connection[]
+  Role        Role?        @relation(fields: [roleId], references: [id])
+  roleId      String?
 }
 
 model Group {
   id   String @id @default(cuid())
   name String
 
-  members   Profile[]
-  account   Account   @relation(fields: [accountId], references: [id])
+  members   Member[]
+  account   Account  @relation(fields: [accountId], references: [id])
   accountId String
 }
 
-model Profile {
-  id   String  @id @default(cuid())
-  name String?
+model Member {
+  id String @id @default(cuid())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  image     ProfileImage?
   roles     Role[]
-  account   Account       @relation(fields: [accountId], references: [id])
+  account   Account @relation(fields: [accountId], references: [id])
   accountId String
-  group     Group         @relation(fields: [groupId], references: [id])
+  group     Group   @relation(fields: [groupId], references: [id])
   groupId   String
 
   @@unique([accountId, groupId], name: "accountId_groupId")
 }
 
-model ProfileImage {
+model AccountImage {
   id          String  @id @default(cuid())
   altText     String?
   contentType String
@@ -66,8 +67,8 @@ model ProfileImage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  profileId String  @unique
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  accountId String  @unique
 }
 
 model Password {
@@ -114,8 +115,10 @@ model Role {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  profiles    Profile[]
+  acconuts    Account[]
   permissions Permission[]
+  Member      Member?      @relation(fields: [memberId], references: [id])
+  memberId    String?
 }
 
 model Verification {

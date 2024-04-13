@@ -1,12 +1,15 @@
 import { type Submission } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
-import { json } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { generatePath } from '@remix-run/react'
 import { z } from 'zod'
 import { handleVerification as handleChangeEmailVerification } from '#app/routes/settings+/profile.change-email.server.tsx'
 import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx'
-import { requireAccountId } from '#app/utils/auth.server.ts'
+import { accountExistsByEmail } from '#app/utils/account.server.js'
+import { getAccountId, requireAccountId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { ensurePrimary } from '#app/utils/litefs.server.ts'
+import { createMember } from '#app/utils/member.server.js'
 import { getDomainUrl } from '#app/utils/misc.tsx'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { generateTOTP, verifyTOTP } from '#app/utils/totp.server.ts'
@@ -16,7 +19,10 @@ import {
 	handleVerification as handleLoginTwoFactorVerification,
 	shouldRequestTwoFA,
 } from './login.server.ts'
-import { handleVerification as handleOnboardingVerification } from './onboarding.server.ts'
+import {
+	handleInviteVerification,
+	handleVerification as handleOnboardingVerification,
+} from './onboarding.server.ts'
 import { handleVerification as handleResetPasswordVerification } from './reset-password.server.ts'
 import {
 	VerifySchema,
@@ -205,6 +211,39 @@ export async function validateRequest(
 		case 'waitlist': {
 			await deleteVerification()
 			return handleWaitlistVerification({ request, body, submission })
+		}
+		case 'invite': {
+			await deleteVerification()
+
+			const accountId = await getAccountId(request)
+
+			const [groupId, email] = submission.value.target.split(':')
+			const verifySessionHeaders = await handleInviteVerification({
+				request,
+				body,
+				submission,
+			})
+
+			if (accountId) {
+				await createMember({ accountId, groupId })
+				return redirect(generatePath('/:groupId/welcome', { groupId }), {
+					headers: verifySessionHeaders,
+				})
+			}
+
+			const account = await accountExistsByEmail(email)
+
+			if (account) {
+				await createMember({ accountId: account.id, groupId })
+				const loginParams = new URLSearchParams([
+					['redirectTo', `/${groupId}/welcome`],
+				])
+				return redirect(`login?${loginParams}`, {
+					headers: verifySessionHeaders,
+				})
+			}
+
+			return redirect('/onboarding', { headers: verifySessionHeaders })
 		}
 	}
 }
