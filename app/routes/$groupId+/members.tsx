@@ -8,9 +8,8 @@ import {
 } from '@remix-run/node'
 import { Form, json, useActionData, useLoaderData } from '@remix-run/react'
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
-import { toast } from 'sonner'
 import { z } from 'zod'
-import { Button, ButtonGroup } from '#app/components/catalyst/button.js'
+import { Button } from '#app/components/catalyst/button.js'
 import {
 	Dialog,
 	DialogActions,
@@ -185,15 +184,10 @@ export default function Screen() {
 				<h1 className="text-lg/7 font-semibold tracking-[-0.015em] text-zinc-950">
 					Members
 				</h1>
-				<ButtonGroup>
-					<Button outline onClick={() => toast('Test')}>
-						Show Toast
-					</Button>
-					<Button color="orange" onClick={() => setIsOpen(true)}>
-						<Icon name="envelope-closed" /> Invite Member
-					</Button>
-					<InviteModal isOpen={isOpen} setIsOpen={setIsOpen} />
-				</ButtonGroup>
+				<Button color="orange" onClick={() => setIsOpen(true)}>
+					<Icon name="envelope-closed" /> Invite Member
+				</Button>
+				<InviteModal isOpen={isOpen} setIsOpen={setIsOpen} />
 			</div>
 			<Table dense className="mt-6">
 				<TableHead>

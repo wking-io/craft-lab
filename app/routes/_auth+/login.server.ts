@@ -69,7 +69,7 @@ export async function handleNewSession(
 		return redirect(
 			safeRedirect(
 				redirectTo,
-				generatePath('/:groupId/dashboard', { groupId: group.id }),
+				generatePath('/:groupId/objectives', { groupId: group.id }),
 			),
 			combineResponseInits(
 				{

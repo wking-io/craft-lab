@@ -4,6 +4,7 @@ export type IconName =
 	| 'arrow-left'
 	| 'arrow-right'
 	| 'avatar'
+	| 'bookmark'
 	| 'camera'
 	| 'chat-bubble'
 	| 'check'

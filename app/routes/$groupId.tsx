@@ -63,39 +63,138 @@ export default function Screen() {
 				<div className="flex flex-1 flex-col gap-1 pt-8">
 					<NavLink
 						to={generatePath('/:groupId/objectives', { groupId })}
-						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
+						className={({ isActive }) =>
+							clsx(
+								isActive
+									? 'bg-primary/5 text-primary'
+									: 'text-primary/60 hover:bg-primary/5',
+								'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+							)
+						}
 					>
-						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-pink group-hover:text-pink-foreground">
-							<Icon name="columns" size="sm" />
-						</span>
-						Objectives
+						{({ isActive }) => (
+							<>
+								<span
+									className={clsx(
+										isActive
+											? 'bg-pink text-pink-foreground'
+											: 'bg-primary group-hover:bg-pink group-hover:text-pink-foreground',
+										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
+									)}
+								>
+									<Icon name="columns" size="sm" />
+								</span>
+								Objectives
+							</>
+						)}
 					</NavLink>
 					<NavLink
 						to={generatePath('/:groupId/milestones', { groupId })}
-						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
+						className={({ isActive }) =>
+							clsx(
+								isActive
+									? 'bg-primary/5 text-primary'
+									: 'text-primary/60 hover:bg-primary/5',
+								'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+							)
+						}
 					>
-						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-yellow">
-							<Icon name="lightning-bolt" size="sm" />
-						</span>
-						Milestones
+						{({ isActive }) => (
+							<>
+								<span
+									className={clsx(
+										isActive
+											? 'bg-yellow text-yellow-foreground'
+											: 'bg-primary group-hover:bg-yellow group-hover:text-yellow-foreground',
+										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
+									)}
+								>
+									<Icon name="lightning-bolt" size="sm" />
+								</span>
+								Milestones
+							</>
+						)}
 					</NavLink>
 					<NavLink
 						to={generatePath('/:groupId/signals', { groupId })}
-						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
+						className={({ isActive }) =>
+							clsx(
+								isActive
+									? 'bg-primary/5 text-primary'
+									: 'text-primary/60 hover:bg-primary/5',
+								'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+							)
+						}
 					>
-						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-lime">
-							<Icon name="target" size="sm" />
-						</span>
-						Signals
+						{({ isActive }) => (
+							<>
+								<span
+									className={clsx(
+										isActive
+											? 'bg-lime text-lime-foreground'
+											: 'bg-primary group-hover:bg-lime group-hover:text-lime-foreground',
+										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
+									)}
+								>
+									<Icon name="target" size="sm" />
+								</span>
+								Signals
+							</>
+						)}
 					</NavLink>
 					<NavLink
 						to={generatePath('/:groupId/threads', { groupId })}
-						className="group flex items-center gap-2 rounded p-2 text-sm font-medium text-primary/60 hover:bg-primary/5 hover:text-primary"
+						className={({ isActive }) =>
+							clsx(
+								isActive
+									? 'bg-primary/5 text-primary'
+									: 'text-primary/60 hover:bg-primary/5',
+								'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+							)
+						}
 					>
-						<span className="inline-flex h-6 w-6 items-center justify-center rounded bg-primary text-white group-hover:bg-blue">
-							<Icon name="chat-bubble" size="sm" />
-						</span>
-						Threads
+						{({ isActive }) => (
+							<>
+								<span
+									className={clsx(
+										isActive
+											? 'bg-pink text-purple-foreground'
+											: 'bg-primary group-hover:bg-purple group-hover:text-purple-foreground',
+										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
+									)}
+								>
+									<Icon name="chat-bubble" size="sm" />
+								</span>
+								Threads
+							</>
+						)}
+					</NavLink>
+					<NavLink
+						to={generatePath('/:groupId/library', { groupId })}
+						className={({ isActive }) =>
+							clsx(
+								isActive
+									? 'bg-primary/5 text-primary'
+									: 'text-primary/60 hover:bg-primary/5',
+								'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+							)
+						}
+					>
+						{({ isActive }) => (
+							<>
+								<span
+									className={clsx(
+										isActive
+											? 'bg-blue text-blue-foreground'
+											: 'bg-primary group-hover:bg-blue group-hover:text-blue-foreground',
+										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
+									)}
+								>
+									<Icon name="bookmark" size="sm" />
+								</span>
+								Library
+							</>
+						)}
 					</NavLink>
 					<NavLink
 						to={generatePath('/:groupId/members', { groupId })}
@@ -112,7 +211,9 @@ export default function Screen() {
 							<>
 								<span
 									className={clsx(
-										isActive ? 'bg-orange' : 'bg-primary group-hover:bg-orange',
+										isActive
+											? 'bg-orange text-orange-foreground'
+											: 'bg-primary group-hover:bg-orange group-hover:text-orange-foreground',
 										'inline-flex h-6 w-6 items-center justify-center rounded text-white',
 									)}
 								>
