@@ -138,8 +138,8 @@ export function WaitlistEmail({
 	)
 }
 
-const gridLines =
-	'before:absolute before:left-1/2 before:right-1/2 before:top-0 before:-ml-[50vw] before:-mr-[50vw] before:h-0 before:w-screen before:border-t after:absolute after:left-1/2 after:right-1/2 after:bottom-0 after:-ml-[50vw] after:-mr-[50vw] after:h-0 after:w-screen after:border-t'
+// const gridLines =
+// 	'before:absolute before:left-1/2 before:right-1/2 before:top-0 before:-ml-[50vw] before:-mr-[50vw] before:h-0 before:w-screen before:border-t after:absolute after:left-1/2 after:right-1/2 after:bottom-0 after:-ml-[50vw] after:-mr-[50vw] after:h-0 after:w-screen after:border-t'
 
 export default function Index() {
 	const actionData = useActionData<typeof action>()
@@ -157,23 +157,18 @@ export default function Index() {
 	})
 
 	return (
-		<main className="grid h-full grid-cols-[1fr_40px_auto_40px_1fr]">
-			<div></div>
-			<div className="-mx-px border-x bg-diagonal"></div>
-			<div className="max-w-2xl self-center">
-				<div
-					className={clsx(
-						gridLines,
-						'relative flex items-center gap-2 px-2 py-1',
-					)}
-				>
-					<Logo seed={seed} className="h-auto w-8" />
-					<p className="text-2xl font-bold">Craft Lab</p>
+		<main className="h-full">
+			<nav className="flex justify-between gap-8 px-4 py-2">
+				<div className={clsx('relative flex items-center gap-2')}>
+					<Logo seed={seed} className="h-auto w-6" />
+					<p className="text-xl font-semibold tracking-tight">Craft Lab</p>
 				</div>
-				<h1 className={clsx(gridLines, 'relative mt-8 px-2 py-1 font-bold')}>
+			</nav>
+			<div className="max-w-2xl self-center">
+				<h1 className={clsx('relative mt-8 px-2 py-1 font-semibold')}>
 					# A community for Design Engineers by Design Engineers.
 				</h1>
-				<p className={clsx(gridLines, 'relative mt-3 px-2 py-1')}>
+				<p className={clsx('relative mt-3 px-2 py-1')}>
 					There are only <span className="underline">8</span> spots left for the
 					alpha group to help get this space off of the ground. Get on the
 					waitlist and let's chat 👇
@@ -181,7 +176,7 @@ export default function Index() {
 				<Form
 					method="POST"
 					{...getFormProps(form)}
-					className={clsx(gridLines, 'relative mt-6 px-2 pb-2 pt-1')}
+					className={clsx('relative mt-6 px-2 pb-2 pt-1')}
 				>
 					<HoneypotInputs />
 					<Field
@@ -209,8 +204,6 @@ export default function Index() {
 					</StatusButton>
 				</Form>
 			</div>
-			<div className="-mx-px border-x bg-diagonal"></div>
-			<div></div>
 		</main>
 	)
 }
