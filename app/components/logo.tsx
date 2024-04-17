@@ -17,6 +17,54 @@ const COLORS = [
 	'#F460CF',
 ]
 
+const rowColors = [
+	[
+		'#5948F6', // PURPLE
+		'#5948F6', // PURPLE
+		'#3479F6', // BLUE
+	],
+	[
+		'#5948F6', // PURPLE
+		'#3479F6', // BLUE
+		'#3479F6', // BLUE
+		'#34BF96', // GREEN
+	],
+	[
+		'#5948F6', // PURPLE
+		'#3479F6', // BLUE
+		'#34BF96', // GREEN
+	],
+	[
+		'#EFBD2D', // YELLOW
+		'#3479F6', // BLUE
+		'#34BF96', // GREEN
+		'#97DC42', // LIME
+	],
+	[
+		'#EFBD2D', // YELLOW
+		'#F27D47', // ORANGE
+		'#34BF96', // GREEN
+		'#97DC42', // LIME
+	],
+	[
+		'#EFBD2D', // YELLOW
+		'#F27D47', // ORANGE
+		'#F460CF', // PINK
+		'#97DC42', // LIME
+	],
+	[
+		'#EFBD2D', // YELLOW
+		'#F27D47', // ORANGE
+		'#F460CF', // PINK
+		'#F27D47', // ORANGE
+		'#F460CF', // PINK
+	],
+	[
+		'#F27D47', // ORANGE
+		'#F460CF', // PINK
+	],
+]
+
 type Seed = [number, number, number, number]
 type BaseProps = { seed: Seed; className?: string }
 function Logo({ seed, className }: BaseProps) {
@@ -36,14 +84,19 @@ function Logo({ seed, className }: BaseProps) {
 		>
 			{randomNumbers.map((rn, i) => {
 				const { x, y } = getCoordinates(i)
+				const colors = rowColors[y]
 				if (
 					[
+						[9, 0],
+						[9, 1],
+						[9, 2],
+						[9, 3],
+						[8, 0],
+						[8, 1],
+						[8, 2],
 						[7, 0],
 						[7, 1],
-						[7, 2],
 						[6, 0],
-						[6, 1],
-						[5, 0],
 					].some(([x2, y2]) => x === x2 && y === y2)
 				) {
 					return null
@@ -54,129 +107,11 @@ function Logo({ seed, className }: BaseProps) {
 						y={y * CELL_SIZE}
 						width={CELL_SIZE}
 						height={CELL_SIZE}
-						fill={COLORS[Math.floor(rn * COLORS.length)]}
+						fill={colors[Math.floor(rn * colors.length)]}
 						key={`rect-${rn}-${i}`}
 					/>
 				)
 			})}
-		</svg>
-	)
-}
-
-function PointLogo({ seed, className }: BaseProps) {
-	const randomNumbers = useMemo(() => {
-		const generator = sfc32(seed)
-		return Array.from({ length: ROWS * COLUMNS }, () => generator())
-	}, [seed])
-
-	return (
-		<svg
-			id="craft-lab-logo"
-			viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
-			width={CANVAS_WIDTH}
-			height={CANVAS_HEIGHT}
-			xmlns="http://www.w3.org/2000/svg"
-			className={className}
-		>
-			{randomNumbers.map((rn, i) => {
-				const sizeMultiplier = Math.random() * (1 - 0.4) + 0.4
-				const { x, y } = getCoordinates(i)
-				if (
-					[
-						[4, 2],
-						[3, 3],
-						[3, 4],
-						[4, 3],
-						[4, 4],
-						[5, 4],
-						[3, 5],
-						[2, 3],
-					].some(([x2, y2]) => x === x2 && y === y2)
-				) {
-					return null
-				}
-				return (
-					<circle
-						cx={x * CELL_SIZE + CELL_SIZE / 2}
-						cy={y * CELL_SIZE + CELL_SIZE / 2}
-						r={(CELL_SIZE / 2) * sizeMultiplier}
-						fill={COLORS[Math.floor(rn * COLORS.length)]}
-						key={`rect-${rn}-${i}`}
-					/>
-				)
-			})}
-		</svg>
-	)
-}
-
-function BlobLogo({ seed, className }: BaseProps) {
-	return (
-		<svg
-			id="craft-lab-logo"
-			viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
-			width={CANVAS_WIDTH}
-			height={CANVAS_HEIGHT}
-			xmlns="http://www.w3.org/2000/svg"
-			className={clsx(className, 'isolate')}
-		>
-			{shuffle(COLORS).map((color, i) => {
-				const blob = blobGenerator({
-					size: CANVAS_WIDTH,
-					growth: 1 + i * 0.85,
-					edges: 8,
-					seed: seed[0] + i,
-				})
-				return (
-					<path
-						d={blob.path}
-						key={color}
-						fill={color}
-						className="mix-blend-screen"
-					/>
-				)
-			})}
-		</svg>
-	)
-}
-
-const best = [
-	'#EFBD2D', // YELLOW
-	'#F27D47', // ORANGE
-	'#F460CF', // PINK
-	'#5948F6', // PURPLE
-	'#3479F6', // BLUE
-	'#34BF96', // GREEN
-	'#97DC42', // LIME
-]
-
-function BlobLineLogo({ seed, className }: BaseProps) {
-	const paths = circleLineGenerator({
-		size: CANVAS_WIDTH,
-		colors: best,
-		seed: seed[0],
-	})
-	return (
-		<svg
-			id="craft-lab-logo"
-			viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
-			width={CANVAS_WIDTH}
-			height={CANVAS_HEIGHT}
-			xmlns="http://www.w3.org/2000/svg"
-			className={clsx(className, 'isolate')}
-		>
-			{paths.reverse().map(([color, points], i) =>
-				points.map(([x, y]) => {
-					return (
-						<circle
-							cx={x}
-							cy={y}
-							key={`${color}-${x}-${y}`}
-							fill={color}
-							r={1.8 * Math.pow(0.8, (paths.length - 1 - i) / 1.3)}
-						/>
-					)
-				}),
-			)}
 		</svg>
 	)
 }
@@ -197,12 +132,29 @@ function makeFavicon(seed: Seed) {
         >
             ${randomNumbers.map((rn, i) => {
 							const { x, y } = getCoordinates(i)
+							const colors = rowColors[y]
+							if (
+								[
+									[9, 0],
+									[9, 1],
+									[9, 2],
+									[9, 3],
+									[8, 0],
+									[8, 1],
+									[8, 2],
+									[7, 0],
+									[7, 1],
+									[6, 0],
+								].some(([x2, y2]) => x === x2 && y === y2)
+							) {
+								return ''
+							}
 							return `<rect
                         x="${x * CELL_SIZE}"
                         y="${y * CELL_SIZE}"
                         width="${CELL_SIZE}"
                         height="${CELL_SIZE}"
-                        fill="${COLORS[Math.floor(rn * COLORS.length)]}"
+                        fill="${colors[Math.floor(rn * colors.length)]}"
                     />`
 						})}
         </svg>`.trim()
@@ -430,6 +382,128 @@ function point({
 function shuffle<T>(array: T[]) {
 	array.sort(() => Math.random() - 0.5)
 	return array
+}
+
+/**
+ * UNUSED
+ */
+
+function PointLogo({ seed, className }: BaseProps) {
+	const randomNumbers = useMemo(() => {
+		const generator = sfc32(seed)
+		return Array.from({ length: ROWS * COLUMNS }, () => generator())
+	}, [seed])
+
+	return (
+		<svg
+			id="craft-lab-logo"
+			viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
+			width={CANVAS_WIDTH}
+			height={CANVAS_HEIGHT}
+			xmlns="http://www.w3.org/2000/svg"
+			className={className}
+		>
+			{randomNumbers.map((rn, i) => {
+				const sizeMultiplier = Math.random() * (1 - 0.4) + 0.4
+				const { x, y } = getCoordinates(i)
+				if (
+					[
+						[4, 2],
+						[3, 3],
+						[3, 4],
+						[4, 3],
+						[4, 4],
+						[5, 4],
+						[3, 5],
+						[2, 3],
+					].some(([x2, y2]) => x === x2 && y === y2)
+				) {
+					return null
+				}
+				return (
+					<circle
+						cx={x * CELL_SIZE + CELL_SIZE / 2}
+						cy={y * CELL_SIZE + CELL_SIZE / 2}
+						r={(CELL_SIZE / 2) * sizeMultiplier}
+						fill={COLORS[Math.floor(rn * COLORS.length)]}
+						key={`rect-${rn}-${i}`}
+					/>
+				)
+			})}
+		</svg>
+	)
+}
+
+function BlobLogo({ seed, className }: BaseProps) {
+	return (
+		<svg
+			id="craft-lab-logo"
+			viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
+			width={CANVAS_WIDTH}
+			height={CANVAS_HEIGHT}
+			xmlns="http://www.w3.org/2000/svg"
+			className={clsx(className, 'isolate')}
+		>
+			{shuffle(COLORS).map((color, i) => {
+				const blob = blobGenerator({
+					size: CANVAS_WIDTH,
+					growth: 1 + i * 0.85,
+					edges: 8,
+					seed: seed[0] + i,
+				})
+				return (
+					<path
+						d={blob.path}
+						key={color}
+						fill={color}
+						className="mix-blend-screen"
+					/>
+				)
+			})}
+		</svg>
+	)
+}
+
+const best = [
+	'#EFBD2D', // YELLOW
+	'#F27D47', // ORANGE
+	'#F460CF', // PINK
+	'#5948F6', // PURPLE
+	'#3479F6', // BLUE
+	'#34BF96', // GREEN
+	'#97DC42', // LIME
+]
+
+function BlobLineLogo({ seed, className }: BaseProps) {
+	const paths = circleLineGenerator({
+		size: CANVAS_WIDTH,
+		colors: best,
+		seed: seed[0],
+	})
+	return (
+		<svg
+			id="craft-lab-logo"
+			viewBox={`0 0 ${CANVAS_WIDTH} ${CANVAS_HEIGHT}`}
+			width={CANVAS_WIDTH}
+			height={CANVAS_HEIGHT}
+			xmlns="http://www.w3.org/2000/svg"
+			className={clsx(className, 'isolate')}
+		>
+			{paths.reverse().map(([color, points], i) =>
+				points.map(([x, y]) => {
+					return (
+						<circle
+							cx={x}
+							cy={y}
+							key={`${color}-${x}-${y}`}
+							fill={color}
+							r={1.8 * Math.pow(0.8, (paths.length - 1 - i) / 1.3)}
+						/>
+					)
+				}),
+			)}
+		</svg>
+	)
 }
 
 export { PointLogo, BlobLogo, BlobLineLogo, Logo, makeFavicon }

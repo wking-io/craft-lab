@@ -166,12 +166,11 @@ export default function Index() {
 			</nav>
 			<div className="max-w-2xl self-center">
 				<h1 className={clsx('relative mt-8 px-2 py-1 font-semibold')}>
-					# A community for Design Engineers by Design Engineers.
+					A community built for incredible Design Engineers
 				</h1>
 				<p className={clsx('relative mt-3 px-2 py-1')}>
-					There are only <span className="underline">8</span> spots left for the
-					alpha group to help get this space off of the ground. Get on the
-					waitlist and let's chat 👇
+					Come help us build a space where the goal is to learn and share
+					everything about your craft and have fun doing it.
 				</p>
 				<Form
 					method="POST"
@@ -204,6 +203,71 @@ export default function Index() {
 					</StatusButton>
 				</Form>
 			</div>
+			<h3>Objectives</h3>
+			<h2>Collaborate daily on what matters</h2>
+			<p>
+				Start every day sharing what you're working on. That objective will now
+				be available for tracking progress and having conversations focused
+				around it.
+			</p>
+			<h3>Milestones</h3>
+			<h2>Plan your long term growth</h2>
+			<p>
+				A community can't help you if we don't know where you are headed. Use
+				milestones to share your big goal for the year, and what you are doing
+				this quarter to achieve it.
+			</p>
+			<h3>Signals</h3>
+			<h2>Targeted help when you need it</h2>
+			<p>
+				A wide range of expertise in the community gives you access to the right
+				kind of help when you need it. Signals everyone know that you are
+				looking for active feedback to get past hurdles that come up.
+			</p>
+			<h3>Library</h3>
+			<h2>The best resources from people who get it</h2>
+			<p>
+				Submit your favorite resources and access the ones that have been shared
+				by the rest of us. A library of trusted and tried information...it
+				doesn't get better than that.
+			</p>
+			<h3>Threads</h3>
+			<h2>Let's not forget we want to have fun</h2>
+			<p>
+				Threads is a space for fun and community. It is a group chat with a ton
+				of people who care about the things you do both professionally and
+				creatively.
+			</p>
+			<h3>A Playground for Ideas</h3>
+			<h2>You can help build the platform yourself</h2>
+			<p>
+				The value is you. This platform is open source for anyone to read, but
+				Members get full access to contribute to the design and development of
+				making this space something really special.
+			</p>
+
+			<h3>Did I mention membership cards yet?</h3>
+			<h2>
+				Get an exclusive membership card variant when you join the waitlist
+			</h2>
+			<p>
+				This community is about exploring the craft of design engineering with
+				others, making each other better, and having fun while we do it.
+			</p>
+			<p>
+				Not every idea or project has the space to be explored in our day jobs.
+				So, let's do that here. Membership cards are an example of this.
+			</p>
+			<p>
+				Variants will be custom generative graphics that are unique to only you.
+				The designs are keyed off of your account information, and if you join
+				the waitlist you will have a variant only available to you.
+			</p>
+			<p>
+				Also, the goal is for members to be able to contribute new variants to
+				be made available to everyone if that is a area that is interesting to
+				you.
+			</p>
 		</main>
 	)
 }
