@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { useMemo } from 'react'
+import { type Seed, sfc32 } from '#app/utils/random.js'
 
 const ROWS = 8
 const COLUMNS = 8
@@ -65,7 +66,6 @@ const rowColors = [
 	],
 ]
 
-type Seed = [number, number, number, number]
 type BaseProps = { seed: Seed; className?: string }
 function Logo({ seed, className }: BaseProps) {
 	const randomNumbers = useMemo(() => {
@@ -173,31 +173,6 @@ function getCoordinates(
 	const y = Math.floor(index / width)
 	const x = index % height
 	return { x, y }
-}
-
-/**
- * Implementation for the Simple Fast Counter (sfc32)
- * A Pseudorandom Number Generator (PRNG) that takes four numbers and
- * will output a predictable generator as long as the seed stays the same.
- *
- */
-function sfc32([a, b, c, d]: Seed) {
-	return function () {
-		a |= 0
-		b |= 0
-		c |= 0
-		d |= 0
-		let t = (((a + b) | 0) + d) | 0
-		d = (d + 1) | 0
-		a = b ^ (b >>> 9)
-		b = (c + (c << 3)) | 0
-		c = (c << 21) | (c >>> 11)
-		c = (c + t) | 0
-
-		// Dividing the 32-bit integer by 2^32 to make sure the output
-		// Always stays between 0 - 1.
-		return (t >>> 0) / 4294967296
-	}
 }
 
 /**

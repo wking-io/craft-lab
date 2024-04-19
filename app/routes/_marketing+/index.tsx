@@ -1,12 +1,14 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { Field, Input } from '@headlessui/react'
 import * as E from '@react-email/components'
 import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
 import { Form, json, redirect, useActionData } from '@remix-run/react'
 import clsx from 'clsx'
+import { type PropsWithChildren } from 'react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.js'
+import { ErrorMessage } from '#app/components/catalyst/fieldset.js'
 import { Logo } from '#app/components/logo.js'
 import { StatusButton } from '#app/components/ui/status-button.js'
 import { rootRouteId } from '#app/root.js'
@@ -158,116 +160,207 @@ export default function Index() {
 
 	return (
 		<main className="h-full">
-			<nav className="flex justify-between gap-8 px-4 py-2">
-				<div className={clsx('relative flex items-center gap-2')}>
-					<Logo seed={seed} className="h-auto w-6" />
-					<p className="text-xl font-semibold tracking-tight">Craft Lab</p>
+			<div className="container flex flex-col py-8 md:py-12 lg:py-16">
+				<div className={clsx('relative flex gap-3')}>
+					<Logo seed={seed} className="h-auto w-8" />
+					<p className="text-3xl font-semibold tracking-tight">Craft Lab</p>
 				</div>
-			</nav>
-			<div className="max-w-2xl self-center">
-				<h1 className={clsx('relative mt-8 px-2 py-1 font-semibold')}>
-					A community built for incredible Design Engineers
+				<h1 className="relative mt-8 max-w-2xl text-balance text-5xl font-semibold leading-tight">
+					A community built for Incredible Design Engineers
 				</h1>
-				<p className={clsx('relative mt-3 px-2 py-1')}>
-					Come help us build a space where the goal is to learn and share
-					everything about your craft and have fun doing it.
+				<p className="mt-5 text-secondary md:text-lg lg:text-xl">
+					Help us build a space where we learn and share everything about our
+					craft and have fun doing it.
 				</p>
 				<Form
 					method="POST"
 					{...getFormProps(form)}
-					className={clsx('relative mt-6 px-2 pb-2 pt-1')}
+					className={clsx('relative mt-8 w-full max-w-2xl lg:mt-12')}
 				>
 					<HoneypotInputs />
-					<Field
-						labelProps={{
-							htmlFor: fields.email.id,
-							children: 'Email',
-						}}
-						inputProps={{
-							...getInputProps(fields.email, { type: 'email' }),
-							autoFocus: true,
-							autoComplete: 'email',
-							placeholder: 'design@engineer.awesome',
-							className: 'placeholder:text-primary/40 mt-1 border-primary',
-						}}
-						errors={fields.email.errors}
-					/>
-					<ErrorList errors={form.errors} id={form.errorId} />
-					<StatusButton
-						className="w-full"
-						status={isPending ? 'pending' : form.status ?? 'idle'}
-						type="submit"
-						disabled={isPending}
-					>
-						Submit
-					</StatusButton>
+					<Field className="flex w-full flex-col items-start md:flex-row">
+						<label className="sr-only" htmlFor={fields.email.id}>
+							Email
+						</label>
+						<div className="flex-1">
+							<Input
+								{...getInputProps(fields.email, { type: 'email' })}
+								placeholder="design@engineer.awesome"
+								invalid={Boolean(fields.email.errors?.length)}
+								className="w-full border border-primary px-4 py-2"
+							/>
+							<ErrorMessage errors={fields.email.errors} />
+							<ErrorMessage errors={form.errors} id={form.errorId} />
+						</div>
+						<StatusButton
+							className="min-w-[30%]"
+							status={isPending ? 'pending' : form.status ?? 'idle'}
+							type="submit"
+							disabled={isPending}
+						>
+							Join The Waitlist
+						</StatusButton>
+					</Field>
 				</Form>
 			</div>
-			<h3>Objectives</h3>
-			<h2>Collaborate daily on what matters</h2>
-			<p>
-				Start every day sharing what you're working on. That objective will now
-				be available for tracking progress and having conversations focused
-				around it.
-			</p>
-			<h3>Milestones</h3>
-			<h2>Plan your long term growth</h2>
-			<p>
-				A community can't help you if we don't know where you are headed. Use
-				milestones to share your big goal for the year, and what you are doing
-				this quarter to achieve it.
-			</p>
-			<h3>Signals</h3>
-			<h2>Targeted help when you need it</h2>
-			<p>
-				A wide range of expertise in the community gives you access to the right
-				kind of help when you need it. Signals everyone know that you are
-				looking for active feedback to get past hurdles that come up.
-			</p>
-			<h3>Library</h3>
-			<h2>The best resources from people who get it</h2>
-			<p>
-				Submit your favorite resources and access the ones that have been shared
-				by the rest of us. A library of trusted and tried information...it
-				doesn't get better than that.
-			</p>
-			<h3>Threads</h3>
-			<h2>Let's not forget we want to have fun</h2>
-			<p>
-				Threads is a space for fun and community. It is a group chat with a ton
-				of people who care about the things you do both professionally and
-				creatively.
-			</p>
-			<h3>A Playground for Ideas</h3>
-			<h2>You can help build the platform yourself</h2>
-			<p>
-				The value is you. This platform is open source for anyone to read, but
-				Members get full access to contribute to the design and development of
-				making this space something really special.
-			</p>
+			<section className="container">
+				<div className="-mx-5 grid grid-cols-3 gap-6 py-8 md:gap-y-8 lg:gap-y-8">
+					<div className="grid max-w-sm px-5 py-6">
+						<div className="max-w-xl">
+							<FeatureName color="text-pink">Objectives</FeatureName>
+							<h2 className="mt-4 text-xl font-semibold">
+								Collaborate daily on what matters
+							</h2>
+							<p className="mt-4 text-pretty text-secondary">
+								Start every day sharing what you're working on. That objective
+								will now be available for tracking progress and having
+								conversations focused around it.
+							</p>
+						</div>
+					</div>
+					<div className="grid max-w-sm px-5 py-6">
+						<div className="max-w-xl justify-self-end">
+							<FeatureName color="text-yellow">Milestones</FeatureName>
+							<h2 className="mt-4 text-xl font-semibold">
+								Plan your long term growth
+							</h2>
+							<p className="mt-4 text-pretty text-secondary">
+								A community can't help you if we don't know where you are
+								headed. Use milestones to share your big goal for the year, and
+								what you are doing this quarter to achieve it.
+							</p>
+						</div>
+					</div>
+					<div className="grid max-w-sm px-5 py-6">
+						<div className="max-w-xl">
+							<FeatureName color="text-lime">Signals</FeatureName>
+							<h2 className="mt-4 text-xl font-semibold">
+								Targeted help when you need it
+							</h2>
+							<p className="mt-4 text-pretty text-secondary">
+								A wide range of expertise in the community gives you access to
+								the right kind of help when you need it. Signals everyone know
+								that you are looking for active feedback to get past hurdles
+								that come up.
+							</p>
+						</div>
+					</div>
 
-			<h3>Did I mention membership cards yet?</h3>
-			<h2>
-				Get an exclusive membership card variant when you join the waitlist
-			</h2>
-			<p>
-				This community is about exploring the craft of design engineering with
-				others, making each other better, and having fun while we do it.
-			</p>
-			<p>
-				Not every idea or project has the space to be explored in our day jobs.
-				So, let's do that here. Membership cards are an example of this.
-			</p>
-			<p>
-				Variants will be custom generative graphics that are unique to only you.
-				The designs are keyed off of your account information, and if you join
-				the waitlist you will have a variant only available to you.
-			</p>
-			<p>
-				Also, the goal is for members to be able to contribute new variants to
-				be made available to everyone if that is a area that is interesting to
-				you.
-			</p>
+					<div className="grid max-w-sm px-5 py-6">
+						<div className="max-w-xl justify-self-end">
+							<FeatureName color="text-green">Library</FeatureName>
+							<h2 className="mt-4 text-pretty text-xl font-semibold">
+								Curated resources from the best people
+							</h2>
+							<p className="mt-4 text-pretty text-secondary">
+								Submit your favorite resources and access the ones that have
+								been shared by the rest of us. A library of trusted and tried
+								information...it doesn't get better than that.
+							</p>
+						</div>
+					</div>
+
+					<div className="grid max-w-sm px-5 py-6">
+						<div className="max-w-xl">
+							<FeatureName color="text-blue">Threads</FeatureName>
+							<h2 className="mt-4 text-pretty text-xl font-semibold">
+								Let's not forget we want to have fun
+							</h2>
+							<p className="mt-4 text-pretty text-secondary">
+								Threads is a space for fun and community. It is a group chat
+								with a ton of people who care about the things you do both
+								professionally and creatively.
+							</p>
+						</div>
+					</div>
+
+					<div className="dark relative flex max-w-sm flex-col bg-background px-5 py-6">
+						<svg
+							className="absolute right-0 top-0 h-[24px] w-[24px]"
+							viewBox="0 0 4 4"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<rect
+								className="fill-current text-foreground"
+								x="0"
+								y="0"
+								width="4"
+								height="4"
+							/>
+							<path
+								d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+								className="fill-current text-background"
+							/>
+						</svg>
+						<div className="flex-1">
+							<FeatureName color="text-foreground">
+								Playground for Ideas
+							</FeatureName>
+							<div className="">
+								<h2 className="mt-4 text-pretty text-xl font-semibold text-foreground">
+									Help build the platform yourself
+								</h2>
+								<p className="mt-4 text-pretty text-secondary">
+									Members get full access to contribute to the design and
+									development of making this space something really special.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section className="container py-8 md:py-12 lg:py-16">
+				<h3 className="font-mono font-semibold">
+					Did I mention the membership cards yet?
+				</h3>
+				<h2 className="relative mt-3 max-w-4xl text-balance text-5xl font-semibold leading-tight">
+					Get an exclusive membership card variant when you join the waitlist
+				</h2>
+				<p className="mt-4 max-w-3xl text-secondary">
+					This community is about exploring the craft of design engineering with
+					others, making each other better, and having fun while we do it.
+				</p>
+				<p className="mt-4 max-w-3xl text-secondary">
+					Not every idea or project has the space to be explored in our day
+					jobs. So, let's do that here. Membership cards are an example of this.
+				</p>
+				<p className="mt-4 max-w-3xl text-secondary">
+					Variants will be custom generative graphics that are unique to only
+					you. The designs are keyed off of your account information, and if you
+					join the waitlist you will have a variant only available to you.
+				</p>
+				<p className="mt-4 max-w-3xl text-secondary">
+					Want to design a variant for the community? The goal is for members to
+					be able to contribute new variants available to everyone.
+				</p>
+			</section>
 		</main>
+	)
+}
+
+function FeatureName({
+	color,
+	children,
+}: PropsWithChildren<{ color: `text-${string}` }>) {
+	return (
+		<h3 className="relative inline-flex items-center gap-1 border border-foreground py-0.5 pl-2 pr-2.5 font-mono text-xs font-semibold uppercase text-foreground">
+			<span className="absolute -left-px -top-px h-1.5 w-1.5 border border-b-foreground border-l-background border-r-foreground border-t-background bg-background" />
+			<span className="absolute -bottom-px -left-px h-1.5 w-1.5 border border-b-background border-l-background border-r-foreground border-t-foreground bg-background" />
+			<span className="absolute -right-px -top-px h-1.5 w-1.5 border border-b-foreground border-l-foreground border-r-background border-t-background bg-background" />
+			<span className="absolute -bottom-px -right-px h-1.5 w-1.5 border border-b-background border-l-foreground border-r-background border-t-foreground bg-background" />
+			<svg
+				className={clsx(color, 'h-3 w-3')}
+				viewBox="0 0 12 12"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					d="M 0 3 H 3 V 0 H 9 V 3 H 12 V 9 H 9 V 12 H 3 V 9 H 0 V 3 Z"
+					className="fill-current"
+				/>
+			</svg>
+			{children}
+		</h3>
 	)
 }

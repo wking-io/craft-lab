@@ -12,17 +12,17 @@ export const extendedTheme = {
 			DEFAULT: 'hsl(var(--ring))',
 			invalid: 'hsl(var(--foreground-destructive))',
 		},
-		background: 'hsl(var(--background))',
+		background: 'var(--background)',
 		foreground: {
-			DEFAULT: 'hsl(var(--foreground))',
+			DEFAULT: 'var(--foreground)',
 		},
 		primary: {
-			DEFAULT: 'hsl(var(--primary))',
-			foreground: 'hsl(var(--primary-foreground))',
+			DEFAULT: 'var(--primary)',
+			foreground: 'var(--primary-foreground)',
 		},
 		secondary: {
-			DEFAULT: 'hsl(var(--secondary))',
-			foreground: 'hsl(var(--secondary-foreground))',
+			DEFAULT: 'var(--secondary)',
+			foreground: 'var(--secondary-foreground)',
 		},
 		red: {
 			DEFAULT: 'hsl(var(--red))',
@@ -86,6 +86,7 @@ export const extendedTheme = {
 	},
 	fontFamily: {
 		sans: ['var(--font-sans)', ...defaultTheme.fontFamily.sans],
+		mono: ['var(--font-mono)', ...defaultTheme.fontFamily.mono],
 	},
 	fontSize: {
 		// 1rem = 16px
