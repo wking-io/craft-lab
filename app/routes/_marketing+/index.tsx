@@ -140,9 +140,6 @@ export function WaitlistEmail({
 	)
 }
 
-// const gridLines =
-// 	'before:absolute before:left-1/2 before:right-1/2 before:top-0 before:-ml-[50vw] before:-mr-[50vw] before:h-0 before:w-screen before:border-t after:absolute after:left-1/2 after:right-1/2 after:bottom-0 after:-ml-[50vw] after:-mr-[50vw] after:h-0 after:w-screen after:border-t'
-
 export default function Index() {
 	const actionData = useActionData<typeof action>()
 	const { seed } = useRouteIdLoaderData(rootRouteId)
@@ -175,8 +172,34 @@ export default function Index() {
 				<Form
 					method="POST"
 					{...getFormProps(form)}
-					className={clsx('relative mt-8 w-full max-w-2xl lg:mt-12')}
+					className={clsx(
+						'group relative isolate mt-8 w-full max-w-2xl transition lg:mt-12',
+					)}
 				>
+					<svg
+						className="absolute -left-1.5 top-1.5 -z-10 h-[42px] w-auto text-zinc-950/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100"
+						viewBox="0 0 125 7"
+					>
+						{/* Layer one */}
+						<rect x="0" y="0" width="1" height="1" className="fill-current " />
+						<rect x="0" y="2" width="1" height="5" className="fill-current" />
+						<rect x="1" y="6" width="80" height="1" className="fill-current" />
+						<rect x="83" y="6" width="2" height="1" className="fill-current" />
+						<rect x="86" y="6" width="1" height="1" className="fill-current" />
+						<rect x="88" y="6" width="1" height="1" className="fill-current" />
+						{/* Layer two */}
+						<rect x="0" y="2" width="1" height="1" className="fill-current" />
+						<rect x="0" y="4" width="1" height="3" className="fill-current" />
+						<rect x="1" y="6" width="40" height="1" className="fill-current" />
+						<rect x="44" y="6" width="4" height="1" className="fill-current" />
+						<rect x="48" y="6" width="2" height="1" className="fill-current" />
+						<rect x="52" y="6" width="1" height="1" className="fill-current" />
+						{/* Layer three */}
+						<rect x="0" y="6" width="8" height="1" className="fill-current" />
+						<rect x="10" y="6" width="4" height="1" className="fill-current" />
+						<rect x="16" y="6" width="2" height="1" className="fill-current" />
+						<rect x="19" y="6" width="1" height="1" className="fill-current" />
+					</svg>
 					<HoneypotInputs />
 					<Field className="flex w-full flex-col items-start md:flex-row">
 						<label className="sr-only" htmlFor={fields.email.id}>
@@ -187,7 +210,7 @@ export default function Index() {
 								{...getInputProps(fields.email, { type: 'email' })}
 								placeholder="design@engineer.awesome"
 								invalid={Boolean(fields.email.errors?.length)}
-								className="w-full border border-primary px-4 py-2"
+								className="w-full border border-primary px-4 py-2 focus:outline-none"
 							/>
 							<ErrorMessage errors={fields.email.errors} />
 							<ErrorMessage errors={form.errors} id={form.errorId} />
