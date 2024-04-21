@@ -94,184 +94,37 @@ function HoverSVG({ className }: { className?: string }) {
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
 		>
-			<rect x="48" width="6" height="6" fill="white" fill-opacity="0.5" />
-			<rect x="42" y="6" width="6" height="6" fill="white" fill-opacity="0.4" />
-			<rect x="36" width="6" height="6" fill="white" fill-opacity="0.5" />
-			<rect x="24" width="6" height="6" fill="white" fill-opacity="0.3" />
-			<rect x="12" width="6" height="6" fill="white" fill-opacity="0.2" />
-			<rect width="6" height="6" fill="white" fill-opacity="0.1" />
-			<rect
-				x="12"
-				y="12"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.1"
-			/>
-			<rect
-				x="24"
-				y="18"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.1"
-			/>
-			<rect
-				x="36"
-				y="24"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.1"
-			/>
-			<rect
-				x="24"
-				y="30"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.1"
-			/>
-			<rect
-				x="30"
-				y="36"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.1"
-			/>
-			<rect x="30" y="6" width="6" height="6" fill="white" fill-opacity="0.4" />
-			<rect x="24" y="6" width="6" height="6" fill="white" fill-opacity="0.2" />
-			<rect
-				x="36"
-				y="12"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.3"
-			/>
-			<rect
-				x="18"
-				y="12"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.2"
-			/>
-			<rect
-				x="42"
-				y="18"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.3"
-			/>
-			<rect
-				x="30"
-				y="18"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.2"
-			/>
-			<rect
-				x="48"
-				y="24"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.3"
-			/>
-			<rect
-				x="42"
-				y="24"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.2"
-			/>
-			<rect x="54" y="6" width="6" height="6" fill="white" fill-opacity="0.5" />
-			<rect x="48" y="6" width="6" height="6" fill="white" fill-opacity="0.5" />
-			<rect
-				x="48"
-				y="12"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.4"
-			/>
-			<rect
-				x="60"
-				y="12"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.5"
-			/>
-			<rect
-				x="60"
-				y="18"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.5"
-			/>
-			<rect
-				x="60"
-				y="36"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.5"
-			/>
-			<rect
-				x="54"
-				y="18"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.4"
-			/>
-			<rect
-				x="60"
-				y="24"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.5"
-			/>
-			<rect
-				x="54"
-				y="30"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.4"
-			/>
-			<rect
-				x="48"
-				y="36"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.3"
-			/>
-			<rect
-				x="42"
-				y="36"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.2"
-			/>
-			<rect
-				x="36"
-				y="30"
-				width="6"
-				height="6"
-				fill="white"
-				fill-opacity="0.2"
-			/>
+			<rect x="48" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="42" y="6" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="36" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="24" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="12" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="12" y="12" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="24" y="18" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="36" y="24" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="24" y="30" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="30" y="36" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="30" y="6" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="24" y="6" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="36" y="12" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="18" y="12" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="42" y="18" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="30" y="18" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="48" y="24" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="42" y="24" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="54" y="6" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="48" y="6" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="48" y="12" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="60" y="12" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="60" y="18" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="60" y="36" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="54" y="18" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="60" y="24" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="54" y="30" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="48" y="36" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="42" y="36" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="36" y="30" width="6" height="6" fill="white" fillOpacity="0.2" />
 		</svg>
 	)
 }

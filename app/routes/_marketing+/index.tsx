@@ -141,19 +141,7 @@ export function WaitlistEmail({
 }
 
 export default function Index() {
-	const actionData = useActionData<typeof action>()
 	const { seed } = useRouteIdLoaderData(rootRouteId)
-	const isPending = useIsPending()
-
-	const [form, fields] = useForm({
-		id: 'waitlist-form',
-		constraint: getZodConstraint(WaitlistFormSchema),
-		lastResult: actionData?.result,
-		onValidate({ formData }) {
-			return parseWithZod(formData, { schema: WaitlistFormSchema })
-		},
-		shouldRevalidate: 'onBlur',
-	})
 
 	return (
 		<main className="h-full">
@@ -165,73 +153,18 @@ export default function Index() {
 				<h1 className="relative mt-8 max-w-2xl text-balance text-5xl font-semibold leading-tight">
 					A community built for Incredible Design Engineers
 				</h1>
-				<p className="mt-5 text-secondary md:text-lg lg:text-xl">
+				<p className="mt-5 text-secondary md:text-lg xl:text-xl">
 					Help us build a space where we learn and share everything about our
 					craft and have fun doing it.
 				</p>
-				<Form
-					method="POST"
-					{...getFormProps(form)}
-					className={clsx(
-						'group relative isolate mt-8 w-full max-w-2xl transition lg:mt-12',
-					)}
-				>
-					<svg
-						className="absolute -left-1.5 top-1.5 -z-10 h-[42px] w-auto text-zinc-950/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100"
-						viewBox="0 0 125 7"
-					>
-						{/* Layer one */}
-						<rect x="0" y="0" width="1" height="1" className="fill-current " />
-						<rect x="0" y="2" width="1" height="5" className="fill-current" />
-						<rect x="1" y="6" width="80" height="1" className="fill-current" />
-						<rect x="83" y="6" width="2" height="1" className="fill-current" />
-						<rect x="86" y="6" width="1" height="1" className="fill-current" />
-						<rect x="88" y="6" width="1" height="1" className="fill-current" />
-						{/* Layer two */}
-						<rect x="0" y="2" width="1" height="1" className="fill-current" />
-						<rect x="0" y="4" width="1" height="3" className="fill-current" />
-						<rect x="1" y="6" width="40" height="1" className="fill-current" />
-						<rect x="44" y="6" width="4" height="1" className="fill-current" />
-						<rect x="48" y="6" width="2" height="1" className="fill-current" />
-						<rect x="52" y="6" width="1" height="1" className="fill-current" />
-						{/* Layer three */}
-						<rect x="0" y="6" width="8" height="1" className="fill-current" />
-						<rect x="10" y="6" width="4" height="1" className="fill-current" />
-						<rect x="16" y="6" width="2" height="1" className="fill-current" />
-						<rect x="19" y="6" width="1" height="1" className="fill-current" />
-					</svg>
-					<HoneypotInputs />
-					<Field className="flex w-full flex-col items-start md:flex-row">
-						<label className="sr-only" htmlFor={fields.email.id}>
-							Email
-						</label>
-						<div className="flex-1">
-							<Input
-								{...getInputProps(fields.email, { type: 'email' })}
-								placeholder="design@engineer.awesome"
-								invalid={Boolean(fields.email.errors?.length)}
-								className="w-full border border-primary px-4 py-2 focus:outline-none"
-							/>
-							<ErrorMessage errors={fields.email.errors} />
-							<ErrorMessage errors={form.errors} id={form.errorId} />
-						</div>
-						<StatusButton
-							className="min-w-[30%]"
-							status={isPending ? 'pending' : form.status ?? 'idle'}
-							type="submit"
-							disabled={isPending}
-						>
-							Join The Waitlist
-						</StatusButton>
-					</Field>
-				</Form>
+				<WaitlistForm />
 			</div>
 			<section className="container">
 				<div className="-mx-5 grid grid-cols-3 gap-6 py-8 md:gap-y-8 lg:gap-y-8">
 					<div className="grid max-w-sm px-5 py-6">
 						<div className="max-w-xl">
 							<FeatureName color="text-pink">Objectives</FeatureName>
-							<h2 className="mt-4 text-xl font-semibold">
+							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Collaborate daily on what matters
 							</h2>
 							<p className="mt-4 text-pretty text-secondary">
@@ -244,7 +177,7 @@ export default function Index() {
 					<div className="grid max-w-sm px-5 py-6">
 						<div className="max-w-xl justify-self-end">
 							<FeatureName color="text-yellow">Milestones</FeatureName>
-							<h2 className="mt-4 text-xl font-semibold">
+							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Plan your long term growth
 							</h2>
 							<p className="mt-4 text-pretty text-secondary">
@@ -257,7 +190,7 @@ export default function Index() {
 					<div className="grid max-w-sm px-5 py-6">
 						<div className="max-w-xl">
 							<FeatureName color="text-lime">Signals</FeatureName>
-							<h2 className="mt-4 text-xl font-semibold">
+							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Targeted help when you need it
 							</h2>
 							<p className="mt-4 text-pretty text-secondary">
@@ -272,7 +205,7 @@ export default function Index() {
 					<div className="grid max-w-sm px-5 py-6">
 						<div className="max-w-xl justify-self-end">
 							<FeatureName color="text-green">Library</FeatureName>
-							<h2 className="mt-4 text-pretty text-xl font-semibold">
+							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Curated resources from the best people
 							</h2>
 							<p className="mt-4 text-pretty text-secondary">
@@ -286,7 +219,7 @@ export default function Index() {
 					<div className="grid max-w-sm px-5 py-6">
 						<div className="max-w-xl">
 							<FeatureName color="text-blue">Threads</FeatureName>
-							<h2 className="mt-4 text-pretty text-xl font-semibold">
+							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Let's not forget we want to have fun
 							</h2>
 							<p className="mt-4 text-pretty text-secondary">
@@ -297,7 +230,7 @@ export default function Index() {
 						</div>
 					</div>
 
-					<div className="dark relative flex max-w-sm flex-col bg-background px-5 py-6">
+					<div className="dark group relative flex max-w-sm flex-col bg-background px-5 py-6">
 						<svg
 							className="absolute right-0 top-0 h-[24px] w-[24px]"
 							viewBox="0 0 4 4"
@@ -316,6 +249,7 @@ export default function Index() {
 								className="fill-current text-background"
 							/>
 						</svg>
+						<PlaygroundHoverSVG className="absolute right-0 top-0 opacity-0 transition group-hover:opacity-100" />
 						<div className="flex-1">
 							<FeatureName color="text-foreground">
 								Playground for Ideas
@@ -333,30 +267,28 @@ export default function Index() {
 					</div>
 				</div>
 			</section>
-			<section className="container py-8 md:py-12 lg:py-16">
-				<h3 className="font-mono font-semibold">
-					Did I mention the membership cards yet?
-				</h3>
-				<h2 className="relative mt-3 max-w-4xl text-balance text-5xl font-semibold leading-tight">
-					Get an exclusive membership card variant when you join the waitlist
-				</h2>
-				<p className="mt-4 max-w-3xl text-secondary">
-					This community is about exploring the craft of design engineering with
-					others, making each other better, and having fun while we do it.
-				</p>
-				<p className="mt-4 max-w-3xl text-secondary">
-					Not every idea or project has the space to be explored in our day
-					jobs. So, let's do that here. Membership cards are an example of this.
-				</p>
-				<p className="mt-4 max-w-3xl text-secondary">
-					Variants will be custom generative graphics that are unique to only
-					you. The designs are keyed off of your account information, and if you
-					join the waitlist you will have a variant only available to you.
-				</p>
-				<p className="mt-4 max-w-3xl text-secondary">
-					Want to design a variant for the community? The goal is for members to
-					be able to contribute new variants available to everyone.
-				</p>
+			<section className="container flex items-center gap-8 py-8 md:gap-12 md:py-12 lg:gap-16 lg:py-16">
+				<div>
+					<div className="flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-transparent shadow">
+						<Cube />
+					</div>
+				</div>
+				<div>
+					<h3 className="font-mono font-semibold">
+						Did I mention the membership cards yet?
+					</h3>
+					<h2 className="relative mt-3 max-w-4xl text-balance text-5xl font-semibold leading-tight">
+						Only waitlist members will get the holographic overlay.
+					</h2>
+					<p className="mt-5 max-w-3xl text-pretty text-secondary md:text-lg xl:text-xl">
+						This community is about exploring the craft of design engineering
+						with others, making each other better, and having fun while we do
+						it. Not every idea or project has the space to be explored in our
+						day jobs. So, let's do that here. Membership cards are an example of
+						this.
+					</p>
+					<WaitlistForm />
+				</div>
 			</section>
 		</main>
 	)
@@ -386,4 +318,183 @@ function FeatureName({
 			{children}
 		</h3>
 	)
+}
+
+function PlaygroundHoverSVG({ className }: { className?: string }) {
+	return (
+		<svg
+			width="66"
+			height="72"
+			viewBox="0 0 66 72"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			className={className}
+		>
+			<rect x="48" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="42" y="6" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="36" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="24" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="12" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="12" y="12" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="24" y="18" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="36" y="24" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="24" y="24" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="30" y="36" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="24" y="42" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="36" y="42" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="42" y="54" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="18" y="30" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="30" y="6" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="24" y="6" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="36" y="12" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="18" y="12" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="42" y="18" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="30" y="18" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="48" y="24" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="42" y="24" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="54" y="6" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="48" y="6" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="48" y="12" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="60" y="12" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="60" y="18" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="60" y="36" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="60" y="48" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="60" y="60" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="60" y="66" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="54" y="54" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="48" y="48" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="36" y="48" width="6" height="6" fill="white" fillOpacity="0.1" />
+			<rect x="54" y="42" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="54" y="18" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="60" y="24" width="6" height="6" fill="white" fillOpacity="0.5" />
+			<rect x="54" y="30" width="6" height="6" fill="white" fillOpacity="0.4" />
+			<rect x="48" y="36" width="6" height="6" fill="white" fillOpacity="0.3" />
+			<rect x="42" y="36" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect x="36" y="30" width="6" height="6" fill="white" fillOpacity="0.2" />
+		</svg>
+	)
+}
+
+function WaitlistForm() {
+	const actionData = useActionData<typeof action>()
+	const isPending = useIsPending()
+
+	const [form, fields] = useForm({
+		id: 'waitlist-form',
+		constraint: getZodConstraint(WaitlistFormSchema),
+		lastResult: actionData?.result,
+		onValidate({ formData }) {
+			return parseWithZod(formData, { schema: WaitlistFormSchema })
+		},
+		shouldRevalidate: 'onBlur',
+	})
+
+	return (
+		<Form
+			method="POST"
+			{...getFormProps(form)}
+			className={clsx(
+				'group relative isolate mt-8 w-full max-w-2xl transition lg:mt-12',
+			)}
+		>
+			<svg
+				className="absolute -left-1.5 top-1.5 -z-10 h-[42px] w-auto text-zinc-950/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100"
+				viewBox="0 0 125 7"
+			>
+				{/* Layer one */}
+				<rect x="0" y="0" width="1" height="1" className="fill-current " />
+				<rect x="0" y="2" width="1" height="5" className="fill-current" />
+				<rect x="1" y="6" width="80" height="1" className="fill-current" />
+				<rect x="83" y="6" width="2" height="1" className="fill-current" />
+				<rect x="86" y="6" width="1" height="1" className="fill-current" />
+				<rect x="88" y="6" width="1" height="1" className="fill-current" />
+				{/* Layer two */}
+				<rect x="0" y="2" width="1" height="1" className="fill-current" />
+				<rect x="0" y="4" width="1" height="3" className="fill-current" />
+				<rect x="1" y="6" width="40" height="1" className="fill-current" />
+				<rect x="44" y="6" width="4" height="1" className="fill-current" />
+				<rect x="48" y="6" width="2" height="1" className="fill-current" />
+				<rect x="52" y="6" width="1" height="1" className="fill-current" />
+				{/* Layer three */}
+				<rect x="0" y="6" width="8" height="1" className="fill-current" />
+				<rect x="10" y="6" width="4" height="1" className="fill-current" />
+				<rect x="16" y="6" width="2" height="1" className="fill-current" />
+				<rect x="19" y="6" width="1" height="1" className="fill-current" />
+			</svg>
+			<HoneypotInputs />
+			<Field className="flex w-full flex-col items-start md:flex-row">
+				<label className="sr-only" htmlFor={fields.email.id}>
+					Email
+				</label>
+				<div className="flex-1">
+					<Input
+						{...getInputProps(fields.email, { type: 'email' })}
+						placeholder="design@engineer.awesome"
+						invalid={Boolean(fields.email.errors?.length)}
+						className="w-full border border-primary px-4 py-2 focus:outline-none"
+					/>
+					<ErrorMessage errors={fields.email.errors} />
+					<ErrorMessage errors={form.errors} id={form.errorId} />
+				</div>
+				<StatusButton
+					className="min-w-[30%]"
+					status={isPending ? 'pending' : form.status ?? 'idle'}
+					type="submit"
+					disabled={isPending}
+				>
+					Join The Waitlist
+				</StatusButton>
+			</Field>
+		</Form>
+	)
+}
+
+function Cube() {
+	const { left, top, right } = createCube({
+		size: 100,
+		originX: 250,
+		originY: 250,
+	})
+	return (
+		<svg id="svg" viewBox="0 0 500 500" width="100" height="100">
+			<polygon className="fill-current text-pink" points={top}></polygon>
+			<polygon className="fill-current text-purple" points={left}></polygon>
+			<polygon className="fill-current text-green" points={right}></polygon>
+		</svg>
+	)
+}
+
+function createCube({
+	size,
+	originX,
+	originY,
+}: {
+	size: number
+	originX: number
+	originY: number
+}) {
+	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
+	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
+
+	return {
+		right: [
+			`${originX},${originY}`,
+			`${originX + deltaX},${originY - deltaY}`,
+			`${originX + deltaX},${originY + size - deltaY}`,
+			`${originX},${originY + size}`,
+		].join(' '),
+		left: [
+			`${originX - deltaX},${originY - deltaY}`,
+			`${originX - deltaX},${originY + size - deltaY}`,
+			`${originX},${originY + size}`,
+			`${originX},${originY}`,
+		].join(' '),
+		top: [
+			`${originX},${originY}`,
+			`${originX + deltaX},${originY - deltaY}`,
+			`${originX},${originY - 2 * deltaY}`,
+			`${originX - deltaX},${originY - deltaY}`,
+		].join(' '),
+	}
 }
