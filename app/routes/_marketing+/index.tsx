@@ -270,7 +270,7 @@ export default function Index() {
 			<section className="container flex items-center gap-8 py-8 md:gap-12 md:py-12 lg:gap-16 lg:py-16">
 				<div>
 					<div className="flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-transparent shadow">
-						<Cube />
+						<Cube width={320} height={(320 * 7) / 5} />
 					</div>
 				</div>
 				<div>
@@ -450,51 +450,465 @@ function WaitlistForm() {
 	)
 }
 
-function Cube() {
-	const { left, top, right } = createCube({
-		size: 100,
-		originX: 250,
-		originY: 250,
+function Cube({ width, height }: { width: number; height: number }) {
+	const config = {
+		size: 15,
+		originX: width / 2,
+		originY: height / 2,
+	}
+	const z1 = createCubes({
+		...config,
+		transformOrigin: 'z',
+	})
+	const x1 = createCubes({
+		...config,
+		transformOrigin: 'x',
+	})
+	const y1 = createCubes({
+		...config,
+		transformOrigin: 'y',
 	})
 	return (
-		<svg id="svg" viewBox="0 0 500 500" width="100" height="100">
-			<polygon className="fill-current text-pink" points={top}></polygon>
-			<polygon className="fill-current text-purple" points={left}></polygon>
-			<polygon className="fill-current text-green" points={right}></polygon>
+		<svg
+			id="svg"
+			viewBox={`0 0 ${width} ${height}`}
+			width={width}
+			height={height}
+		>
+			<polygon className="fill-current text-pink" points={z1.c4.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={z1.c4.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={z1.c4.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={z1.c2.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={z1.c2.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={z1.c2.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={z1.c3.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={z1.c3.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={z1.c3.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={z1.c1.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={z1.c1.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={z1.c1.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={x1.c4.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={x1.c4.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={x1.c4.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={x1.c2.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={x1.c2.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={x1.c2.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={x1.c3.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={x1.c3.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={x1.c3.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={x1.c1.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={x1.c1.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={x1.c1.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={y1.c4.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={y1.c4.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={y1.c4.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={y1.c2.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={y1.c2.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={y1.c2.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={y1.c3.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={y1.c3.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={y1.c3.right}
+			></polygon>
+			<polygon className="fill-current text-pink" points={y1.c1.top}></polygon>
+			<polygon
+				className="fill-current text-purple"
+				points={y1.c1.left}
+			></polygon>
+			<polygon
+				className="fill-current text-green"
+				points={y1.c1.right}
+			></polygon>
 		</svg>
 	)
+}
+
+type Vector2D = [number, number] // [x, y]
+function createCubes(args: {
+	size: number
+	originX: number
+	originY: number
+	transformOrigin: 'z' | 'x' | 'y'
+}) {
+	const { c1, c2, c3, c4 } = getCubeCoords(args)
+
+	return {
+		c1: {
+			right: [
+				vectorToString(c1.o),
+				vectorToString(c1.tr),
+				vectorToString(c1.br),
+				vectorToString(c1.b),
+			].join(' '),
+			left: [
+				vectorToString(c1.o),
+				vectorToString(c1.b),
+				vectorToString(c1.bl),
+				vectorToString(c1.tl),
+			].join(' '),
+			top: [
+				vectorToString(c1.o),
+				vectorToString(c1.tr),
+				vectorToString(c1.t),
+				vectorToString(c1.tl),
+			].join(' '),
+		},
+		c2: {
+			right: [
+				vectorToString(c2.o),
+				vectorToString(c2.tr),
+				vectorToString(c2.br),
+				vectorToString(c2.b),
+			].join(' '),
+			left: [
+				vectorToString(c2.o),
+				vectorToString(c2.b),
+				vectorToString(c2.bl),
+				vectorToString(c2.tl),
+			].join(' '),
+			top: [
+				vectorToString(c2.o),
+				vectorToString(c2.tr),
+				vectorToString(c2.t),
+				vectorToString(c2.tl),
+			].join(' '),
+		},
+		c3: {
+			right: [
+				vectorToString(c3.o),
+				vectorToString(c3.tr),
+				vectorToString(c3.br),
+				vectorToString(c3.b),
+			].join(' '),
+			left: [
+				vectorToString(c3.o),
+				vectorToString(c3.b),
+				vectorToString(c3.bl),
+				vectorToString(c3.tl),
+			].join(' '),
+			top: [
+				vectorToString(c3.o),
+				vectorToString(c3.tr),
+				vectorToString(c3.t),
+				vectorToString(c3.tl),
+			].join(' '),
+		},
+		c4: {
+			right: [
+				vectorToString(c4.o),
+				vectorToString(c4.tr),
+				vectorToString(c4.br),
+				vectorToString(c4.b),
+			].join(' '),
+			left: [
+				vectorToString(c4.o),
+				vectorToString(c4.b),
+				vectorToString(c4.bl),
+				vectorToString(c4.tl),
+			].join(' '),
+			top: [
+				vectorToString(c4.o),
+				vectorToString(c4.tr),
+				vectorToString(c4.t),
+				vectorToString(c4.tl),
+			].join(' '),
+		},
+	}
+}
+
+function getCubeCoords({
+	size,
+	originX,
+	originY,
+	transformOrigin,
+}: {
+	size: number
+	originX: number
+	originY: number
+	transformOrigin: 'z' | 'x' | 'y'
+}) {
+	let pointsFrom = pointsFromOriginZ
+	if (transformOrigin === 'x') pointsFrom = pointsFromOriginX
+	if (transformOrigin === 'y') pointsFrom = pointsFromOriginY
+
+	if (transformOrigin === 'y') {
+		const c1 = pointsFrom({
+			originX,
+			originY,
+			size,
+			scale: 0.7,
+		})
+		const c2 = pointsFrom({
+			originX: c1.t[0],
+			originY: c1.t[1],
+			size,
+			scale: 1.6,
+		})
+		const c3 = pointsFrom({
+			originX: c1.bl[0],
+			originY: c1.bl[1],
+			size,
+			scale: 3.5,
+		})
+		const c4 = pointsFrom({
+			originX: c2.bl[0],
+			originY: c2.bl[1],
+			size,
+			scale: 2.5,
+		})
+		return { c1, c2, c3, c4 }
+	} else if (transformOrigin === 'x') {
+		const c1 = pointsFrom({
+			originX,
+			originY,
+			size,
+			scale: 1.7,
+		})
+		const c2 = pointsFrom({
+			originX: c1.t[0],
+			originY: c1.t[1],
+			size,
+			scale: 0.6,
+		})
+		const c3 = pointsFrom({
+			originX: c1.br[0],
+			originY: c1.br[1],
+			size,
+			scale: 1,
+		})
+		const c4 = pointsFrom({
+			originX: c2.br[0],
+			originY: c2.br[1],
+			size,
+			scale: 2.4,
+		})
+		return { c1, c2, c3, c4 }
+	}
+
+	const c1 = pointsFrom({
+		originX,
+		originY,
+		size,
+		scale: 0,
+	})
+	const c2 = pointsFrom({
+		originX: c1.bl[0],
+		originY: c1.bl[1],
+		size,
+		scale: 2.2,
+	})
+	const c3 = pointsFrom({
+		originX: c1.br[0],
+		originY: c1.br[1],
+		size,
+		scale: 4.5,
+	})
+	const c4 = pointsFrom({
+		originX: c2.br[0],
+		originY: c2.br[1],
+		size,
+		scale: 3.1,
+	})
+	return { c1, c2, c3, c4 }
 }
 
 function createCube({
 	size,
 	originX,
 	originY,
+	transformOrigin,
 }: {
 	size: number
 	originX: number
 	originY: number
+	transformOrigin: 'z' | 'x' | 'y'
 }) {
-	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
-	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
+	let pointsFrom = pointsFromOriginZ
+	if (transformOrigin === 'x') pointsFrom = pointsFromOriginX
+	if (transformOrigin === 'y') pointsFrom = pointsFromOriginY
+	const { o, t, tr, br, b, bl, tl } = pointsFrom({
+		originX,
+		originY,
+		size,
+		scale: 1.5,
+	})
 
 	return {
 		right: [
-			`${originX},${originY}`,
-			`${originX + deltaX},${originY - deltaY}`,
-			`${originX + deltaX},${originY + size - deltaY}`,
-			`${originX},${originY + size}`,
+			vectorToString(o),
+			vectorToString(tr),
+			vectorToString(br),
+			vectorToString(b),
 		].join(' '),
 		left: [
-			`${originX - deltaX},${originY - deltaY}`,
-			`${originX - deltaX},${originY + size - deltaY}`,
-			`${originX},${originY + size}`,
-			`${originX},${originY}`,
+			vectorToString(o),
+			vectorToString(b),
+			vectorToString(bl),
+			vectorToString(tl),
 		].join(' '),
 		top: [
-			`${originX},${originY}`,
-			`${originX + deltaX},${originY - deltaY}`,
-			`${originX},${originY - 2 * deltaY}`,
-			`${originX - deltaX},${originY - deltaY}`,
+			vectorToString(o),
+			vectorToString(tr),
+			vectorToString(t),
+			vectorToString(tl),
 		].join(' '),
 	}
+}
+
+type CubeCoords = {
+	o: Vector2D
+	t: Vector2D
+	tr: Vector2D
+	br: Vector2D
+	b: Vector2D
+	bl: Vector2D
+	tl: Vector2D
+}
+
+function pointsFromOriginZ({
+	originX,
+	originY,
+	scale,
+	size,
+}: {
+	originX: number
+	originY: number
+	scale: number
+	size: number
+}): CubeCoords {
+	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
+	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
+
+	const z = deltaY * 2 * scale
+	const b: Vector2D = [originX, originY]
+	const o: Vector2D = [originX, originY - z]
+	const t: Vector2D = [originX, originY - z - deltaY * 2]
+	const br: Vector2D = [originX + deltaX, originY - deltaY]
+	const tr: Vector2D = [originX + deltaX, originY - z - deltaY]
+	const bl: Vector2D = [originX - deltaX, originY - deltaY]
+	const tl: Vector2D = [originX - deltaX, originY - z - deltaY]
+
+	return { o, t, tr, br, b, bl, tl }
+}
+
+function pointsFromOriginY({
+	originX,
+	originY,
+	scale,
+	size,
+}: {
+	originX: number
+	originY: number
+	scale: number
+	size: number
+}): CubeCoords {
+	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
+	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
+
+	const x = deltaX * scale
+	const y = deltaY * scale
+	const b: Vector2D = [originX + x, originY + y + deltaY * 2]
+	const o: Vector2D = [originX + x, originY + y]
+	const t: Vector2D = [originX + deltaX, originY - deltaY]
+	const br: Vector2D = [originX + x + deltaX, originY + y + deltaY]
+	const tr: Vector2D = [originX + x + deltaX, originY + y - deltaY]
+	const bl: Vector2D = [originX, originY + deltaY * 2]
+	const tl: Vector2D = [originX, originY]
+
+	return { o, t, tr, br, b, bl, tl }
+}
+
+function pointsFromOriginX({
+	originX,
+	originY,
+	scale,
+	size,
+}: {
+	originX: number
+	originY: number
+	scale: number
+	size: number
+}): CubeCoords {
+	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
+	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
+
+	const x = deltaX * scale
+	const y = deltaY * scale
+	const b: Vector2D = [originX - x, originY + y + deltaY * 2]
+	const o: Vector2D = [originX - x, originY + y]
+	const t: Vector2D = [originX - deltaX, originY - deltaY]
+	const br: Vector2D = [originX, originY + deltaY * 2]
+	const tr: Vector2D = [originX, originY]
+	const bl: Vector2D = [originX - x - deltaX, originY + y + deltaY]
+	const tl: Vector2D = [originX - x - deltaX, originY + y - deltaY]
+
+	return { o, t, tr, br, b, bl, tl }
+}
+
+function vectorToString([x, y]: Vector2D) {
+	return `${x}, ${y}`
 }
