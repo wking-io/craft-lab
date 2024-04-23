@@ -3,8 +3,15 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { Field, Input } from '@headlessui/react'
 import * as E from '@react-email/components'
 import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
-import { Form, json, redirect, useActionData } from '@remix-run/react'
+import {
+	Form,
+	json,
+	redirect,
+	useActionData,
+	useLoaderData,
+} from '@remix-run/react'
 import clsx from 'clsx'
+import QR from 'qrcode'
 import { type PropsWithChildren } from 'react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
@@ -23,6 +30,13 @@ import { prepareVerification } from '../_auth+/verify.server'
 
 export const meta: MetaFunction = () => [{ title: 'Craft Lab' }]
 
+export async function loader() {
+	return json({
+		qrcode: await QR.toDataURL('https://mubs.me/', {
+			color: { light: '#09090b', dark: '#fff' },
+		}),
+	})
+}
 const WaitlistFormSchema = z.object({
 	email: EmailSchema,
 })
@@ -142,6 +156,7 @@ export function WaitlistEmail({
 }
 
 export default function Index() {
+	const { qrcode } = useLoaderData<typeof loader>()
 	const { seed } = useRouteIdLoaderData(rootRouteId)
 
 	return (
@@ -270,9 +285,62 @@ export default function Index() {
 			</section>
 			<section className="container flex items-center gap-8 py-8 md:gap-12 md:py-12 lg:gap-16 lg:py-16">
 				<div>
-					<div className="dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-background p-[25px] shadow-xl">
-						<div className="h-full w-full rounded border border-foreground"></div>
+					<div className="dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-background p-[25px] text-secondary shadow-xl">
+						<div className="h-full w-full overflow-hidden rounded border border-foreground">
+							<div className="flex">
+								<div className="w-32 border-b border-r border-foreground">
+									<img
+										src="https://res.cloudinary.com/dzqdvin5s/image/upload/v1713902480/mubs.jpg"
+										alt="Mubashar Iqbal"
+										className="h-full w-full object-cover grayscale"
+									/>
+								</div>
+								<div className="flex flex-1 items-center justify-center">
+									<img
+										src={qrcode}
+										alt="Mubashar showcase URL"
+										className="h-auto w-16"
+									/>
+								</div>
+							</div>
+							<h2 className="mt-4 px-4 font-mono text-4xl font-semibold leading-tight text-primary">
+								Mubashar Iqbal
+							</h2>
+							<p className="mt-6 px-4 text-xs uppercase tracking-wide">
+								Became Member:
+							</p>
+							<p className="mt-1 px-4 font-mono text-xs font-bold text-primary">
+								April 22, 2024
+							</p>
+							<p className="mt-6 px-4 text-xs uppercase tracking-wide">
+								Currently:
+							</p>
+							<p className="mt-1 px-4 font-mono text-xs font-bold text-primary">
+								Mubs | Product Studio
+							</p>
+						</div>
 						<Cubes width={320} height={(320 * 7) / 5} seed={seed} />
+						<svg
+							viewBox={`0 0 ${320} ${(320 * 7) / 5}`}
+							xmlns="http://www.w3.org/2000/svg"
+							className="absolute inset-0"
+						>
+							<filter id="noiseFilter">
+								<feTurbulence
+									type="fractalNoise"
+									baseFrequency="0.5"
+									numOctaves="6"
+									stitchTiles="stitch"
+								/>
+							</filter>
+
+							<rect
+								width="100%"
+								height="100%"
+								filter="url(#noiseFilter)"
+								className="mix-blend-soft-light"
+							/>
+						</svg>
 					</div>
 				</div>
 				<div>
