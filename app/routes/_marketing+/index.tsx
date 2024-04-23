@@ -17,6 +17,7 @@ import { prisma } from '#app/utils/db.server.js'
 import { sendEmail } from '#app/utils/email.server.js'
 import { checkHoneypot } from '#app/utils/honeypot.server.js'
 import { useIsPending } from '#app/utils/misc.js'
+import { type Seed, sfc32 } from '#app/utils/random.js'
 import { useRouteIdLoaderData } from '#app/utils/route-id.js'
 import { prepareVerification } from '../_auth+/verify.server'
 
@@ -269,8 +270,9 @@ export default function Index() {
 			</section>
 			<section className="container flex items-center gap-8 py-8 md:gap-12 md:py-12 lg:gap-16 lg:py-16">
 				<div>
-					<div className="flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-primary shadow-xl">
-						<Cube width={320} height={(320 * 7) / 5} />
+					<div className="dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-background p-[25px] shadow-xl">
+						<div className="h-full w-full rounded border border-foreground"></div>
+						<Cubes width={320} height={(320 * 7) / 5} seed={seed} />
 					</div>
 				</div>
 				<div>
@@ -459,605 +461,346 @@ const colors = [
 	'text-blue',
 	'text-purple',
 ]
-function Cube({ width, height }: { width: number; height: number }) {
+
+type Direction = 'x' | 'y' | 'z'
+type Vector2D = [number, number] // [x, y]
+
+function Cubes({
+	width,
+	height,
+	seed,
+}: {
+	width: number
+	height: number
+	seed: Seed
+}) {
+	const generator = sfc32(seed)
 	const config = {
-		size: 15,
-		originX: width / 2,
-		originY: height / 2,
+		size: 10,
+		originX: width - 50,
+		originY: height - 50,
+		generator,
 	}
-	const z1 = createCubes({
+
+	const zCubes = createCubes({
 		...config,
-		transformOrigin: 'z',
+		direction: 'z',
 	})
-	const x1 = createCubes({
+
+	const xCubes = createCubes({
 		...config,
-		transformOrigin: 'x',
+		direction: 'x',
 	})
-	const y1 = createCubes({
+
+	const yCubes = createCubes({
 		...config,
-		transformOrigin: 'y',
+		direction: 'y',
 	})
+
 	return (
 		<svg
 			id="svg"
 			viewBox={`0 0 ${width} ${height}`}
 			width={width}
 			height={height}
+			className="absolute left-0 top-0 h-full w-full"
 		>
-			<CubePolys {...z1.c4} />
-			<CubePolys {...z1.c3} />
-			<CubePolys {...z1.c2} />
-			<CubePolys {...z1.c1} />
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c4.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c4.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c4.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c2.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c2.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c2.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c3.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c3.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c3.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c1.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c1.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={x1.c1.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c4.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c4.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c4.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c2.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c2.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c2.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c3.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c3.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c3.right}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c1.top}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c1.left}
-			></polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={y1.c1.right}
-			></polygon>
+			<rect
+				x={config.originX - 50}
+				y={config.originY - 50}
+				width={50 * 2}
+				height={50 * 2}
+				className="fill-background"
+			/>
+			{zCubes.map((cube, i) => (
+				<Cube key={`cube-z-${i}`} {...cube} generator={generator} />
+			))}
+			{yCubes.map((cube, i) => (
+				<Cube key={`cube-y-${i}`} {...cube} generator={generator} />
+			))}
+			{xCubes.map((cube, i) => (
+				<Cube key={`cube-x-${i}`} {...cube} generator={generator} />
+			))}
 		</svg>
 	)
 }
 
-function CubePolys({
-	top,
-	topFrames,
-	left,
-	leftFrames,
-	right,
-	rightFrames,
+function Cube({
+	origin,
+	frames,
+	generator,
+}: Cube & { generator: () => number }) {
+	const faces = cubeToFaces({ origin, frames })
+
+	return faces.map((face, i) => {
+		const randomNumber = generator()
+		const color = getRandomColor(colors, generator())
+		return (
+			<Face
+				{...face}
+				color={color}
+				key={`face-${i}-${randomNumber}-${color}`}
+			/>
+		)
+	})
+}
+
+function cubeToFaces({
+	origin,
+	frames,
+}: Cube): { points: string; frames: string }[] {
+	const o1 = origin[0]
+	const o2 = origin[1]
+	const o4 = origin[3]
+	const [d1, d2, d3, d4] = frames[0]
+	return [
+		{
+			points: [
+				vectorToString(o1),
+				vectorToString(d1),
+				vectorToString(d2),
+				vectorToString(o2),
+			].join(' '),
+			frames: frames
+				.map(d =>
+					[
+						vectorToString(o1),
+						vectorToString(d[0]),
+						vectorToString(d[1]),
+						vectorToString(o2),
+					].join(' '),
+				)
+				.join('; '),
+		},
+		{
+			points: [
+				vectorToString(o1),
+				vectorToString(d1),
+				vectorToString(d4),
+				vectorToString(o4),
+			].join(' '),
+			frames: frames
+				.map(d =>
+					[
+						vectorToString(o1),
+						vectorToString(d[0]),
+						vectorToString(d[3]),
+						vectorToString(o4),
+					].join(' '),
+				)
+				.join('; '),
+		},
+		{
+			points: [
+				vectorToString(d1),
+				vectorToString(d2),
+				vectorToString(d3),
+				vectorToString(d4),
+			].join(' '),
+			frames: frames
+				.map(d =>
+					[
+						vectorToString(d[0]),
+						vectorToString(d[1]),
+						vectorToString(d[2]),
+						vectorToString(d[3]),
+					].join(' '),
+				)
+				.join('; '),
+		},
+	]
+}
+
+function Face({
+	points,
+	frames,
+	color,
 }: {
-	top: string
-	topFrames: string
-	right: string
-	rightFrames: string
-	left: string
-	leftFrames: string
+	points: string
+	frames: string
+	color: string
 }) {
 	return (
-		<>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={top}
-			>
-				<animate
-					attributeName="points"
-					begin="0s"
-					dur="8s"
-					repeatCount="indefinite"
-					values={topFrames}
-					keyTimes="0; 0.2; 0.5; 0.75; 1"
-					calcMode="linear"
-				/>
-			</polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={left}
-			>
-				<animate
-					attributeName="points"
-					begin="0s"
-					dur="8s"
-					repeatCount="indefinite"
-					values={leftFrames}
-					keyTimes="0; 0.2; 0.5; 0.75; 1"
-					calcMode="linear"
-				/>
-			</polygon>
-			<polygon
-				className={clsx(
-					colors[Math.floor(Math.random() * colors.length)],
-					'fill-current stroke-primary',
-				)}
-				points={right}
-			>
-				<animate
-					attributeName="points"
-					begin="0s"
-					dur="8s"
-					repeatCount="indefinite"
-					values={rightFrames}
-					keyTimes="0; 0.2; 0.5; 0.75; 1"
-					calcMode="linear"
-				/>
-			</polygon>
-		</>
+		<polygon
+			className={clsx(color, 'fill-current stroke-background')}
+			points={points}
+		>
+			<animate
+				attributeName="points"
+				begin="0s"
+				dur="8s"
+				repeatCount="indefinite"
+				values={frames}
+				calcMode="spline"
+				keyTimes="0; 0.15; 0.3; 0.45; 0.6; 0.75; 1"
+				keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+			/>
+		</polygon>
 	)
 }
 
-type Vector2D = [number, number] // [x, y]
+// Cube Functions
 function createCubes(args: {
-	size: number
 	originX: number
 	originY: number
-	transformOrigin: 'z' | 'x' | 'y'
+	size: number
+	direction: Direction
+	generator: () => number
 }) {
-	const { c1, c2, c3, c4 } = getCubeCoords(args)
+	const c1 = createCube(args)
+	return [
+		createCube({ ...args, originX: c1.origin[2][0], originY: c1.origin[2][1] }),
+		createCube({ ...args, originX: c1.origin[1][0], originY: c1.origin[1][1] }),
+		createCube({ ...args, originX: c1.origin[3][0], originY: c1.origin[3][1] }),
+		c1,
+	]
+}
+
+function createCube({
+	originX,
+	originY,
+	generator,
+	direction,
+	size,
+}: {
+	originX: number
+	originY: number
+	size: number
+	direction: Direction
+	generator: () => number
+}): Cube {
+	const origin = makeOrigin({ size, originX, originY, direction })
+	const frames = [
+		origin,
+		transformOrigin({
+			origin,
+			size,
+			scale: getRandomScale(3, generator()),
+			direction,
+		}),
+		transformOrigin({
+			origin,
+			size,
+			scale: getRandomScale(3, generator()),
+			direction,
+		}),
+		transformOrigin({
+			origin,
+			size,
+			scale: getRandomScale(3, generator()),
+			direction,
+		}),
+		transformOrigin({
+			origin,
+			size,
+			scale: getRandomScale(3, generator()),
+			direction,
+		}),
+		transformOrigin({
+			origin,
+			size,
+			scale: getRandomScale(3, generator()),
+			direction,
+		}),
+		origin,
+	]
 
 	return {
-		c1: makeCubeFromCoords(c1),
-		c2: makeCubeFromCoords(c2),
-		c3: makeCubeFromCoords(c3),
-		c4: makeCubeFromCoords(c4),
+		origin,
+		frames,
 	}
 }
 
-function makeCubeFromCoords(c: CubeCoords) {
-	return {
-		right: [
-			vectorToString(c.o),
-			vectorToString(c.tr),
-			vectorToString(c.br),
-			vectorToString(c.b),
-		].join(' '),
-		rightFrames: [
-			[
-				vectorToString(c.b),
-				vectorToString(c.br),
-				vectorToString(c.br),
-				vectorToString(c.b),
-			].join(' '),
-			[
-				vectorToString(c.o),
-				vectorToString(c.tr),
-				vectorToString(c.br),
-				vectorToString(c.b),
-			].join(' '),
-			[
-				vectorToString(c.b),
-				vectorToString(c.br),
-				vectorToString(c.br),
-				vectorToString(c.b),
-			].join(' '),
-			[
-				vectorToString(c.o),
-				vectorToString(c.tr),
-				vectorToString(c.br),
-				vectorToString(c.b),
-			].join(' '),
-			[
-				vectorToString(c.b),
-				vectorToString(c.br),
-				vectorToString(c.br),
-				vectorToString(c.b),
-			].join(' '),
-		].join('; '),
-		left: [
-			vectorToString(c.o),
-			vectorToString(c.b),
-			vectorToString(c.bl),
-			vectorToString(c.tl),
-		].join(' '),
-		leftFrames: [
-			[
-				vectorToString(c.b),
-				vectorToString(c.b),
-				vectorToString(c.bl),
-				vectorToString(c.bl),
-			].join(' '),
-			[
-				vectorToString(c.o),
-				vectorToString(c.b),
-				vectorToString(c.bl),
-				vectorToString(c.tl),
-			].join(' '),
-			[
-				vectorToString(c.b),
-				vectorToString(c.b),
-				vectorToString(c.bl),
-				vectorToString(c.bl),
-			].join(' '),
-			[
-				vectorToString(c.o),
-				vectorToString(c.b),
-				vectorToString(c.bl),
-				vectorToString(c.tl),
-			].join(' '),
-			[
-				vectorToString(c.b),
-				vectorToString(c.b),
-				vectorToString(c.bl),
-				vectorToString(c.bl),
-			].join(' '),
-		].join('; '),
-		top: [
-			vectorToString(c.o),
-			vectorToString(c.tr),
-			vectorToString(c.t),
-			vectorToString(c.tl),
-		].join(' '),
-		topFrames: [
-			[
-				vectorToString(c.b),
-				vectorToString(c.br),
-				vectorToString(c.ho),
-				vectorToString(c.bl),
-			].join(' '),
-			[
-				vectorToString(c.o),
-				vectorToString(c.tr),
-				vectorToString(c.t),
-				vectorToString(c.tl),
-			].join(' '),
-			[
-				vectorToString(c.b),
-				vectorToString(c.br),
-				vectorToString(c.ho),
-				vectorToString(c.bl),
-			].join(' '),
-			[
-				vectorToString(c.o),
-				vectorToString(c.tr),
-				vectorToString(c.t),
-				vectorToString(c.tl),
-			].join(' '),
-			[
-				vectorToString(c.b),
-				vectorToString(c.br),
-				vectorToString(c.ho),
-				vectorToString(c.bl),
-			].join(' '),
-		].join('; '),
+type Face = [Vector2D, Vector2D, Vector2D, Vector2D]
+type Cube = {
+	origin: Face
+	frames: Face[]
+}
+
+function makeOrigin({
+	size,
+	originX,
+	originY,
+	direction,
+}: {
+	size: number
+	originX: number
+	originY: number
+	direction: Direction
+}): Face {
+	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
+	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
+
+	switch (direction) {
+		case 'x':
+			return [
+				[originX, originY],
+				[originX, originY + deltaY * 2],
+				[originX - deltaX, originY + deltaY],
+				[originX - deltaX, originY - deltaY],
+			]
+		case 'y':
+			return [
+				[originX, originY],
+				[originX + deltaX, originY - deltaY],
+				[originX + deltaX, originY + deltaY],
+				[originX, originY + deltaY * 2],
+			]
+		case 'z':
+			return [
+				[originX, originY],
+				[originX - deltaX, originY - deltaY],
+				[originX, originY - deltaY * 2],
+				[originX + deltaX, originY - deltaY],
+			]
+		default:
+			throw new Error('Invalid direction')
 	}
 }
 
-function getCubeCoords({
+function transformOrigin({
+	origin,
 	size,
-	originX,
-	originY,
-	transformOrigin,
+	scale,
+	direction,
 }: {
+	origin: Face
 	size: number
-	originX: number
-	originY: number
-	transformOrigin: 'z' | 'x' | 'y'
-}) {
-	let pointsFrom = pointsFromOriginZ
-	if (transformOrigin === 'x') pointsFrom = pointsFromOriginX
-	if (transformOrigin === 'y') pointsFrom = pointsFromOriginY
+	scale: number
+	direction: Direction
+}): Face {
+	const deltaX = size * Math.cos(Math.PI / 6) * scale
+	const deltaY = size * Math.sin(Math.PI / 6) * scale
+	console.log(scale, deltaX, deltaY)
 
-	if (transformOrigin === 'y') {
-		const c1 = pointsFrom({
-			originX,
-			originY,
-			size,
-			scale: 0.7,
-		})
-		const c2 = pointsFrom({
-			originX: c1.t[0],
-			originY: c1.t[1],
-			size,
-			scale: 1.6,
-		})
-		const c3 = pointsFrom({
-			originX: c1.bl[0],
-			originY: c1.bl[1],
-			size,
-			scale: 3.5,
-		})
-		const c4 = pointsFrom({
-			originX: c2.bl[0],
-			originY: c2.bl[1],
-			size,
-			scale: 2.5,
-		})
-		return { c1, c2, c3, c4 }
-	} else if (transformOrigin === 'x') {
-		const c1 = pointsFrom({
-			originX,
-			originY,
-			size,
-			scale: 1.7,
-		})
-		const c2 = pointsFrom({
-			originX: c1.t[0],
-			originY: c1.t[1],
-			size,
-			scale: 0.6,
-		})
-		const c3 = pointsFrom({
-			originX: c1.br[0],
-			originY: c1.br[1],
-			size,
-			scale: 1,
-		})
-		const c4 = pointsFrom({
-			originX: c2.br[0],
-			originY: c2.br[1],
-			size,
-			scale: 2.4,
-		})
-		return { c1, c2, c3, c4 }
+	// Calculate changes based on direction
+	switch (direction) {
+		case 'x':
+			return origin.map(v => moveVector(v, [-deltaX, deltaY])) as Face
+		case 'y':
+			return origin.map(v => moveVector(v, [deltaX, deltaY])) as Face
+		case 'z':
+			return origin.map(v => moveVector(v, [0, -deltaY])) as Face
+		default:
+			throw new Error('Invalid direction')
 	}
-
-	const c1 = pointsFrom({
-		originX,
-		originY,
-		size,
-		scale: 0.2,
-	})
-	const c2 = pointsFrom({
-		originX: c1.bl[0],
-		originY: c1.bl[1],
-		size,
-		scale: 2.2,
-	})
-	const c3 = pointsFrom({
-		originX: c1.br[0],
-		originY: c1.br[1],
-		size,
-		scale: 4.5,
-	})
-	const c4 = pointsFrom({
-		originX: c2.br[0],
-		originY: c2.br[1],
-		size,
-		scale: 3.1,
-	})
-	return { c1, c2, c3, c4 }
 }
 
-type CubeCoords = {
-	o: Vector2D
-	t: Vector2D
-	tr: Vector2D
-	br: Vector2D
-	b: Vector2D
-	bl: Vector2D
-	tl: Vector2D
-	ho: Vector2D
+function moveVector([x, y]: Vector2D, [dx, dy]: Vector2D): Vector2D {
+	return [x + dx, y + dy]
 }
 
-function pointsFromOriginZ({
-	originX,
-	originY,
-	scale,
-	size,
-}: {
-	originX: number
-	originY: number
-	scale: number
-	size: number
-}): CubeCoords {
-	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
-	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
-
-	const z = deltaY * 2 * scale
-	const b: Vector2D = [originX, originY]
-	const o: Vector2D = [originX, originY - z]
-	const t: Vector2D = [originX, originY - z - deltaY * 2]
-	const br: Vector2D = [originX + deltaX, originY - deltaY]
-	const tr: Vector2D = [originX + deltaX, originY - z - deltaY]
-	const bl: Vector2D = [originX - deltaX, originY - deltaY]
-	const tl: Vector2D = [originX - deltaX, originY - z - deltaY]
-	const ho: Vector2D = [originX, originY - deltaY * 2]
-
-	return { o, t, tr, br, b, bl, tl, ho }
-}
-
-function pointsFromOriginY({
-	originX,
-	originY,
-	scale,
-	size,
-}: {
-	originX: number
-	originY: number
-	scale: number
-	size: number
-}): CubeCoords {
-	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
-	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
-
-	const x = deltaX * scale
-	const y = deltaY * scale
-	const b: Vector2D = [originX + x, originY + y + deltaY * 2]
-	const o: Vector2D = [originX + x, originY + y]
-	const t: Vector2D = [originX + deltaX, originY - deltaY]
-	const br: Vector2D = [originX + x + deltaX, originY + y + deltaY]
-	const tr: Vector2D = [originX + x + deltaX, originY + y - deltaY]
-	const bl: Vector2D = [originX, originY + deltaY * 2]
-	const tl: Vector2D = [originX, originY]
-	const ho: Vector2D = [originX + deltaX, originY + deltaY]
-
-	return { o, t, tr, br, b, bl, tl, ho }
-}
-
-function pointsFromOriginX({
-	originX,
-	originY,
-	scale,
-	size,
-}: {
-	originX: number
-	originY: number
-	scale: number
-	size: number
-}): CubeCoords {
-	const deltaX = size * Math.cos(Math.PI / 6) // cos(30°)
-	const deltaY = size * Math.sin(Math.PI / 6) // sin(30°)
-
-	const x = deltaX * scale
-	const y = deltaY * scale
-	const b: Vector2D = [originX - x, originY + y + deltaY * 2]
-	const o: Vector2D = [originX - x, originY + y]
-	const t: Vector2D = [originX - deltaX, originY - deltaY]
-	const br: Vector2D = [originX, originY + deltaY * 2]
-	const tr: Vector2D = [originX, originY]
-	const bl: Vector2D = [originX - x - deltaX, originY + y + deltaY]
-	const tl: Vector2D = [originX - x - deltaX, originY + y - deltaY]
-	const ho: Vector2D = [originX - deltaX, originY - deltaY]
-
-	return { o, t, tr, br, b, bl, tl, ho }
-}
-
+// utils
 function vectorToString([x, y]: Vector2D) {
 	return `${x},${y}`
 }
+
+function getRandomColor(colors: string[], seed: number): string {
+	return colors[Math.floor(seed * colors.length)]
+}
+
+function getRandomScale(max: number, seed: number): number {
+	return seed * max
+}
+
+// REFACTOR
