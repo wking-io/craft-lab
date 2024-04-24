@@ -121,6 +121,7 @@ export function ErrorMessage({
 	return (
 		<HeadlessDescription
 			{...props}
+			as="div"
 			data-slot="error"
 			className={clsx(
 				className,

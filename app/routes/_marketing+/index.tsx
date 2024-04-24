@@ -12,7 +12,7 @@ import {
 } from '@remix-run/react'
 import clsx from 'clsx'
 import QR from 'qrcode'
-import { type PropsWithChildren } from 'react'
+import { useId, type PropsWithChildren } from 'react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { ErrorMessage } from '#app/components/catalyst/fieldset.js'
@@ -46,6 +46,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	checkHoneypot(formData)
 
+	console.log('HERE')
 	const submission = await parseWithZod(formData, {
 		schema: WaitlistFormSchema.superRefine(async (data, ctx) => {
 			const pExistingAccount = prisma.account.findUnique({
@@ -100,7 +101,7 @@ export async function action({ request }: ActionFunctionArgs) {
 
 	const response = await sendEmail({
 		to: email,
-		subject: `Welcome to Epic Notes!`,
+		subject: `Verify email to lock in your waitlist reward!`,
 		react: (
 			<WaitlistEmail waitlistVerificationUrl={verifyUrl.toString()} otp={otp} />
 		),
@@ -135,8 +136,8 @@ export function WaitlistEmail({
 				</h1>
 				<p>
 					<E.Text>
-						This community is going to be a blast, and I cannot wait for you to
-						see it.
+						Please verify your email! This community is going to be a blast, and
+						I cannot wait for you to see it.
 					</E.Text>
 				</p>
 				<p>
@@ -393,12 +394,14 @@ function PlaygroundHoverSVG({ className }: { className?: string }) {
 function WaitlistForm() {
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
+	const id = useId()
 
 	const [form, fields] = useForm({
-		id: 'waitlist-form',
+		id: `waitlist-form-${id}`,
 		constraint: getZodConstraint(WaitlistFormSchema),
 		lastResult: actionData?.result,
 		onValidate({ formData }) {
+			console.log(Object.fromEntries(formData))
 			return parseWithZod(formData, { schema: WaitlistFormSchema })
 		},
 		shouldRevalidate: 'onBlur',

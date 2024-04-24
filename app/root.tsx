@@ -76,8 +76,11 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [
-		{ title: data ? 'Epic Notes' : 'Error | Epic Notes' },
-		{ name: 'description', content: `Your own captain's log` },
+		{ title: data ? 'Craft Lab' : 'Error | Craft Lab' },
+		{
+			name: 'description',
+			content: `A community built for Design Engineers. Help us build a space where we learn and share everything about our craft and have fun doing it.`,
+		},
 	]
 }
 
@@ -86,7 +89,7 @@ function genSeed() {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const allowedPaths = ['/', '/waitlist/success']
+	const allowedPaths = ['/', '/verify', '/waitlist/success']
 	const url = new URL(request.url)
 	if (
 		process.env.SKIP_ALLOWED_PATHS !== 'true' &&

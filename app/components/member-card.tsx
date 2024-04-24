@@ -117,14 +117,8 @@ export default function MemberCard({
 	return (
 		<div
 			style={{ perspective: '1000px' }}
-			onMouseEnter={() => {
-				console.log('here')
-				setShowHolo(true)
-			}}
-			onMouseLeave={() => {
-				console.log('here gone')
-				setShowHolo(false)
-			}}
+			onMouseEnter={() => setShowHolo(true)}
+			onMouseLeave={() => setShowHolo(false)}
 		>
 			<motion.div style={cardStyles}>
 				<motion.div ref={cardRef} className="card">
