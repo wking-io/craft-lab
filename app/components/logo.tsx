@@ -482,4 +482,3 @@ function BlobLineLogo({ seed, className }: BaseProps) {
 }
 
 export { PointLogo, BlobLogo, BlobLineLogo, Logo, makeFavicon }
-export type { Seed }

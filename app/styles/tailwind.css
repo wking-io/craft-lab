@@ -338,6 +338,27 @@
 		--ring: 215 20.2% 65.1%;
 
 		--radius: 0.5rem;
+
+		/* CARD VARS */
+		--card-aspect: 0.718;
+		--card-radius: 4.55% / 3.5%;
+		--card-edge: hsl(47, 100%, 78%);
+		--card-back: hsl(205, 100%, 25%);
+		--card-glow: hsl(175, 100%, 90%);
+
+		--sunpillar-1: hsl(2, 100%, 73%);
+		--sunpillar-2: hsl(53, 100%, 69%);
+		--sunpillar-3: hsl(93, 100%, 69%);
+		--sunpillar-4: hsl(176, 100%, 76%);
+		--sunpillar-5: hsl(228, 100%, 74%);
+		--sunpillar-6: hsl(283, 100%, 73%);
+
+		--sunpillar-clr-1: var(--sunpillar-1);
+		--sunpillar-clr-2: var(--sunpillar-2);
+		--sunpillar-clr-3: var(--sunpillar-3);
+		--sunpillar-clr-4: var(--sunpillar-4);
+		--sunpillar-clr-5: var(--sunpillar-5);
+		--sunpillar-clr-6: var(--sunpillar-6);
 	}
 
 	.dark {
@@ -371,4 +392,224 @@
 
 		--ring: 217.2 32.6% 60%;
 	}
+}
+
+.card {
+	--grain: url('./images/grain.webp');
+	--glitter: url('./images/glitter.png');
+	--glittersize: 25%;
+
+	--space: 5%;
+	--angle: 133deg;
+	--imgsize: cover;
+
+	--clip: inset(9.85% 8% 52.85% 8%);
+	--clip-invert: polygon(
+		0% 0%,
+		100% 0%,
+		100% 100%,
+		0% 100%,
+		0 47.15%,
+		91.5% 47.15%,
+		91.5% 9.85%,
+		8% 9.85%,
+		8% 47.15%,
+		0 50%
+	);
+
+	--clip-stage: polygon(
+		91.5% 9.85%,
+		57% 9.85%,
+		54% 12%,
+		17% 12%,
+		16% 14%,
+		12% 16%,
+		8% 16%,
+		8% 47.15%,
+		92% 47.15%
+	);
+	--clip-stage-invert: polygon(
+		0% 0%,
+		100% 0%,
+		100% 100%,
+		0% 100%,
+		0 47.15%,
+		91.5% 47.15%,
+		91.5% 9.85%,
+		57% 9.85%,
+		54% 12%,
+		17% 12%,
+		16% 14%,
+		12% 16%,
+		8% 16%,
+		8% 47.15%,
+		0 50%
+	);
+
+	--clip-trainer: inset(14.5% 8.5% 48.2% 8.5%);
+	--clip-borders: inset(2.8% 4% round 2.55% / 1.5%);
+
+	/* place the card on a new transform layer and
+  make sure it has hardward acceleration... we gun'need that! */
+	-webkit-transform: translate3d(0px, 0px, 0.01px);
+	transform: translate3d(0px, 0px, 0.01px);
+	-webkit-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	pointer-events: none;
+
+	/* every little helps! */
+	will-change: transform, visibility, z-index;
+}
+
+.card,
+.card * {
+	/* outline is a little trick to anti-alias */
+	outline: 1px solid transparent;
+}
+
+.card-shine,
+.card-glare {
+	will-change: transform, opacity, background-image, background-size,
+		background-position, background-blend-mode, filter;
+
+	/* make sure the glare doesn't clip */
+	transform: translateZ(1.41px);
+	overflow: hidden;
+
+	background-image: radial-gradient(
+		farthest-corner circle at var(--pointer-x) var(--pointer-y),
+		hsla(0, 0%, 100%, 0.8) 10%,
+		hsla(0, 0%, 100%, 0.65) 20%,
+		hsla(0, 0%, 0%, 0.5) 90%
+	);
+
+	opacity: var(--card-opacity);
+	mix-blend-mode: overlay;
+}
+
+.card-shine {
+	display: grid;
+	transform: translateZ(1px);
+	overflow: hidden;
+	z-index: 3;
+
+	background: transparent;
+	background-size: cover;
+	background-position: center;
+
+	filter: brightness(0.85) contrast(2.75) saturate(0.65);
+	mix-blend-mode: color-dodge;
+
+	opacity: var(--card-opacity);
+
+	/* CHANGE AFTER */
+
+	--mask: none;
+	--foil: url('./images/vmaxbg.jpg');
+	--imgsize: 60% 30%;
+
+	--space: 11%;
+	--angle: 133deg;
+	--imgsize: cover;
+
+	background-image: var(--foil),
+		repeating-linear-gradient(
+			-33deg,
+			hsl(2, 70%, 47%) calc(var(--space) * 1),
+			hsl(228, 60%, 64%) calc(var(--space) * 2),
+			hsl(176, 55%, 39%) calc(var(--space) * 3),
+			hsl(123, 68%, 35%) calc(var(--space) * 4),
+			hsl(283, 75%, 57%) calc(var(--space) * 5),
+			hsl(2, 70%, 47%) calc(var(--space) * 6)
+		),
+		repeating-linear-gradient(
+			var(--angle),
+			hsla(227, 53%, 12%, 0.5) 0%,
+			hsl(180, 10%, 50%) 2.5%,
+			hsl(83, 50%, 35%) 5%,
+			hsl(180, 10%, 50%) 7.5%,
+			hsla(227, 53%, 12%, 0.5) 10%,
+			hsla(227, 53%, 12%, 0.5) 15%
+		),
+		radial-gradient(
+			farthest-corner circle at var(--pointer-x) var(--pointer-y),
+			hsla(189, 76%, 77%, 0.6) 0%,
+			hsla(147, 59%, 77%, 0.6) 25%,
+			hsla(271, 55%, 69%, 0.6) 50%,
+			hsla(355, 56%, 72%, 0.6) 75%
+		);
+
+	background-blend-mode: difference, luminosity, soft-light;
+	background-size:
+		var(--imgsize),
+		1100% 1100%,
+		600% 600%,
+		200% 200%;
+	background-position:
+		center,
+		var(--background-x) var(--background-y),
+		var(--background-x) var(--background-y),
+		var(--background-x) var(--background-y);
+
+	filter: brightness(calc((var(--pointer-from-center) * 0.4) + 0.4)) contrast(2)
+		saturate(1);
+}
+
+.card-shine:before,
+.card-shine:after {
+	--sunpillar-clr-1: var(--sunpillar-5);
+	--sunpillar-clr-2: var(--sunpillar-6);
+	--sunpillar-clr-3: var(--sunpillar-1);
+	--sunpillar-clr-4: var(--sunpillar-2);
+	--sunpillar-clr-5: var(--sunpillar-3);
+	--sunpillar-clr-6: var(--sunpillar-4);
+
+	grid-area: 1/1;
+	transform: translateZ(1px);
+	border-radius: var(--card-radius);
+}
+
+.card-shine:after {
+	--mask: none;
+	--foil: url('./images/vmaxbg.jpg');
+	--imgsize: 60% 30%;
+
+	content: '';
+
+	background-image: repeating-linear-gradient(
+			0deg,
+			var(--sunpillar-clr-1) calc(var(--space) * 1),
+			var(--sunpillar-clr-2) calc(var(--space) * 2),
+			var(--sunpillar-clr-3) calc(var(--space) * 3),
+			var(--sunpillar-clr-4) calc(var(--space) * 4),
+			var(--sunpillar-clr-5) calc(var(--space) * 5),
+			var(--sunpillar-clr-6) calc(var(--space) * 6),
+			var(--sunpillar-clr-1) calc(var(--space) * 7)
+		),
+		repeating-linear-gradient(
+			var(--angle),
+			#0e152e 0%,
+			hsl(180, 10%, 60%) 3.8%,
+			hsl(180, 29%, 66%) 4.5%,
+			hsl(180, 10%, 60%) 5.2%,
+			#0e152e 10%,
+			#0e152e 12%
+		);
+
+	background-blend-mode: hue, hard-light;
+	background-size:
+		200% 700%,
+		300% 100%,
+		200% 100%;
+	background-position:
+		0% var(--background-y),
+		var(--background-x) var(--background-y),
+		var(--background-x) var(--background-y);
+
+	mix-blend-mode: lighten;
+	opacity: calc(
+		(0.3 * var(--card-opacity)) + var(--card-opacity) *
+			var(--pointer-from-center) * 0.6
+	);
+	filter: saturate(1.5);
 }
