@@ -45,7 +45,7 @@ export const StatusButton = React.forwardRef<
 			ref={ref}
 			className={cn(
 				status === 'error' && 'border-red',
-				'group relative flex justify-center gap-4 border border-transparent bg-primary px-4 py-2 font-medium text-primary-foreground',
+				'group relative flex justify-center gap-4 border border-transparent bg-primary py-2 pl-5 pr-6 font-medium text-primary-foreground',
 				className,
 			)}
 			{...props}
@@ -69,7 +69,10 @@ export const StatusButton = React.forwardRef<
 				/>
 			</svg>
 			<HoverSVG className="absolute -right-px -top-px opacity-0 transition duration-200 group-hover:opacity-100" />
-			<div>{children}</div>
+
+			<span className="relative inline-flex items-center justify-center gap-2">
+				{children}
+			</span>
 			{message ? (
 				<TooltipProvider>
 					<Tooltip>
@@ -139,37 +142,243 @@ function HoverSVG({ className }: { className?: string }) {
 			xmlns="http://www.w3.org/2000/svg"
 			className={className}
 		>
-			<rect x="48" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="42" y="6" width="6" height="6" fill="white" fillOpacity="0.4" />
-			<rect x="36" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="24" width="6" height="6" fill="white" fillOpacity="0.3" />
-			<rect x="12" width="6" height="6" fill="white" fillOpacity="0.2" />
-			<rect width="6" height="6" fill="white" fillOpacity="0.1" />
-			<rect x="12" y="12" width="6" height="6" fill="white" fillOpacity="0.1" />
-			<rect x="24" y="18" width="6" height="6" fill="white" fillOpacity="0.1" />
-			<rect x="36" y="24" width="6" height="6" fill="white" fillOpacity="0.1" />
-			<rect x="24" y="30" width="6" height="6" fill="white" fillOpacity="0.1" />
-			<rect x="30" y="36" width="6" height="6" fill="white" fillOpacity="0.1" />
-			<rect x="30" y="6" width="6" height="6" fill="white" fillOpacity="0.4" />
-			<rect x="24" y="6" width="6" height="6" fill="white" fillOpacity="0.2" />
-			<rect x="36" y="12" width="6" height="6" fill="white" fillOpacity="0.3" />
-			<rect x="18" y="12" width="6" height="6" fill="white" fillOpacity="0.2" />
-			<rect x="42" y="18" width="6" height="6" fill="white" fillOpacity="0.3" />
-			<rect x="30" y="18" width="6" height="6" fill="white" fillOpacity="0.2" />
-			<rect x="48" y="24" width="6" height="6" fill="white" fillOpacity="0.3" />
-			<rect x="42" y="24" width="6" height="6" fill="white" fillOpacity="0.2" />
-			<rect x="54" y="6" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="48" y="6" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="48" y="12" width="6" height="6" fill="white" fillOpacity="0.4" />
-			<rect x="60" y="12" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="60" y="18" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="60" y="36" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="54" y="18" width="6" height="6" fill="white" fillOpacity="0.4" />
-			<rect x="60" y="24" width="6" height="6" fill="white" fillOpacity="0.5" />
-			<rect x="54" y="30" width="6" height="6" fill="white" fillOpacity="0.4" />
-			<rect x="48" y="36" width="6" height="6" fill="white" fillOpacity="0.3" />
-			<rect x="42" y="36" width="6" height="6" fill="white" fillOpacity="0.2" />
-			<rect x="36" y="30" width="6" height="6" fill="white" fillOpacity="0.2" />
+			<rect
+				x="48"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="42"
+				y="6"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.4"
+			/>
+			<rect
+				x="36"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="24"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.3"
+			/>
+			<rect
+				x="12"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
+			<rect width="6" height="6" className="fill-current" fillOpacity="0.1" />
+			<rect
+				x="12"
+				y="12"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.1"
+			/>
+			<rect
+				x="24"
+				y="18"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.1"
+			/>
+			<rect
+				x="36"
+				y="24"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.1"
+			/>
+			<rect
+				x="24"
+				y="30"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.1"
+			/>
+			<rect
+				x="30"
+				y="36"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.1"
+			/>
+			<rect
+				x="30"
+				y="6"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.4"
+			/>
+			<rect
+				x="24"
+				y="6"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
+			<rect
+				x="36"
+				y="12"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.3"
+			/>
+			<rect
+				x="18"
+				y="12"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
+			<rect
+				x="42"
+				y="18"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.3"
+			/>
+			<rect
+				x="30"
+				y="18"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
+			<rect
+				x="48"
+				y="24"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.3"
+			/>
+			<rect
+				x="42"
+				y="24"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
+			<rect
+				x="54"
+				y="6"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="48"
+				y="6"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="48"
+				y="12"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.4"
+			/>
+			<rect
+				x="60"
+				y="12"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="60"
+				y="18"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="60"
+				y="36"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="54"
+				y="18"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.4"
+			/>
+			<rect
+				x="60"
+				y="24"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.5"
+			/>
+			<rect
+				x="54"
+				y="30"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.4"
+			/>
+			<rect
+				x="48"
+				y="36"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.3"
+			/>
+			<rect
+				x="42"
+				y="36"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
+			<rect
+				x="36"
+				y="30"
+				width="6"
+				height="6"
+				className="fill-current"
+				fillOpacity="0.2"
+			/>
 		</svg>
 	)
 }
