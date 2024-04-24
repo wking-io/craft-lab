@@ -210,7 +210,6 @@ export default function TwoFactorRoute() {
 							</StatusButton>
 							<StatusButton
 								className="w-full"
-								variant="secondary"
 								status={
 									pendingIntent === 'cancel'
 										? 'pending'

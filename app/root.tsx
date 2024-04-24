@@ -2,6 +2,7 @@ import { parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
 import {
 	json,
+	redirect,
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
 	type HeadersFunction,
@@ -22,7 +23,7 @@ import { useEffect } from 'react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
-import { makeFavicon, type Seed } from './components/logo.tsx'
+import { makeFavicon } from './components/logo.tsx'
 import { EpicProgress } from './components/progress-bar.tsx'
 import { useToast } from './components/toaster.tsx'
 import { href as iconsHref } from './components/ui/icon.tsx'
@@ -35,6 +36,7 @@ import { getEnv } from './utils/env.server.ts'
 import { honeypot } from './utils/honeypot.server.ts'
 import { combineHeaders, getDomainUrl } from './utils/misc.tsx'
 import { useNonce } from './utils/nonce-provider.ts'
+import { type Seed } from './utils/random.ts'
 import { useRequestInfo } from './utils/request-info.ts'
 import { type RouteID } from './utils/route-id.ts'
 import { type Theme, setTheme, getTheme } from './utils/theme.server.ts'
@@ -84,6 +86,14 @@ function genSeed() {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
+	const allowedPaths = ['/', '/waitlist/success']
+	const url = new URL(request.url)
+	if (
+		process.env.SKIP_ALLOWED_PATHS !== 'true' &&
+		!allowedPaths.includes(url.pathname)
+	) {
+		return redirect('/')
+	}
 	const timings = makeTimings('root loader')
 	const accountId = await time(() => getAccountId(request), {
 		timings,

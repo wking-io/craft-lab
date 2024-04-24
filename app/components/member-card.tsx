@@ -99,6 +99,7 @@ export default function MemberCard({
 		return () => {
 			window.removeEventListener('mousemove', handleMouseMove)
 		}
+		// eslint-disable-next-line
 	}, [])
 
 	const cardStyles: CustomStyle = {

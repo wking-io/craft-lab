@@ -192,8 +192,6 @@ function Connection({
 								<StatusButton
 									name="intent"
 									value="delete-connection"
-									variant="destructive"
-									size="sm"
 									status={
 										deleteFetcher.state !== 'idle'
 											? 'pending'

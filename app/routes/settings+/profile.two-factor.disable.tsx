@@ -49,7 +49,6 @@ export default function TwoFactorDisableRoute() {
 					you would like to do so, click here:
 				</p>
 				<StatusButton
-					variant="destructive"
 					status={disable2FAFetcher.state === 'loading' ? 'pending' : 'idle'}
 					{...dc.getButtonProps({
 						className: 'mx-auto',

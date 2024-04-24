@@ -1,3 +1,4 @@
+import { type LinkProps, Link } from '@remix-run/react'
 import * as React from 'react'
 import { useSpinDelay } from 'spin-delay'
 import { cn } from '#app/utils/misc.tsx'
@@ -83,6 +84,50 @@ export const StatusButton = React.forwardRef<
 	)
 })
 StatusButton.displayName = 'Button'
+
+export const MarketingButton = React.forwardRef<
+	HTMLAnchorElement,
+	LinkProps &
+		React.PropsWithChildren<{
+			className?: string
+		}>
+>(({ className, children, ...props }, ref) => {
+	return (
+		<Link
+			ref={ref}
+			className={cn(
+				'group relative flex justify-center gap-4 border border-transparent bg-primary py-2 pl-5 pr-6 font-medium text-primary-foreground',
+				className,
+			)}
+			{...props}
+		>
+			<svg
+				className="absolute -right-px -top-px h-[24px] w-[24px]"
+				viewBox="0 0 4 4"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<rect
+					className="fill-current text-background"
+					x="0"
+					y="0"
+					width="4"
+					height="4"
+				/>
+				<path
+					d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+					className="fill-current text-foreground"
+				/>
+			</svg>
+			<HoverSVG className="absolute -right-px -top-px opacity-0 transition duration-200 group-hover:opacity-100" />
+			<span className="relative inline-flex items-center justify-center gap-2">
+				{children}
+			</span>
+		</Link>
+	)
+})
+
+MarketingButton.displayName = 'Button'
 
 function HoverSVG({ className }: { className?: string }) {
 	return (

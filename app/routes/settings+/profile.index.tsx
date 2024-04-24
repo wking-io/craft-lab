@@ -223,7 +223,6 @@ function UpdateProfile() {
 			<div className="mt-8 flex justify-center">
 				<StatusButton
 					type="submit"
-					size="wide"
 					name="intent"
 					value={profileUpdateActionIntent}
 					status={fetcher.state !== 'idle' ? 'pending' : form.status ?? 'idle'}
@@ -272,7 +271,6 @@ function SignOutOfSessions() {
 							name: 'intent',
 							value: signOutOfSessionsActionIntent,
 						})}
-						variant={dc.doubleCheck ? 'destructive' : 'default'}
 						status={
 							fetcher.state !== 'idle'
 								? 'pending'
@@ -315,7 +313,6 @@ function DeleteData() {
 						name: 'intent',
 						value: deleteDataActionIntent,
 					})}
-					variant={dc.doubleCheck ? 'destructive' : 'default'}
 					status={fetcher.state !== 'idle' ? 'pending' : 'idle'}
 				>
 					<Icon name="trash">
