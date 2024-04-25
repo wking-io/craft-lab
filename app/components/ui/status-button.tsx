@@ -51,7 +51,7 @@ export const StatusButton = React.forwardRef<
 			{...props}
 		>
 			<svg
-				className="absolute -right-px -top-px h-[24px] w-[24px]"
+				className="absolute -bottom-px -right-px h-[24px] w-[24px] rotate-90 sm:-top-px sm:bottom-auto sm:rotate-0"
 				viewBox="0 0 4 4"
 				fill="none"
 				xmlns="http://www.w3.org/2000/svg"
@@ -68,7 +68,7 @@ export const StatusButton = React.forwardRef<
 					className="fill-current text-foreground"
 				/>
 			</svg>
-			<HoverSVG className="absolute -right-px -top-px opacity-0 transition duration-200 group-hover:opacity-100" />
+			<HoverSVG className="absolute -bottom-px -right-px -scale-y-100 opacity-0 transition duration-200 group-hover:opacity-100 sm:-top-px sm:bottom-auto sm:scale-y-100" />
 
 			<span className="relative inline-flex items-center justify-center gap-2">
 				{children}

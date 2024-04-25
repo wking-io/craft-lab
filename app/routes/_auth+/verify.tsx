@@ -52,10 +52,10 @@ export default function VerifyRoute() {
 
 	const checkEmail = (
 		<>
-			<h1 className="relative text-balance text-5xl font-semibold leading-tight">
+			<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
 				Check your email
 			</h1>
-			<p className="mt-3 text-body-md text-secondary">
+			<p className="mt-3 text-pretty text-body-md text-secondary">
 				We've sent you a code to verify your email address.
 			</p>
 		</>
@@ -69,10 +69,10 @@ export default function VerifyRoute() {
 		'change-email': checkEmail,
 		'2fa': (
 			<>
-				<h1 className="relative text-balance text-5xl font-semibold leading-tight">
+				<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
 					Check your 2FA app
 				</h1>
-				<p className="mt-3 text-body-md text-secondary">
+				<p className="mt-3 text-pretty text-body-md text-secondary">
 					Please enter your 2FA code to verify your identity.
 				</p>
 			</>
@@ -96,7 +96,7 @@ export default function VerifyRoute() {
 
 	return (
 		<main className="dark flex h-full flex-col items-center justify-center bg-background pb-32 pt-20 text-primary">
-			<div className="container">
+			<div className="container px-6">
 				<div className="text-center">
 					{type ? headings[type] : 'Invalid Verification Type'}
 				</div>
@@ -109,7 +109,7 @@ export default function VerifyRoute() {
 						)}
 					>
 						<svg
-							className="absolute -left-1.5 top-1.5 -z-10 h-[42px] w-auto text-primary text-opacity-5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100"
+							className="text-primary/5 absolute -left-1.5 -top-1.5 -z-10 h-[42px] w-auto -scale-y-100 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:scale-y-100"
 							viewBox="0 0 125 7"
 						>
 							{/* Layer one */}
@@ -124,26 +124,26 @@ export default function VerifyRoute() {
 							<rect
 								x="1"
 								y="6"
-								width="80"
+								width="50"
 								height="1"
 								className="fill-current"
 							/>
 							<rect
-								x="83"
+								x="53"
 								y="6"
 								width="2"
 								height="1"
 								className="fill-current"
 							/>
 							<rect
-								x="86"
+								x="56"
 								y="6"
 								width="1"
 								height="1"
 								className="fill-current"
 							/>
 							<rect
-								x="88"
+								x="58"
 								y="6"
 								width="1"
 								height="1"
@@ -160,21 +160,21 @@ export default function VerifyRoute() {
 								className="fill-current"
 							/>
 							<rect
-								x="44"
+								x="24"
 								y="6"
 								width="4"
 								height="1"
 								className="fill-current"
 							/>
 							<rect
-								x="48"
+								x="28"
 								y="6"
 								width="2"
 								height="1"
 								className="fill-current"
 							/>
 							<rect
-								x="52"
+								x="32"
 								y="6"
 								width="1"
 								height="1"
@@ -216,11 +216,11 @@ export default function VerifyRoute() {
 								type: 'hidden',
 							})}
 						/>
-						<Field className="flex w-full flex-col items-start md:flex-row">
+						<Field className="flex w-full flex-col items-start sm:flex-row">
 							<label className="sr-only" htmlFor={fields[codeQueryParam].id}>
 								Email
 							</label>
-							<div className="flex-1">
+							<div className="w-full flex-1">
 								<Input
 									{...getInputProps(fields[codeQueryParam], { type: 'text' })}
 									autoComplete="one-time-code"
@@ -232,7 +232,7 @@ export default function VerifyRoute() {
 								<ErrorMessage errors={form.errors} id={form.errorId} />
 							</div>
 							<StatusButton
-								className="min-w-[30%]"
+								className="w-full min-w-[30%] sm:w-auto"
 								status={isPending ? 'pending' : form.status ?? 'idle'}
 								type="submit"
 								disabled={isPending}

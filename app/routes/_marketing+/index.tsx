@@ -162,55 +162,55 @@ export default function Index() {
 
 	return (
 		<main className="h-full">
-			<div className="container flex flex-col py-8 md:py-12 lg:py-16">
+			<div className="container flex flex-col overflow-x-hidden px-6 py-8 md:py-12 lg:py-16">
 				<div className={clsx('relative flex gap-3')}>
 					<Logo seed={seed} className="h-auto w-8" />
 					<p className="text-3xl font-semibold tracking-tight">Craft Lab</p>
 				</div>
-				<h1 className="relative mt-8 max-w-2xl text-balance text-5xl font-semibold leading-tight">
+				<h1 className="relative mt-8 max-w-2xl text-balance text-4xl font-semibold leading-tight md:text-5xl">
 					A community built for Incredible Design Engineers
 				</h1>
-				<p className="mt-5 text-secondary md:text-lg xl:text-xl">
+				<p className="text-foreground/70 mt-5 text-pretty md:text-lg xl:text-xl">
 					Help us build a space where we learn and share everything about our
 					craft and have fun doing it.
 				</p>
 				<WaitlistForm />
 			</div>
 			<section className="container">
-				<div className="-mx-5 grid grid-cols-3 gap-6 py-8 md:gap-y-8 lg:gap-y-8">
-					<div className="grid max-w-sm px-5 py-6">
-						<div className="max-w-xl">
+				<div className="grid gap-6 py-8 md:grid-cols-2 md:gap-y-8 md:px-6 lg:grid-cols-3 lg:gap-y-8">
+					<div className="grid px-5 py-6 md:max-w-sm">
+						<div className="">
 							<FeatureName color="text-pink">Objectives</FeatureName>
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Collaborate daily on what matters
 							</h2>
-							<p className="mt-4 text-pretty text-secondary">
+							<p className="text-foreground/70 mt-4 text-pretty">
 								Start every day sharing what you're working on. That objective
 								will now be available for tracking progress and having
 								conversations focused around it.
 							</p>
 						</div>
 					</div>
-					<div className="grid max-w-sm px-5 py-6">
-						<div className="max-w-xl justify-self-end">
+					<div className="grid px-5 py-6 md:max-w-sm">
+						<div className="justify-self-end">
 							<FeatureName color="text-yellow">Milestones</FeatureName>
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Plan your long term growth
 							</h2>
-							<p className="mt-4 text-pretty text-secondary">
+							<p className="text-foreground/70 mt-4 text-pretty">
 								A community can't help you if we don't know where you are
 								headed. Use milestones to share your big goal for the year, and
 								what you are doing this quarter to achieve it.
 							</p>
 						</div>
 					</div>
-					<div className="grid max-w-sm px-5 py-6">
-						<div className="max-w-xl">
+					<div className="grid px-5 py-6 md:max-w-sm">
+						<div className="">
 							<FeatureName color="text-lime">Signals</FeatureName>
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Targeted help when you need it
 							</h2>
-							<p className="mt-4 text-pretty text-secondary">
+							<p className="text-foreground/70 mt-4 text-pretty">
 								A wide range of expertise in the community gives you access to
 								the right kind of help when you need it. Signals everyone know
 								that you are looking for active feedback to get past hurdles
@@ -219,13 +219,13 @@ export default function Index() {
 						</div>
 					</div>
 
-					<div className="grid max-w-sm px-5 py-6">
-						<div className="max-w-xl justify-self-end">
+					<div className="grid px-5 py-6 md:max-w-sm">
+						<div className="justify-self-end">
 							<FeatureName color="text-green">Library</FeatureName>
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Curated resources from the best people
 							</h2>
-							<p className="mt-4 text-pretty text-secondary">
+							<p className="text-foreground/70 mt-4 text-pretty">
 								Submit your favorite resources and access the ones that have
 								been shared by the rest of us. A library of trusted and tried
 								information...it doesn't get better than that.
@@ -233,13 +233,13 @@ export default function Index() {
 						</div>
 					</div>
 
-					<div className="grid max-w-sm px-5 py-6">
-						<div className="max-w-xl">
+					<div className="grid px-5 py-6 md:max-w-sm">
+						<div className="">
 							<FeatureName color="text-blue">Threads</FeatureName>
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Let's not forget we want to have fun
 							</h2>
-							<p className="mt-4 text-pretty text-secondary">
+							<p className="text-foreground/70 mt-4 text-pretty">
 								Threads is a space for fun and community. It is a group chat
 								with a ton of people who care about the things you do both
 								professionally and creatively.
@@ -247,7 +247,7 @@ export default function Index() {
 						</div>
 					</div>
 
-					<div className="dark group relative flex max-w-sm flex-col bg-background px-5 py-6">
+					<div className="dark group relative flex flex-col bg-background px-5 py-6 md:max-w-sm">
 						<svg
 							className="absolute right-0 top-0 h-[24px] w-[24px]"
 							viewBox="0 0 4 4"
@@ -275,7 +275,7 @@ export default function Index() {
 								<h2 className="mt-4 text-pretty text-xl font-semibold text-foreground">
 									Help build the platform yourself
 								</h2>
-								<p className="mt-4 text-pretty text-secondary">
+								<p className="text-foreground/70 mt-4 text-pretty">
 									Members get full access to contribute to the design and
 									development of making this space something really special.
 								</p>
@@ -284,18 +284,18 @@ export default function Index() {
 					</div>
 				</div>
 			</section>
-			<section className="container flex items-center gap-8 py-8 md:gap-12 md:py-12 lg:gap-16 lg:py-16">
+			<section className="container flex flex-col-reverse items-center gap-8 px-6 py-8 md:gap-12 md:py-12 lg:flex-row lg:gap-16 lg:py-16">
 				<div>
 					<MemberCard seed={seed} qrcode={qrcode} />
 				</div>
 				<div>
-					<h3 className="font-mono font-semibold">
+					<h3 className="font-mono text-sm font-semibold md:text-base">
 						Did I mention the membership cards yet?
 					</h3>
-					<h2 className="relative mt-3 max-w-4xl text-balance text-5xl font-semibold leading-tight">
+					<h2 className="relative mt-3 max-w-4xl text-4xl font-semibold leading-tight md:text-balance md:text-5xl">
 						Only waitlist members will get the holographic overlay.
 					</h2>
-					<p className="mt-5 max-w-3xl text-pretty text-secondary md:text-lg xl:text-xl">
+					<p className="text-foreground/70 mt-5 max-w-3xl text-pretty md:text-lg xl:text-xl">
 						This community is about exploring the craft of design engineering
 						with others, making each other better, and having fun while we do
 						it. Not every idea or project has the space to be explored in our
@@ -416,7 +416,7 @@ function WaitlistForm() {
 			)}
 		>
 			<svg
-				className="absolute -left-1.5 top-1.5 -z-10 h-[42px] w-auto text-zinc-950/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100"
+				className="absolute -left-1.5 -top-1.5 -z-10 hidden h-[42px] w-auto -scale-y-100 text-zinc-950/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:block sm:scale-y-100"
 				viewBox="0 0 125 7"
 			>
 				{/* Layer one */}
@@ -439,12 +439,36 @@ function WaitlistForm() {
 				<rect x="16" y="6" width="2" height="1" className="fill-current" />
 				<rect x="19" y="6" width="1" height="1" className="fill-current" />
 			</svg>
+			<svg
+				className="text-primary/5 absolute -left-1.5 -top-1.5 -z-10 h-[42px] w-auto -scale-y-100 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:hidden sm:scale-y-100"
+				viewBox="0 0 125 7"
+			>
+				{/* Layer one */}
+				<rect x="0" y="0" width="1" height="1" className="fill-current " />
+				<rect x="0" y="2" width="1" height="5" className="fill-current" />
+				<rect x="1" y="6" width="50" height="1" className="fill-current" />
+				<rect x="53" y="6" width="2" height="1" className="fill-current" />
+				<rect x="56" y="6" width="1" height="1" className="fill-current" />
+				<rect x="58" y="6" width="1" height="1" className="fill-current" />
+				{/* Layer two */}
+				<rect x="0" y="2" width="1" height="1" className="fill-current" />
+				<rect x="0" y="4" width="1" height="3" className="fill-current" />
+				<rect x="1" y="6" width="20" height="1" className="fill-current" />
+				<rect x="24" y="6" width="4" height="1" className="fill-current" />
+				<rect x="28" y="6" width="2" height="1" className="fill-current" />
+				<rect x="32" y="6" width="1" height="1" className="fill-current" />
+				{/* Layer three */}
+				<rect x="0" y="6" width="8" height="1" className="fill-current" />
+				<rect x="10" y="6" width="4" height="1" className="fill-current" />
+				<rect x="16" y="6" width="2" height="1" className="fill-current" />
+				<rect x="19" y="6" width="1" height="1" className="fill-current" />
+			</svg>
 			<HoneypotInputs />
-			<Field className="flex w-full flex-col items-start md:flex-row">
+			<Field className="flex w-full flex-col items-start sm:flex-row">
 				<label className="sr-only" htmlFor={fields.email.id}>
 					Email
 				</label>
-				<div className="flex-1">
+				<div className="w-full flex-1">
 					<Input
 						{...getInputProps(fields.email, { type: 'email' })}
 						placeholder="design@engineer.awesome"
@@ -455,7 +479,7 @@ function WaitlistForm() {
 					<ErrorMessage errors={form.errors} id={form.errorId} />
 				</div>
 				<StatusButton
-					className="min-w-[30%]"
+					className="min-w-[30% w-full sm:w-auto"
 					status={isPending ? 'pending' : form.status ?? 'idle'}
 					type="submit"
 					disabled={isPending}

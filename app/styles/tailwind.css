@@ -313,8 +313,8 @@
 		--purple: 246 91% 62%;
 		--purple-foreground: 246 91% 95%;
 
-		--background: theme('colors.white');
-		--foreground: theme('colors.zinc.950');
+		--background: 0 0 100%;
+		--foreground: 240 10% 3.92%;
 
 		--muted: 210 40% 93%;
 		--muted-foreground: 215.4 16.3% 30%;
@@ -329,11 +329,11 @@
 		--input: 214.3 31.8% 91.4%;
 		--input-invalid: var(--red);
 
-		--primary: theme('colors.zinc.950');
-		--primary-foreground: theme('colors.white');
+		--primary: 240 10% 3.92%;
+		--primary-foreground: 0 0 100%;
 
 		--secondary: theme('colors.zinc.500');
-		--secondary-foreground: theme('colors.white');
+		--secondary-foreground: 0 0 100%;
 
 		--ring: 215 20.2% 65.1%;
 
@@ -362,8 +362,8 @@
 	}
 
 	.dark {
-		--background: theme('colors.zinc.950');
-		--foreground: theme('colors.white');
+		--foreground: 0 0 100%;
+		--background: 240 10% 3.92%;
 
 		--muted: 217.2 32.6% 12%;
 		--muted-foreground: 215 20.2% 65.1%;
@@ -378,11 +378,11 @@
 		--input: 217.2 32.6% 17.5%;
 		--input-invalid: 0 62.8% 30.6%;
 
-		--primary: theme('colors.white');
-		--primary-foreground: theme('colors.zinc.950');
+		--primary-foreground: var(--background);
+		--primary: 0 0 100%;
 
-		--secondary: hsl(0, 0%, 100%, 0.7);
-		--secondary-foreground: theme('colors.zinc.950');
+		--secondary: 0, 0%, 100%;
+		--secondary-foreground: var(--background);
 
 		--accent: 217.2 32.6% 10%;
 		--accent-foreground: 210 40% 98%;

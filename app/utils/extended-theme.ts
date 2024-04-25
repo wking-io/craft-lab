@@ -12,17 +12,17 @@ export const extendedTheme = {
 			DEFAULT: 'hsl(var(--ring))',
 			invalid: 'hsl(var(--foreground-destructive))',
 		},
-		background: 'var(--background)',
+		background: 'hsl(var(--background))',
 		foreground: {
-			DEFAULT: 'var(--foreground)',
+			DEFAULT: 'hsl(var(--foreground))',
 		},
 		primary: {
-			DEFAULT: 'var(--primary)',
-			foreground: 'var(--primary-foreground)',
+			DEFAULT: 'hsl(var(--primary))',
+			foreground: 'hsl(var(--primary-foreground))',
 		},
 		secondary: {
-			DEFAULT: 'var(--secondary)',
-			foreground: 'var(--secondary-foreground)',
+			DEFAULT: 'hsl(var(--secondary))',
+			foreground: 'hsl(var(--secondary-foreground))',
 		},
 		red: {
 			DEFAULT: 'hsl(var(--red))',
