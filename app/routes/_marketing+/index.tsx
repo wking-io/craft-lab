@@ -31,7 +31,7 @@ import { prepareVerification } from '../_auth+/verify.server'
 
 export const meta: MetaFunction = () =>
 	seoData({
-		title: 'Craft Lab — A community built for Incredible Design Engineers',
+		title: 'Craft Lab — A community built for Design Engineers',
 		description:
 			'Help us build a space where we learn and share everything about our craft and have fun doing it.',
 	})
@@ -173,8 +173,10 @@ export default function Index() {
 					<Logo seed={seed} className="h-auto w-8" />
 					<p className="text-3xl font-semibold tracking-tight">Craft Lab</p>
 				</div>
-				<h1 className="relative mt-8 max-w-2xl text-balance text-4xl font-semibold leading-tight md:text-5xl">
-					A community built for Incredible Design Engineers
+				<h1 className="relative mt-8 text-4xl font-semibold leading-tight md:text-5xl">
+					Your friends are your future.
+					<br className="hidden md:block" /> Come make more Design Engineer
+					ones.
 				</h1>
 				<p className="text-foreground/70 mt-5 text-pretty md:text-lg xl:text-xl">
 					Help us build a space where we learn and share everything about our
@@ -321,10 +323,10 @@ function FeatureName({
 }: PropsWithChildren<{ color: `text-${string}` }>) {
 	return (
 		<h3 className="relative inline-flex items-center gap-1 border border-foreground py-0.5 pl-2 pr-2.5 font-mono text-xs font-semibold uppercase text-foreground">
-			<span className="absolute -left-px -top-px h-1.5 w-1.5 border border-b-foreground border-l-background border-r-foreground border-t-background bg-background" />
-			<span className="absolute -bottom-px -left-px h-1.5 w-1.5 border border-b-background border-l-background border-r-foreground border-t-foreground bg-background" />
-			<span className="absolute -right-px -top-px h-1.5 w-1.5 border border-b-foreground border-l-foreground border-r-background border-t-background bg-background" />
-			<span className="absolute -bottom-px -right-px h-1.5 w-1.5 border border-b-background border-l-foreground border-r-background border-t-foreground bg-background" />
+			<span className="absolute -left-0.5 -top-0.5 h-[7px] w-[7px] border border-b-foreground border-l-background border-r-foreground border-t-background bg-background" />
+			<span className="absolute -bottom-0.5 -left-0.5 h-[7px] w-[7px] border border-b-background border-l-background border-r-foreground border-t-foreground bg-background" />
+			<span className="absolute -right-0.5 -top-0.5 h-[7px] w-[7px] border border-b-foreground border-l-foreground border-r-background border-t-background bg-background" />
+			<span className="absolute -bottom-0.5 -right-0.5 h-[7px] w-[7px] border border-b-background border-l-foreground border-r-background border-t-foreground bg-background" />
 			<svg
 				className={clsx(color, 'h-3 w-3')}
 				viewBox="0 0 12 12"
@@ -445,30 +447,6 @@ function WaitlistForm() {
 				<rect x="16" y="6" width="2" height="1" className="fill-current" />
 				<rect x="19" y="6" width="1" height="1" className="fill-current" />
 			</svg>
-			<svg
-				className="text-primary/5 absolute -left-1.5 -top-1.5 -z-10 h-[42px] w-auto -scale-y-100 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:hidden sm:scale-y-100"
-				viewBox="0 0 125 7"
-			>
-				{/* Layer one */}
-				<rect x="0" y="0" width="1" height="1" className="fill-current " />
-				<rect x="0" y="2" width="1" height="5" className="fill-current" />
-				<rect x="1" y="6" width="50" height="1" className="fill-current" />
-				<rect x="53" y="6" width="2" height="1" className="fill-current" />
-				<rect x="56" y="6" width="1" height="1" className="fill-current" />
-				<rect x="58" y="6" width="1" height="1" className="fill-current" />
-				{/* Layer two */}
-				<rect x="0" y="2" width="1" height="1" className="fill-current" />
-				<rect x="0" y="4" width="1" height="3" className="fill-current" />
-				<rect x="1" y="6" width="20" height="1" className="fill-current" />
-				<rect x="24" y="6" width="4" height="1" className="fill-current" />
-				<rect x="28" y="6" width="2" height="1" className="fill-current" />
-				<rect x="32" y="6" width="1" height="1" className="fill-current" />
-				{/* Layer three */}
-				<rect x="0" y="6" width="8" height="1" className="fill-current" />
-				<rect x="10" y="6" width="4" height="1" className="fill-current" />
-				<rect x="16" y="6" width="2" height="1" className="fill-current" />
-				<rect x="19" y="6" width="1" height="1" className="fill-current" />
-			</svg>
 			<HoneypotInputs />
 			<Field className="flex w-full flex-col items-start sm:flex-row">
 				<label className="sr-only" htmlFor={fields.email.id}>
@@ -479,7 +457,7 @@ function WaitlistForm() {
 						{...getInputProps(fields.email, { type: 'email' })}
 						placeholder="design@engineer.awesome"
 						invalid={Boolean(fields.email.errors?.length)}
-						className="w-full border border-primary px-4 py-2 focus:outline-none"
+						className="w-full rounded-none border border-primary px-4 py-2 focus:outline-none"
 					/>
 					<ErrorMessage errors={fields.email.errors} />
 					<ErrorMessage errors={form.errors} id={form.errorId} />
