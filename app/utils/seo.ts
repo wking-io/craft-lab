@@ -22,7 +22,7 @@ export function seoData({
 		{
 			property: 'og:image',
 			content:
-				'https://res.cloudinary.com/dzqdvin5s/image/upload/v1714063227/craft-lab-og.jpg',
+				'https://res.cloudinary.com/dzqdvin5s/image/upload/v1714077475/craft-lab-og-v2.jpg',
 		},
 		{
 			property: 'og:type',
