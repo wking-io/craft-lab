@@ -323,10 +323,10 @@ function FeatureName({
 }: PropsWithChildren<{ color: `text-${string}` }>) {
 	return (
 		<h3 className="relative inline-flex items-center gap-1 border border-foreground py-0.5 pl-2 pr-2.5 font-mono text-xs font-semibold uppercase text-foreground">
-			<span className="absolute -left-0.5 -top-0.5 h-[7px] w-[7px] border border-b-foreground border-l-background border-r-foreground border-t-background bg-background" />
-			<span className="absolute -bottom-0.5 -left-0.5 h-[7px] w-[7px] border border-b-background border-l-background border-r-foreground border-t-foreground bg-background" />
-			<span className="absolute -right-0.5 -top-0.5 h-[7px] w-[7px] border border-b-foreground border-l-foreground border-r-background border-t-background bg-background" />
-			<span className="absolute -bottom-0.5 -right-0.5 h-[7px] w-[7px] border border-b-background border-l-foreground border-r-background border-t-foreground bg-background" />
+			<span className="absolute -left-px -top-px h-1.5 w-1.5 border border-b-foreground border-l-background border-r-foreground border-t-background bg-background" />
+			<span className="absolute -bottom-px -left-px h-1.5 w-1.5 border border-b-background border-l-background border-r-foreground border-t-foreground bg-background" />
+			<span className="absolute -right-px -top-px h-1.5 w-1.5 border border-b-foreground border-l-foreground border-r-background border-t-background bg-background" />
+			<span className="absolute -bottom-px -right-px h-1.5 w-1.5 border border-b-background border-l-foreground border-r-background border-t-foreground bg-background" />
 			<svg
 				className={clsx(color, 'h-3 w-3')}
 				viewBox="0 0 12 12"
