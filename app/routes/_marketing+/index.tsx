@@ -26,9 +26,15 @@ import { sendEmail } from '#app/utils/email.server.js'
 import { checkHoneypot } from '#app/utils/honeypot.server.js'
 import { useIsPending } from '#app/utils/misc.js'
 import { useRouteIdLoaderData } from '#app/utils/route-id.js'
+import { seoData } from '#app/utils/seo.js'
 import { prepareVerification } from '../_auth+/verify.server'
 
-export const meta: MetaFunction = () => [{ title: 'Craft Lab' }]
+export const meta: MetaFunction = () =>
+	seoData({
+		title: 'Craft Lab — A community built for Incredible Design Engineers',
+		description:
+			'Help us build a space where we learn and share everything about our craft and have fun doing it.',
+	})
 
 export async function loader() {
 	return json({

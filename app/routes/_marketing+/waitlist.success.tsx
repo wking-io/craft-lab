@@ -1,8 +1,17 @@
+import { type MetaFunction } from '@remix-run/node'
 import clsx from 'clsx'
 import { Logo } from '#app/components/logo.js'
 import { MarketingButton } from '#app/components/ui/status-button.js'
 import { rootRouteId } from '#app/root.js'
 import { useRouteIdLoaderData } from '#app/utils/route-id.js'
+import { seoData } from '#app/utils/seo.js'
+
+export const meta: MetaFunction = () =>
+	seoData({
+		title: 'Craft Lab — A community built for Incredible Design Engineers',
+		description:
+			'Help us build a space where we learn and share everything about our craft and have fun doing it.',
+	})
 
 export default function Screen() {
 	const { seed } = useRouteIdLoaderData(rootRouteId)

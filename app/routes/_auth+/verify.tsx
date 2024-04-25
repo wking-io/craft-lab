@@ -1,7 +1,7 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { Input, Field } from '@headlessui/react'
-import { type ActionFunctionArgs } from '@remix-run/node'
+import { type MetaFunction, type ActionFunctionArgs } from '@remix-run/node'
 import { Form, useActionData, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
@@ -11,6 +11,7 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
+import { seoData } from '#app/utils/seo.js'
 import { validateRequest } from './verify.server.ts'
 
 export const codeQueryParam = 'code'
@@ -34,6 +35,13 @@ export const VerifySchema = z.object({
 	[targetQueryParam]: z.string(),
 	[redirectToQueryParam]: z.string().optional(),
 })
+
+export const meta: MetaFunction = () =>
+	seoData({
+		title: 'Craft Lab — Verify one-time code',
+		description:
+			'Help us build a space where we learn and share everything about our craft and have fun doing it.',
+	})
 
 export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData()

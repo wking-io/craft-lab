@@ -39,6 +39,7 @@ import { useNonce } from './utils/nonce-provider.ts'
 import { type Seed } from './utils/random.ts'
 import { useRequestInfo } from './utils/request-info.ts'
 import { type RouteID } from './utils/route-id.ts'
+import { seoData } from './utils/seo.ts'
 import { type Theme, setTheme, getTheme } from './utils/theme.server.ts'
 import { makeTimings, time } from './utils/timing.server.ts'
 import { getToast } from './utils/toast.server.ts'
@@ -75,13 +76,11 @@ export const links: LinksFunction = () => {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
-	return [
-		{ title: data ? 'Craft Lab' : 'Error | Craft Lab' },
-		{
-			name: 'description',
-			content: `A community built for Design Engineers. Help us build a space where we learn and share everything about our craft and have fun doing it.`,
-		},
-	]
+	const title = data ? 'Craft Lab' : 'Error | Craft Lab'
+	const description =
+		'A community built for Design Engineers. Help us build a space where we learn and share everything about our craft and have fun doing it.'
+
+	return seoData({ title, description })
 }
 
 function genSeed() {
