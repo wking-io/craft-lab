@@ -42,13 +42,13 @@ export default function MemberCard({
 		if (!cardRef.current) return 0
 		const rect = cardRef.current.getBoundingClientRect()
 		const newRotateX = newMouseY - rect.top - rect.height / 2
-		return -newRotateX / dampen
+		return clamp(-newRotateX / dampen, -7, 7)
 	})
 	const rotateY = useTransform(mouseX, newMouseX => {
 		if (!cardRef.current) return 0
 		const rect = cardRef.current.getBoundingClientRect()
 		const newRotateY = newMouseX - rect.left - rect.width / 2
-		return newRotateY / dampen
+		return clamp(newRotateY / dampen, -7, 7)
 	})
 
 	// sheen
@@ -82,7 +82,7 @@ export default function MemberCard({
 	})
 
 	const sheenGradient = useMotionTemplate`
-        radial-gradient(circle at ${gradientX}% ${gradientY}%, hsl(0,0%,80%, 0.1), hsla(0, 0%, 74.9%, 0))
+        radial-gradient(circle at ${gradientX}% ${gradientY}%, hsl(0,0%,80%, 0.3), hsla(0, 0%, 74.9%, 0))
     `
 
 	// handle mouse move on document
@@ -110,7 +110,7 @@ export default function MemberCard({
 		'--background-y': useMotionTemplate`${backgroundY}%`,
 		'--pointer-x': useMotionTemplate`${gradientX}%`,
 		'--pointer-y': useMotionTemplate`${gradientY}%`,
-		'--card-opacity': `${showHolo ? '100%' : '50%'}`,
+		'--card-opacity': `${showHolo ? '85%' : '50%'}`,
 		'--pointer-from-center': useMotionTemplate`${fromCenter}`,
 	}
 
@@ -122,7 +122,7 @@ export default function MemberCard({
 		>
 			<motion.div style={cardStyles}>
 				<motion.div ref={cardRef} className="card">
-					<div className="text-primary/70 dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-background p-[25px] shadow-xl">
+					<div className="text-primary/70 dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-xl bg-background p-[25px] shadow-xl">
 						<div className="h-full w-full overflow-hidden rounded border border-foreground">
 							<div className="flex">
 								<div className="w-32 border-b border-r border-foreground">
@@ -180,8 +180,7 @@ export default function MemberCard({
 						</svg>
 						<div
 							className={clsx(
-								showHolo ? 'opacity-100' : 'opacity-25',
-								'card-shine absolute inset-0 transition',
+								'card-shine absolute inset-0 transition duration-500 after:transition after:duration-500',
 							)}
 						/>
 						<motion.div
