@@ -1,5 +1,6 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	json,
 	redirect,
@@ -48,6 +49,10 @@ const SignupFormSchema = z
 		redirectTo: z.string().optional(),
 	})
 	.and(PasswordAndConfirmPasswordSchema)
+
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
+}
 
 async function requireOnboardingData(request: Request) {
 	await requireAnonymous(request)

@@ -1,3 +1,4 @@
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	BlobLineLogo,
 	BlobLogo,
@@ -6,6 +7,10 @@ import {
 } from '#app/components/logo.js'
 import { rootRouteId } from '#app/root.js'
 import { useRouteIdLoaderData } from '#app/utils/route-id.js'
+
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
+}
 
 export default function Screen() {
 	const { seed } = useRouteIdLoaderData(rootRouteId)

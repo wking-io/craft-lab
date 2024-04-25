@@ -1,5 +1,6 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	json,
 	type ActionFunctionArgs,
@@ -29,6 +30,10 @@ const LoginFormSchema = z.object({
 	redirectTo: z.string().optional(),
 	remember: z.boolean().optional(),
 })
+
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
+}
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	await requireAnonymous(request)

@@ -1,5 +1,6 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import * as E from '@react-email/components'
 import {
 	json,
@@ -22,6 +23,10 @@ import { prepareVerification } from './verify.server.ts'
 const ForgotPasswordSchema = z.object({
 	handleOrEmail: z.union([EmailSchema, HandleSchema]),
 })
+
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
+}
 
 export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData()
