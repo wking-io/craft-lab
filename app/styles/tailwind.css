@@ -330,7 +330,7 @@
 		--input-invalid: var(--red);
 
 		--primary: 240 10% 3.92%;
-		--primary-foreground: 0 0 100%;
+		--primary-foreground: var(--foreground);
 
 		--secondary: theme('colors.zinc.500');
 		--secondary-foreground: 0 0 100%;
@@ -362,7 +362,7 @@
 	}
 
 	.dark {
-		--foreground: 0 0 100%;
+		--foreground: 0 0% 100%;
 		--background: 240 10% 3.92%;
 
 		--muted: 217.2 32.6% 12%;
@@ -379,7 +379,7 @@
 		--input-invalid: 0 62.8% 30.6%;
 
 		--primary-foreground: var(--background);
-		--primary: 0 0 100%;
+		--primary: var(--foreground);
 
 		--secondary: 0, 0%, 100%;
 		--secondary-foreground: var(--background);
