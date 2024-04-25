@@ -55,7 +55,7 @@ export default function VerifyRoute() {
 			<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
 				Check your email
 			</h1>
-			<p className="mt-3 text-pretty text-body-md text-secondary">
+			<p className="text-primary/70 mt-3 text-pretty text-body-md">
 				We've sent you a code to verify your email address.
 			</p>
 		</>
@@ -72,7 +72,7 @@ export default function VerifyRoute() {
 				<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
 					Check your 2FA app
 				</h1>
-				<p className="mt-3 text-pretty text-body-md text-secondary">
+				<p className="text-primary/70 mt-3 text-pretty text-body-md">
 					Please enter your 2FA code to verify your identity.
 				</p>
 			</>

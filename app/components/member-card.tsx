@@ -122,7 +122,7 @@ export default function MemberCard({
 		>
 			<motion.div style={cardStyles}>
 				<motion.div ref={cardRef} className="card">
-					<div className="dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-background p-[25px] text-secondary shadow-xl">
+					<div className="text-primary/70 dark relative flex aspect-[5/7] w-80 items-center justify-center overflow-hidden rounded-lg bg-background p-[25px] shadow-xl">
 						<div className="h-full w-full overflow-hidden rounded border border-foreground">
 							<div className="flex">
 								<div className="w-32 border-b border-r border-foreground">
