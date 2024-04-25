@@ -179,8 +179,8 @@ export default function Index() {
 					ones.
 				</h1>
 				<p className="text-foreground/70 mt-5 text-pretty md:text-lg xl:text-xl">
-					Help us build a space where we learn and share everything about our
-					craft and have fun doing it.
+					Help us build a community where we learn and share everything about
+					our craft and have fun doing it.
 				</p>
 				<WaitlistForm />
 			</div>
