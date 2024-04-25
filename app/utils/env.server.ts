@@ -18,6 +18,7 @@ const schema = z.object({
 	GITHUB_TOKEN: z.string().default('MOCK_GITHUB_TOKEN'),
 	ALLOW_INDEXING: z.enum(['true', 'false']).optional(),
 	SKIP_ALLOWED_PATHS: z.enum(['true', 'false']).optional(),
+	FATHOM_ID: z.string().optional(),
 })
 
 declare global {
@@ -53,6 +54,7 @@ export function getEnv() {
 		MODE: process.env.NODE_ENV,
 		SENTRY_DSN: process.env.SENTRY_DSN,
 		ALLOW_INDEXING: process.env.ALLOW_INDEXING,
+		FATHOM_ID: process.env.FATHOM_ID,
 	}
 }
 

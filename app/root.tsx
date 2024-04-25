@@ -17,9 +17,11 @@ import {
 	ScrollRestoration,
 	useFetchers,
 	useLoaderData,
+	useLocation,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
-import { useEffect } from 'react'
+import * as Fathom from 'fathom-client'
+import { useEffect, useRef } from 'react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
@@ -223,10 +225,23 @@ function Document({
 
 function App() {
 	const data = useLoaderData<typeof loader>()
+	const fathomLoaded = useRef(false)
 	const nonce = useNonce()
+	const location = useLocation()
 	const theme = 'light'
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
+
+	useEffect(() => {
+		if (!fathomLoaded.current && ENV.FATHOM_ID) {
+			Fathom.load(ENV.FATHOM_ID, {
+				url: 'https://cdn.usefathom.com/script.js',
+			})
+			fathomLoaded.current = true
+		} else {
+			Fathom.trackPageview()
+		}
+	}, [location, fathomLoaded, data.ENV])
 
 	useEffect(() => {
 		const favicon = document.getElementById('favicon')
