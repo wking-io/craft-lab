@@ -26,7 +26,6 @@ import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { makeFavicon } from './components/logo.tsx'
-import { EpicProgress } from './components/progress-bar.tsx'
 import { useToast } from './components/toaster.tsx'
 import { href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
@@ -262,7 +261,6 @@ function App() {
 				<Outlet />
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />
-			<EpicProgress />
 		</Document>
 	)
 }
