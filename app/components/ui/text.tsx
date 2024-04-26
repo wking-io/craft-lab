@@ -1,5 +1,5 @@
 import { clsx } from 'clsx'
-import { Link } from '../ui/link'
+import { Link } from './link'
 
 export function Text({
 	className,

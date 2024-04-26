@@ -17,7 +17,7 @@ import {
 import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { Field } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
-import { Button } from '#app/components/ui/button.tsx'
+import { Button } from '#app/components/ui/button.js'
 import {
 	cache,
 	getAllCacheKeys,
@@ -217,11 +217,7 @@ function CacheKeyRow({
 				<input type="hidden" name="cacheKey" value={cacheKey} />
 				<input type="hidden" name="instance" value={instance} />
 				<input type="hidden" name="type" value={type} />
-				<Button
-					size="sm"
-					variant="secondary"
-					{...dc.getButtonProps({ type: 'submit' })}
-				>
+				<Button>
 					{fetcher.state === 'idle'
 						? dc.doubleCheck
 							? 'You sure?'

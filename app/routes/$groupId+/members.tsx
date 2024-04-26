@@ -9,21 +9,17 @@ import {
 import { Form, json, useActionData, useLoaderData } from '@remix-run/react'
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { z } from 'zod'
-import { Button } from '#app/components/catalyst/button.js'
+import { Button } from '#app/components/ui/button.js'
 import {
 	Dialog,
 	DialogActions,
 	DialogBody,
 	DialogDescription,
 	DialogTitle,
-} from '#app/components/catalyst/dialog.js'
-import {
-	ErrorMessage,
-	Field,
-	Label,
-} from '#app/components/catalyst/fieldset.js'
-import { Input } from '#app/components/catalyst/input.js'
+} from '#app/components/ui/dialog.js'
+import { ErrorMessage, Field, Label } from '#app/components/ui/fieldset.js'
 import { Icon } from '#app/components/ui/icon.js'
+import { Input } from '#app/components/ui/input.js'
 import {
 	Table,
 	TableBody,

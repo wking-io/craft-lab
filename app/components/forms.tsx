@@ -1,8 +1,8 @@
 import { useInputControl } from '@conform-to/react'
 import React, { useId } from 'react'
 import { Checkbox, type CheckboxProps } from './ui/checkbox.tsx'
+import { Label } from './ui/fieldset.tsx'
 import { Input } from './ui/input.tsx'
-import { Label } from './ui/label.tsx'
 import { Textarea } from './ui/textarea.tsx'
 
 export type ListOfErrors = Array<string | null | undefined> | null | undefined
@@ -19,7 +19,7 @@ export function ErrorList({
 	return (
 		<ul id={id} className="flex flex-col gap-1">
 			{errorsToRender.map(e => (
-				<li key={e} className="text-[10px] text-destructive">
+				<li key={e} className="text-destructive text-[10px]">
 					{e}
 				</li>
 			))}
@@ -123,9 +123,9 @@ export function CheckboxField({
 					aria-invalid={errorId ? true : undefined}
 					aria-describedby={errorId}
 					checked={input.value === checkedValue}
-					onCheckedChange={state => {
+					onChange={state => {
 						input.change(state.valueOf() ? checkedValue : '')
-						buttonProps.onCheckedChange?.(state)
+						buttonProps.onChange?.(state)
 					}}
 					onFocus={event => {
 						input.focus()
@@ -135,7 +135,6 @@ export function CheckboxField({
 						input.blur()
 						buttonProps.onBlur?.(event)
 					}}
-					type="button"
 				/>
 				<label
 					htmlFor={id}

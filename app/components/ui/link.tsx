@@ -7,16 +7,20 @@ https://catalyst.tailwindui.com/docs#client-side-router-integration
 */
 
 import { DataInteractive as HeadlessDataInteractive } from '@headlessui/react'
-import { type LinkProps, Link as RemixLink } from '@remix-run/react'
 import React from 'react'
 
 export const Link = React.forwardRef(function Link(
-	props: { href: string | LinkProps['to'] } & Omit<LinkProps, 'to'>,
+	{
+		children,
+		...props
+	}: { href: string } & React.ComponentPropsWithoutRef<'a'>,
 	ref: React.ForwardedRef<HTMLAnchorElement>,
 ) {
 	return (
 		<HeadlessDataInteractive>
-			<RemixLink {...props} to={props.href} ref={ref} />
+			<a {...props} ref={ref}>
+				{children}
+			</a>
 		</HeadlessDataInteractive>
 	)
 })

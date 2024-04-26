@@ -15,9 +15,9 @@ import QR from 'qrcode'
 import { useId, type PropsWithChildren } from 'react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
-import { ErrorMessage } from '#app/components/catalyst/fieldset.js'
 import { Logo } from '#app/components/logo.js'
 import MemberCard from '#app/components/member-card.js'
+import { ErrorMessage } from '#app/components/ui/fieldset.js'
 import { StatusButton } from '#app/components/ui/status-button.js'
 import { rootRouteId } from '#app/root.js'
 import { EmailSchema } from '#app/utils/account-validation.js'
@@ -178,7 +178,7 @@ export default function Index() {
 					<br className="hidden md:block" /> Come make more Design Engineer
 					ones.
 				</h1>
-				<p className="text-foreground/70 mt-5 text-pretty md:text-lg xl:text-xl">
+				<p className="mt-5 text-pretty text-foreground/70 md:text-lg xl:text-xl">
 					Help us build a community where we learn and share everything about
 					our craft and have fun doing it.
 				</p>
@@ -192,7 +192,7 @@ export default function Index() {
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Collaborate daily on what matters
 							</h2>
-							<p className="text-foreground/70 mt-4 text-pretty">
+							<p className="mt-4 text-pretty text-foreground/70">
 								Start every day sharing what you're working on. That objective
 								will now be available for tracking progress and having
 								conversations focused around it.
@@ -205,7 +205,7 @@ export default function Index() {
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Plan your long term growth
 							</h2>
-							<p className="text-foreground/70 mt-4 text-pretty">
+							<p className="mt-4 text-pretty text-foreground/70">
 								A community can't help you if we don't know where you are
 								headed. Use milestones to share your big goal for the year, and
 								what you are doing this quarter to achieve it.
@@ -218,7 +218,7 @@ export default function Index() {
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Targeted help when you need it
 							</h2>
-							<p className="text-foreground/70 mt-4 text-pretty">
+							<p className="mt-4 text-pretty text-foreground/70">
 								A wide range of expertise in the community gives you access to
 								the right kind of help when you need it. Signals everyone know
 								that you are looking for active feedback to get past hurdles
@@ -233,7 +233,7 @@ export default function Index() {
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Curated resources from the best people
 							</h2>
-							<p className="text-foreground/70 mt-4 text-pretty">
+							<p className="mt-4 text-pretty text-foreground/70">
 								Submit your favorite resources and access the ones that have
 								been shared by the rest of us. A library of trusted and tried
 								information...it doesn't get better than that.
@@ -247,7 +247,7 @@ export default function Index() {
 							<h2 className="mt-4 text-balance text-xl font-semibold">
 								Let's not forget we want to have fun
 							</h2>
-							<p className="text-foreground/70 mt-4 text-pretty">
+							<p className="mt-4 text-pretty text-foreground/70">
 								Threads is a space for fun and community. It is a group chat
 								with a ton of people who care about the things you do both
 								professionally and creatively.
@@ -283,7 +283,7 @@ export default function Index() {
 								<h2 className="mt-4 text-pretty text-xl font-semibold text-foreground">
 									Help build the platform yourself
 								</h2>
-								<p className="text-foreground/70 mt-4 text-pretty">
+								<p className="mt-4 text-pretty text-foreground/70">
 									Members get full access to contribute to the design and
 									development of making this space something really special.
 								</p>
@@ -303,7 +303,7 @@ export default function Index() {
 					<h2 className="relative mt-3 max-w-4xl text-4xl font-semibold leading-tight md:text-balance md:text-5xl">
 						Only waitlist members will get the holographic overlay.
 					</h2>
-					<p className="text-foreground/70 mt-5 max-w-3xl text-pretty md:text-lg xl:text-xl">
+					<p className="mt-5 max-w-3xl text-pretty text-foreground/70 md:text-lg xl:text-xl">
 						This community is about exploring the craft of design engineering
 						with others, making each other better, and having fun while we do
 						it. Not every idea or project has the space to be explored in our

@@ -9,14 +9,14 @@ import {
 } from '@remix-run/node'
 import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { Icon } from '#app/components/ui/icon.js'
+import { StatusButton } from '#app/components/ui/status-button.js'
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipProvider,
 	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
+} from '#app/components/ui/tooltip.js'
 import { requireAccountId } from '#app/utils/auth.server.ts'
 import { resolveConnectionData } from '#app/utils/connections.server.ts'
 import {

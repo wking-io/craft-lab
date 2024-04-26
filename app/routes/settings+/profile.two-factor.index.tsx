@@ -6,8 +6,8 @@ import {
 	type ActionFunctionArgs,
 } from '@remix-run/node'
 import { Link, useFetcher, useLoaderData } from '@remix-run/react'
-import { Icon } from '#app/components/ui/icon.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { Icon } from '#app/components/ui/icon.js'
+import { StatusButton } from '#app/components/ui/status-button.js'
 import { requireAccountId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { generateTOTP } from '#app/utils/totp.server.ts'

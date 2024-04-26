@@ -26,7 +26,7 @@ export default function Screen() {
 				<h1 className="relative mt-8 max-w-2xl text-balance text-4xl font-semibold leading-tight md:text-5xl">
 					You are now on the waitlist!
 				</h1>
-				<p className="text-primary/70 mt-5 text-pretty md:text-lg xl:text-xl">
+				<p className="mt-5 text-pretty text-primary/70 md:text-lg xl:text-xl">
 					Can't wait to chat. Will shoot you an update to the email you entered
 					shortly. In the meantime, feel free to DM me on X.
 				</p>

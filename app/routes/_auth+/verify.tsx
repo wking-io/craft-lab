@@ -6,9 +6,9 @@ import { Form, useActionData, useSearchParams } from '@remix-run/react'
 import clsx from 'clsx'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
-import { ErrorMessage } from '#app/components/catalyst/fieldset.js'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { StatusButton } from '#app/components/ui/status-button.tsx'
+import { ErrorMessage } from '#app/components/ui/fieldset.js'
+import { StatusButton } from '#app/components/ui/status-button.js'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { seoData } from '#app/utils/seo.js'
@@ -63,7 +63,7 @@ export default function VerifyRoute() {
 			<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
 				Check your email
 			</h1>
-			<p className="text-primary/70 mt-3 text-pretty text-body-md">
+			<p className="mt-3 text-pretty text-body-md text-primary/70">
 				We've sent you a code to verify your email address.
 			</p>
 		</>
@@ -80,7 +80,7 @@ export default function VerifyRoute() {
 				<h1 className="text-balance text-4xl font-semibold leading-tight md:text-5xl">
 					Check your 2FA app
 				</h1>
-				<p className="text-primary/70 mt-3 text-pretty text-body-md">
+				<p className="mt-3 text-pretty text-body-md text-primary/70">
 					Please enter your 2FA code to verify your identity.
 				</p>
 			</>
@@ -117,7 +117,7 @@ export default function VerifyRoute() {
 						)}
 					>
 						<svg
-							className="text-primary/5 absolute -left-1.5 -top-1.5 -z-10 h-[42px] w-auto -scale-y-100 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:scale-y-100"
+							className="absolute -left-1.5 -top-1.5 -z-10 h-[42px] w-auto -scale-y-100 text-primary/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:scale-y-100"
 							viewBox="0 0 125 7"
 						>
 							{/* Layer one */}
