@@ -22,7 +22,6 @@ import {
 import { safeRedirect } from 'remix-utils/safe-redirect'
 import { z } from 'zod'
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
-import { Spacer } from '#app/components/spacer.tsx'
 import { StatusButton } from '#app/components/ui/status-button.js'
 import { NameSchema, HandleSchema } from '#app/utils/account-validation.js'
 import {
@@ -205,7 +204,6 @@ export default function SignupRoute() {
 						Please enter your details.
 					</p>
 				</div>
-				<Spacer size="xs" />
 				<Form
 					method="POST"
 					className="mx-auto min-w-full max-w-sm sm:min-w-[368px]"

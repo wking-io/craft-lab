@@ -3,7 +3,6 @@ import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { Link, Outlet, useMatches } from '@remix-run/react'
 import { z } from 'zod'
-import { Spacer } from '#app/components/spacer.tsx'
 import { Icon } from '#app/components/ui/icon.js'
 import { useAccount } from '#app/utils/account.js'
 import { requireAccountId } from '#app/utils/auth.server.ts'
@@ -71,7 +70,6 @@ export default function EditUserProfile() {
 					))}
 				</ul>
 			</div>
-			<Spacer size="xs" />
 			<main className="mx-auto bg-muted px-6 py-8 md:container md:rounded-3xl">
 				<Outlet />
 			</main>

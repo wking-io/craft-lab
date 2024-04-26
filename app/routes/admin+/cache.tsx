@@ -16,7 +16,6 @@ import {
 } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { Field } from '#app/components/forms.tsx'
-import { Spacer } from '#app/components/spacer.tsx'
 import { Button } from '#app/components/ui/button.js'
 import {
 	cache,
@@ -105,7 +104,6 @@ export default function CacheAdminRoute() {
 	return (
 		<div className="container">
 			<h1 className="text-h1">Cache Admin</h1>
-			<Spacer size="2xs" />
 			<Form
 				method="get"
 				className="flex flex-col gap-4"
@@ -170,7 +168,6 @@ export default function CacheAdminRoute() {
 					</select>
 				</div>
 			</Form>
-			<Spacer size="2xs" />
 			<div className="flex flex-col gap-4">
 				<h2 className="text-h2">LRU Cache:</h2>
 				{data.cacheKeys.lru.map(key => (
@@ -182,7 +179,6 @@ export default function CacheAdminRoute() {
 					/>
 				))}
 			</div>
-			<Spacer size="3xs" />
 			<div className="flex flex-col gap-4">
 				<h2 className="text-h2">SQLite Cache:</h2>
 				{data.cacheKeys.sqlite.map(key => (
