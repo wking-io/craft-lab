@@ -7,7 +7,7 @@ import {
 	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
 } from '@remix-run/node'
-import { Form, Link, useActionData } from '@remix-run/react'
+import { Form, useActionData } from '@remix-run/react'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.js'
@@ -113,9 +113,7 @@ export default function CreatePasswordRoute() {
 			/>
 			<ErrorList id={form.errorId} errors={form.errors} />
 			<div className="grid w-full grid-cols-2 gap-6">
-				<Button variant="secondary" asChild>
-					<Link to="..">Cancel</Link>
-				</Button>
+				<Button>Cancel</Button>
 				<StatusButton
 					type="submit"
 					status={isPending ? 'pending' : form.status ?? 'idle'}
