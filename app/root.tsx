@@ -18,6 +18,7 @@ import {
 	useFetchers,
 	useLoaderData,
 	useLocation,
+	useNavigate,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
 import * as Fathom from 'fathom-client'
@@ -29,6 +30,7 @@ import { makeFavicon } from './components/logo.tsx'
 import { useToast } from './components/toaster.tsx'
 import { href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
+import { useKonamiCode } from './hooks/useKonami.tsx'
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'
 import { getAccountId, logout } from './utils/auth.server.ts'
 import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx'
@@ -227,9 +229,15 @@ function App() {
 	const fathomLoaded = useRef(false)
 	const nonce = useNonce()
 	const location = useLocation()
+	const codeComplete = useKonamiCode()
+	const navigate = useNavigate()
 	const theme = 'light'
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
+
+	useEffect(() => {
+		if (codeComplete) navigate('/login')
+	}, [codeComplete, navigate])
 
 	useEffect(() => {
 		if (!fathomLoaded.current && ENV.FATHOM_ID) {

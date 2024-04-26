@@ -71,7 +71,7 @@ export async function requireAccountId(
 export async function requireAnonymous(request: Request) {
 	const accountId = await getAccountId(request)
 	if (accountId) {
-		throw redirect('/')
+		throw redirect('/dashboard')
 	}
 }
 
