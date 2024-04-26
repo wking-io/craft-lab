@@ -465,6 +465,9 @@
 .card * {
 	/* outline is a little trick to anti-alias */
 	outline: 1px solid transparent;
+	image-rendering: optimizeQuality;
+	transform-style: preserve-3d;
+	overflow: hidden;
 }
 
 .card-shine,

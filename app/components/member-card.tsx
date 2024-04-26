@@ -122,7 +122,7 @@ export default function MemberCard({
 		>
 			<motion.div style={cardStyles}>
 				<motion.div ref={cardRef} className="card">
-					<div className="text-primary/70 dark relative flex aspect-[5/7] w-80 flex-col items-center justify-center overflow-hidden rounded-xl bg-background p-[25px] shadow-xl">
+					<div className="dark relative flex aspect-[5/7] w-80 flex-col items-center justify-center overflow-hidden rounded-xl bg-background p-[25px] text-primary/70 shadow-xl">
 						<div className="h-full w-full overflow-hidden rounded border border-foreground">
 							<div className="flex">
 								<div className="w-32 border-b border-r border-foreground">
@@ -157,30 +157,9 @@ export default function MemberCard({
 							</p>
 						</div>
 						<Cubes width={320} height={(320 * 7) / 5} seed={seed} />
-						<svg
-							viewBox={`0 0 ${320} ${(320 * 7) / 5}`}
-							xmlns="http://www.w3.org/2000/svg"
-							className="absolute inset-0"
-						>
-							<filter id="noiseFilter">
-								<feTurbulence
-									type="fractalNoise"
-									baseFrequency="0.5"
-									numOctaves="6"
-									stitchTiles="stitch"
-								/>
-							</filter>
-
-							<rect
-								width="100%"
-								height="100%"
-								filter="url(#noiseFilter)"
-								className="mix-blend-soft-light"
-							/>
-						</svg>
 						<div
 							className={clsx(
-								'card-shine absolute inset-0 transition duration-500 after:transition after:duration-500',
+								'card-shine absolute inset-0 rounded-2xl transition duration-500 after:transition after:duration-500',
 							)}
 						/>
 						<motion.div
