@@ -294,24 +294,31 @@
 
 		--pink: 315 87% 67%;
 		--pink-foreground: 315 87% 95%;
+		--pink-dark: 331 89% 51%;
 
 		--orange: 19 87% 61%;
 		--orange-foreground: 19 87% 95%;
+		--orange-dark: 19 87% 61%;
 
 		--yellow: 45 86% 56%;
 		--yellow-foreground: 45 86% 95%;
+		--yellow-dark: 36 92% 48%;
 
 		--green: 162 57% 48%;
 		--green-foreground: 162 57% 95%;
+		--green-dark: 162 57% 48%;
 
 		--lime: 87 69% 56%;
 		--lime-foreground: 87 69% 95%;
+		--lime-dark: 87 69% 56%;
 
 		--blue: 219 92% 58%;
 		--blue-foreground: 219 92% 95%;
+		--blue-dark: 219 92% 58%;
 
 		--purple: 246 91% 62%;
 		--purple-foreground: 246 91% 95%;
+		--purple-dark: 246 91% 62%;
 
 		--background: 0 0% 100%;
 		--foreground: 240 10% 3.92%;

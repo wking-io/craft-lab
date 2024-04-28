@@ -33,30 +33,37 @@ export const extendedTheme = {
 		pink: {
 			DEFAULT: 'hsl(var(--pink))',
 			foreground: 'hsl(var(--pink-foreground))',
+			dark: 'hsl(var(--pink-dark))',
 		},
 		orange: {
 			DEFAULT: 'hsl(var(--orange))',
 			foreground: 'hsl(var(--orange-foreground))',
+			dark: 'hsl(var(--orange-dark))',
 		},
 		yellow: {
 			DEFAULT: 'hsl(var(--yellow))',
 			foreground: 'hsl(var(--yellow-foreground))',
+			dark: 'hsl(var(--yellow-dark))',
 		},
 		green: {
 			DEFAULT: 'hsl(var(--green))',
 			foreground: 'hsl(var(--green-foreground))',
+			dark: 'hsl(var(--green-dark))',
 		},
 		lime: {
 			DEFAULT: 'hsl(var(--lime))',
 			foreground: 'hsl(var(--lime-foreground))',
+			dark: 'hsl(var(--lime-dark))',
 		},
 		blue: {
 			DEFAULT: 'hsl(var(--blue))',
 			foreground: 'hsl(var(--blue-foreground))',
+			dark: 'hsl(var(--blue-dark))',
 		},
 		purple: {
 			DEFAULT: 'hsl(var(--purple))',
 			foreground: 'hsl(var(--purple-foreground))',
+			dark: 'hsl(var(--purple-dark))',
 		},
 		muted: {
 			DEFAULT: 'hsl(var(--muted))',
