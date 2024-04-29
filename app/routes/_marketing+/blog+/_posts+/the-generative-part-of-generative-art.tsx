@@ -1,6 +1,9 @@
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
+import clsx from 'clsx'
+import { useState } from 'react'
 import { getHighlighter } from 'shiki'
+import { RefreshIcon } from '#app/components/two-tone-icon.js'
 import { theme } from '#app/utils/shiki.js'
 
 const exampleOne = `/** 
@@ -161,7 +164,7 @@ export default function Screen() {
 	const { exampleOne, exampleTwo, exampleThree } =
 		useLoaderData<typeof loader>()
 	return (
-		<article className="prose prose-p:text-pretty prose-p:text-foreground/70 mx-auto py-16 lg:py-24 lg:text-lg">
+		<article className="prose mx-auto py-16 prose-p:text-pretty prose-p:text-foreground/70 lg:py-24 lg:text-lg">
 			<h1>The Generative Part of Generative Art</h1>
 			<p>
 				Part of the creation of the Craft Lab brand has involved generative
@@ -200,6 +203,9 @@ export default function Screen() {
 				dangerouslySetInnerHTML={{ __html: exampleOne }}
 				className="text-sm"
 			/>
+
+			<DemoOne />
+
 			<p>BOOM! Generative art.</p>
 
 			<h3>Let’s take it a little further</h3>
@@ -247,5 +253,51 @@ export default function Screen() {
 			/>
 			<h2>Random, but Repeatable</h2>
 		</article>
+	)
+}
+
+function DemoOne() {
+	const [color, setColor] = useState(generateColor())
+
+	/**
+	 * This function is used to return a random positive integer (whole number)
+	 * that will never be any larger than the max integer you pass in.
+	 * This is extremely useful when trying to get a randomized value from
+	 * an array.
+	 **/
+	function getRandomPositiveIntWithin(max: number) {
+		return Math.floor(Math.random() * max)
+	}
+
+	/**
+	 * This function will give us a random color from the array of colors
+	 * we have defined using the `getRandomPositiveIntWithin`. We use the
+	 * length of the colors array to make sure the index lookup will be
+	 * guaranteed to find a match.
+	 **/
+	function generateColor() {
+		const colors = [
+			'bg-pink',
+			'bg-orange',
+			'bg-yellow',
+			'bg-lime',
+			'bg-green',
+			'bg-blue',
+			'bg-purple',
+		]
+		return colors[getRandomPositiveIntWithin(colors.length)]
+	}
+
+	return (
+		<div className="relative flex w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12">
+			<div className={clsx(color, 'h-12 w-12')} />
+			<button
+				onClick={() => setColor(generateColor())}
+				className="group absolute bottom-4 right-4 w-10 p-2 transition hover:rotate-90"
+			>
+				<span className="sr-only">Refresh Example</span>
+				<RefreshIcon />
+			</button>
+		</div>
 	)
 }
