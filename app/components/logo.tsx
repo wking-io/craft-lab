@@ -13,25 +13,25 @@ const COLORS = [
 	'#34BF96',
 	'#EFBD2D',
 	'#97DC42',
-	'#F27D47',
-	'#5948F6',
-	'#F460CF',
+	'#F28F47',
+	'#7863F9',
+	'#FF77DD',
 ]
 
 const rowColors = [
 	[
-		'#5948F6', // PURPLE
-		'#5948F6', // PURPLE
+		'#7863F9', // PURPLE
+		'#7863F9', // PURPLE
 		'#3479F6', // BLUE
 	],
 	[
-		'#5948F6', // PURPLE
+		'#7863F9', // PURPLE
 		'#3479F6', // BLUE
 		'#3479F6', // BLUE
 		'#34BF96', // GREEN
 	],
 	[
-		'#5948F6', // PURPLE
+		'#7863F9', // PURPLE
 		'#3479F6', // BLUE
 		'#34BF96', // GREEN
 	],
@@ -43,26 +43,26 @@ const rowColors = [
 	],
 	[
 		'#EFBD2D', // YELLOW
-		'#F27D47', // ORANGE
+		'#F28F47', // ORANGE
 		'#34BF96', // GREEN
 		'#97DC42', // LIME
 	],
 	[
 		'#EFBD2D', // YELLOW
-		'#F27D47', // ORANGE
-		'#F460CF', // PINK
+		'#F28F47', // ORANGE
+		'#FF77DD', // PINK
 		'#97DC42', // LIME
 	],
 	[
 		'#EFBD2D', // YELLOW
-		'#F27D47', // ORANGE
-		'#F460CF', // PINK
-		'#F27D47', // ORANGE
-		'#F460CF', // PINK
+		'#F28F47', // ORANGE
+		'#FF77DD', // PINK
+		'#F28F47', // ORANGE
+		'#FF77DD', // PINK
 	],
 	[
-		'#F27D47', // ORANGE
-		'#F460CF', // PINK
+		'#F28F47', // ORANGE
+		'#FF77DD', // PINK
 	],
 ]
 
@@ -441,9 +441,9 @@ function BlobLogo({ seed, className }: BaseProps) {
 
 const best = [
 	'#EFBD2D', // YELLOW
-	'#F27D47', // ORANGE
-	'#F460CF', // PINK
-	'#5948F6', // PURPLE
+	'#F28F47', // ORANGE
+	'#FF77DD', // PINK
+	'#7863F9', // PURPLE
 	'#3479F6', // BLUE
 	'#34BF96', // GREEN
 	'#97DC42', // LIME

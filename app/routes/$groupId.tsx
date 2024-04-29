@@ -10,7 +10,14 @@ import {
 } from '@remix-run/react'
 import clsx from 'clsx'
 import { Logo } from '#app/components/logo.js'
-import { MilestoneIcon, ObjectiveIcon } from '#app/components/two-tone-icon.js'
+import {
+	LibraryIcon,
+	MembersIcon,
+	MilestoneIcon,
+	ObjectiveIcon,
+	SignalsIcon,
+	ThreadsIcon,
+} from '#app/components/two-tone-icon.js'
 import { Icon } from '#app/components/ui/icon.js'
 import { rootRouteId } from '#app/root.js'
 import { requireAccountId } from '#app/utils/auth.server.js'
@@ -114,44 +121,10 @@ export default function Screen() {
 						>
 							{({ isActive }) => (
 								<>
-									<span
-										className={clsx(
-											isActive
-												? 'bg-lime text-lime-foreground'
-												: 'bg-primary group-hover:bg-lime group-hover:text-lime-foreground',
-											'inline-flex h-6 w-6 items-center justify-center rounded text-white',
-										)}
-									>
-										<Icon name="target" size="sm" />
+									<span className="h-auto w-5">
+										<SignalsIcon active={isActive} />
 									</span>
 									Signals
-								</>
-							)}
-						</NavLink>
-						<NavLink
-							to={generatePath('/:groupId/threads', { groupId })}
-							className={({ isActive }) =>
-								clsx(
-									isActive
-										? 'bg-primary/5 text-primary'
-										: 'text-primary/60 hover:bg-primary/5',
-									'group flex items-center gap-2 rounded p-2 text-sm font-medium',
-								)
-							}
-						>
-							{({ isActive }) => (
-								<>
-									<span
-										className={clsx(
-											isActive
-												? 'bg-pink text-purple-foreground'
-												: 'bg-primary group-hover:bg-purple group-hover:text-purple-foreground',
-											'inline-flex h-6 w-6 items-center justify-center rounded text-white',
-										)}
-									>
-										<Icon name="chat-bubble" size="sm" />
-									</span>
-									Threads
 								</>
 							)}
 						</NavLink>
@@ -168,17 +141,30 @@ export default function Screen() {
 						>
 							{({ isActive }) => (
 								<>
-									<span
-										className={clsx(
-											isActive
-												? 'bg-blue text-blue-foreground'
-												: 'bg-primary group-hover:bg-blue group-hover:text-blue-foreground',
-											'inline-flex h-6 w-6 items-center justify-center rounded text-white',
-										)}
-									>
-										<Icon name="bookmark" size="sm" />
+									<span className="h-auto w-5">
+										<LibraryIcon active={isActive} />
 									</span>
 									Library
+								</>
+							)}
+						</NavLink>
+						<NavLink
+							to={generatePath('/:groupId/threads', { groupId })}
+							className={({ isActive }) =>
+								clsx(
+									isActive
+										? 'bg-primary/5 text-primary'
+										: 'text-primary/60 hover:bg-primary/5',
+									'group flex items-center gap-2 rounded p-2 text-sm font-medium',
+								)
+							}
+						>
+							{({ isActive }) => (
+								<>
+									<span className="h-auto w-5">
+										<ThreadsIcon active={isActive} />
+									</span>
+									Threads
 								</>
 							)}
 						</NavLink>
@@ -195,15 +181,8 @@ export default function Screen() {
 						>
 							{({ isActive }) => (
 								<>
-									<span
-										className={clsx(
-											isActive
-												? 'bg-orange text-orange-foreground'
-												: 'bg-primary group-hover:bg-orange group-hover:text-orange-foreground',
-											'inline-flex h-6 w-6 items-center justify-center rounded text-white',
-										)}
-									>
-										<Icon name="person" size="sm" />
+									<span className="h-auto w-5">
+										<MembersIcon active={isActive} />
 									</span>
 									Members
 								</>
