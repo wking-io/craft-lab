@@ -217,16 +217,15 @@ const colors = [
 **/
 function getRandomPositiveIntWithin(max: number) { 
   return Math.floor(Math.random() * max)
-} 
+}
 
-/** 
-* This function will give us a random color from the array of colors
-* we have defined using the \`getRandomPositiveIntWithin\`. We use the
-* length of the colors array to make sure the index lookup will be
-* guaranteed to find a match.
-**/
-function generateColor(colors: string[]) {
-  return colors[getRandomPositiveIntWithin(colors.length)]
+/**
+ * Simplex Noise generates a value between -1 and 1, but we are working with an
+ * array that will not accept a negative index. We will be converting the original
+ * noise range to fit the 0 to 1 scale we need.
+ **/
+function getColorByNoise(noise: number) {
+	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
 }
 
 /** 
@@ -235,15 +234,14 @@ function generateColor(colors: string[]) {
 * Useful for creating rows and columns as seen below.
 **/
 function createArrayOfLength(length: number): number[] {
-	return Array.from(Array(length), (_, i) => i)
+	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
 }
 
 function ColorBox({
-	xPercent,
-	yPercent,
+	noise,
 	...props
-}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
-	const color = generateColor([...colors[xPercent], ...colors[yPercent]])
+}: ComponentProps<'rect'> & { noise: number }) {
+	const color = getColorByNoise(noise)
 	return <rect {...props} className={color} />
 }
 
@@ -276,7 +274,8 @@ function ColorGrid() {
   )
 }`
 
-const exampleSix = `import { makeNoise2D } from 'open-simplex-noise'
+const exampleSix = `import Alea from 'alea'
+import { makeNoise2D } from 'open-simplex-noise'
 
 /** 
 * Here we are just going back to our basic array of colors and will let the
@@ -293,23 +292,21 @@ const colors = [
 ]
 
 /** 
-* This function is used to return a random positive integer (whole number) 
-* that will never be any larger than the max integer you pass in. 
-* This is extremely useful when trying to get a randomized value from 
-* an array.
+* This function is now updated to accept the random number and the max. This
+* allows us to make sure that we are passing in a number we know is connected
+* to our seeded PRNG.
 **/
-function getRandomPositiveIntWithin(max: number) { 
-  return Math.floor(Math.random() * max)
+function getRandomPositiveIntWithin(randomNum: number, max: number) { 
+  return Math.floor(randomNum * max)
 } 
 
-/** 
-* This function will give us a random color from the array of colors
-* we have defined using the \`getRandomPositiveIntWithin\`. We use the
-* length of the colors array to make sure the index lookup will be
-* guaranteed to find a match.
-**/
-function generateColor(colors: string[]) {
-  return colors[getRandomPositiveIntWithin(colors.length)]
+/**
+ * Simplex Noise generates a value between -1 and 1, but we are working with an
+ * array that will not accept a negative index. We will be converting the original
+ * noise range to fit the 0 to 1 scale we need.
+ **/
+function getColorByNoise(noise: number) {
+	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
 }
 
 /** 
@@ -318,45 +315,46 @@ function generateColor(colors: string[]) {
 * Useful for creating rows and columns as seen below.
 **/
 function createArrayOfLength(length: number): number[] {
-	return Array.from(Array(length), (_, i) => i)
+	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
 }
 
 function ColorBox({
-	xPercent,
-	yPercent,
+	noise,
 	...props
-}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
-	const color = generateColor([...colors[xPercent], ...colors[yPercent]])
+}: ComponentProps<'rect'> & { noise: number }) {
+	const color = getColorByNoise(noise)
 	return <rect {...props} className={color} />
 }
 
-function ColorGrid() { 
-  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(50))
-  const boxSize = 6
-  const xSmoothness = 20
-  const ySmoothness = 20
-  const noise2D = makeNoise2D(Math.random())
-  return (
-    <svg
-		width={rows.length * boxSize}
-		height={columns.length * boxSize}
-		viewBox={\`0 0 \${rows.length} \${columns.length}\`}
-	>
-		{rows.map(x =>
-			columns.map(y => (
-				<ColorBox
-					x={x}
-					y={y}
-					noise={noise2D(x / xSmoothness, y / ySmoothness)}
-					width="1"
-					height="1"
-					key={\`pixel-\${x}-\${y}\`}
-				/>
-			)),
-		)}
-	</svg>
-  )
+function ColorGrid() {
+	const seed = 99
+	const generator = Alea(seed)
+	const rows = createArrayOfLength(getRandomPositiveIntWithin(generator(), 100))
+	const columns = createArrayOfLength(getRandomPositiveIntWithin(generator(), 50))
+	const boxSize = 6
+	const xSmoothness = 20
+	const ySmoothness = 20
+	const noise2D = makeNoise2D(generator())
+	return (
+		<svg
+			width={rows.length * boxSize}
+			height={columns.length * boxSize}
+			viewBox={\`0 0 \${rows.length} \${columns.length}\`}
+		>
+			{rows.map(x =>
+				columns.map(y => (
+					<ColorBox
+						x={x}
+						y={y}
+						noise={noise2D(x / xSmoothness, y / ySmoothness)}
+						width="1"
+						height="1"
+						key={\`pixel-\${x}-\${y}\`}
+					/>
+				)),
+			)}
+		</svg>
+	)
 }`
 
 export async function loader() {
@@ -430,7 +428,7 @@ export default function Screen() {
 			</p>
 			<div
 				dangerouslySetInnerHTML={{ __html: exampleOne }}
-				className="text-sm"
+				className="text-sm md:-mx-10 lg:-mx-12"
 			/>
 
 			<DemoOne />
@@ -446,7 +444,7 @@ export default function Screen() {
 			</p>
 			<div
 				dangerouslySetInnerHTML={{ __html: exampleTwo }}
-				className="text-sm"
+				className="text-sm md:-mx-10 lg:-mx-12"
 			/>
 
 			<DemoTwo />
@@ -481,7 +479,7 @@ export default function Screen() {
 
 			<div
 				dangerouslySetInnerHTML={{ __html: exampleThree }}
-				className="text-sm"
+				className="text-sm md:-mx-10 lg:-mx-12"
 			/>
 
 			<DemoThree />
@@ -531,7 +529,7 @@ export default function Screen() {
 
 			<div
 				dangerouslySetInnerHTML={{ __html: exampleFour }}
-				className="text-sm"
+				className="text-sm md:-mx-10 lg:-mx-12"
 			/>
 
 			<DemoFour />
@@ -569,35 +567,34 @@ export default function Screen() {
 				<code className="inline-block bg-gray-100 text-sm text-purple before:hidden after:hidden">
 					Math.random()
 				</code>{' '}
-				under the hood) that outputs a randomized number. We will be using the
-				sfc32 algorithm. It is a very simple and fast PRNG.
+				under the hood) that outputs a randomized number.
 			</p>
-			<div className="callout">
-				The ALEA PRNG is another really good algorithm especially when you know
-				you will be generating a large number of randomized data.
-			</div>
 			<p>
 				However, the big difference between Math.random and using a “real” PRNG
 				is the ability to accept a seed.
 			</p>
 			<p>
-				A seed is just a number or in our case a set of four numbers that we
-				pass to the PRNG that guarantee that the numbers that are output are
-				always the same. Let’s take an interactive look real quick.
+				A seed is just a number that we pass to the PRNG that guarantee that the
+				numbers that are output are always the same. Let’s take an interactive
+				look at how that will work real quick.
+			</p>
+			<p>
+				The example below uses the Alea PRNG, and when we pass the same seed you
+				can see that the first four generated numbers will always be the same.
+				Try changing the numbers around and matching them back up.
 			</p>
 
-			{/** Add Demo Five here **/}
+			<DemoFive />
 
 			<p>
-				See? With repeatable randomness it means we can save and track inputs
-				that make great outputs with the visual algorithms we are building.
-				Let's implement seeding with our latest example for our color grid using
-				simplex noise.
+				See? Repeatable randomness. This means we can save and track inputs that
+				make great outputs. Let's implement seeding with our latest example for
+				our color grid that is using simplex noise.
 			</p>
 
 			<div
 				dangerouslySetInnerHTML={{ __html: exampleSix }}
-				className="text-sm"
+				className="text-sm md:-mx-10 lg:-mx-12"
 			/>
 
 			<DemoSix />
@@ -689,7 +686,7 @@ function DemoWrapper({
 		<div
 			className={clsx(
 				className,
-				'relative flex w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12',
+				'relative flex items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12 md:-mx-10 lg:-mx-12',
 			)}
 		>
 			{children}
@@ -1038,8 +1035,82 @@ function DemoFour() {
 	)
 }
 
+function DemoFive() {
+	const [seedOne, setSeedOne] = useState<number>(99)
+	const [seedTwo, setSeedTwo] = useState<number>(99)
+
+	const outputOne = useMemo(() => {
+		const generator = Alea(seedOne)
+		return [generator(), generator(), generator(), generator()]
+	}, [seedOne])
+
+	const outputTwo = useMemo(() => {
+		const generator = Alea(seedTwo)
+		return [generator(), generator(), generator(), generator()]
+	}, [seedTwo])
+
+	return (
+		<div className="relative grid grid-cols-2 items-center rounded-xl border border-gray-200 bg-gray-100 p-12 md:-mx-10 lg:-mx-12">
+			<div>
+				<div className="flex items-center gap-2 font-mono text-xs">
+					<label htmlFor="seed">Seed One</label>
+					<input
+						type="number"
+						min="1"
+						max="100"
+						id="seed"
+						name="seed"
+						value={seedOne}
+						onChange={e => {
+							setSeedOne(e.target.valueAsNumber)
+						}}
+						className="w-28 rounded-none border border-foreground px-1.5 py-0.5"
+					/>
+				</div>
+
+				{outputOne?.length ? (
+					<div className="not-prose mt-6 flex flex-col gap-2 text-sm">
+						{outputOne.map(o => (
+							<p className="text-bold font-mono" key={`output-${o}`}>
+								{o}
+							</p>
+						))}
+					</div>
+				) : null}
+			</div>
+			<div>
+				<div className="flex items-center gap-2 font-mono text-xs">
+					<label htmlFor="seed">Seed Two</label>
+					<input
+						type="number"
+						min="1"
+						max="100"
+						id="seed"
+						name="seed"
+						value={seedTwo}
+						onChange={e => {
+							setSeedTwo(e.target.valueAsNumber)
+						}}
+						className="w-28 rounded-none border border-foreground px-1.5 py-0.5"
+					/>
+				</div>
+
+				{outputTwo?.length ? (
+					<div className="not-prose mt-6 flex flex-col gap-2 text-sm">
+						{outputTwo.map(o => (
+							<p className="text-bold font-mono" key={`output-${o}`}>
+								{o}
+							</p>
+						))}
+					</div>
+				) : null}
+			</div>
+		</div>
+	)
+}
+
 function DemoSix() {
-	const [seed, setSeed] = useState<number>(1234560349)
+	const [seed, setSeed] = useState<number>(99)
 	const generator = useMemo(() => {
 		return Alea(seed)
 	}, [seed])
@@ -1087,7 +1158,7 @@ function DemoSix() {
 	}
 
 	return (
-		<div className="relative flex min-h-[410px] w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12">
+		<div className="relative flex min-h-[410px] items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12 md:-mx-10 lg:-mx-12">
 			<svg
 				width={rows.length * boxSize}
 				height={columns.length * boxSize}
@@ -1139,12 +1210,12 @@ function DemoSix() {
 				<input
 					type="number"
 					min="1"
-					max="999999999"
+					max="100"
 					id="seed"
 					name="seed"
 					value={seed}
 					onChange={e => setSeed(e.target.valueAsNumber)}
-					className="rounded-none border border-foreground px-1.5 py-0.5"
+					className="w-28 rounded-none border border-foreground px-1.5 py-0.5"
 				/>
 			</div>
 		</div>
