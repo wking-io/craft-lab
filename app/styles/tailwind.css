@@ -623,3 +623,30 @@
 	);
 	filter: saturate(1.5);
 }
+
+input[type='range'] {
+	--g: 4px; /* the gap */
+	--l: 3px; /* line thickness*/
+}
+
+input[type='range' i]::-webkit-slider-thumb {
+	@apply h-2 rounded-none;
+	background-color: var(--c);
+	aspect-ratio: 1;
+	box-shadow: 0 0 0 var(--l) inset var(--c);
+	border-image: linear-gradient(90deg, var(--c) 50%, #fff 0) 0 1 /
+		calc(50% - var(--l) / 2) 100vw/0 calc(100vw + var(--g));
+	-webkit-appearance: none;
+	appearance: none;
+}
+/* Firefox */
+input[type='range']::-moz-range-thumb {
+	@apply h-2 rounded-none;
+	background-color: var(--c);
+	aspect-ratio: 1;
+	box-shadow: 0 0 0 var(--l) inset var(--c);
+	border-image: linear-gradient(90deg, var(--c) 50%, #fff 0) 0 1 /
+		calc(50% - var(--l) / 2) 100vw/0 calc(100vw + var(--g));
+	-moz-appearance: none;
+	appearance: none;
+}
