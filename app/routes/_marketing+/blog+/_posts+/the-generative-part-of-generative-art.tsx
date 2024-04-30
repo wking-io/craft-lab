@@ -1,7 +1,7 @@
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { type ComponentProps, useState, type PropsWithChildren } from 'react'
 import { getHighlighter } from 'shiki'
 import { RefreshIcon } from '#app/components/two-tone-icon.js'
 import { theme } from '#app/utils/shiki.js'
@@ -164,7 +164,7 @@ export default function Screen() {
 	const { exampleOne, exampleTwo, exampleThree } =
 		useLoaderData<typeof loader>()
 	return (
-		<article className="prose mx-auto py-16 prose-p:text-pretty prose-p:text-foreground/70 lg:py-24 lg:text-lg">
+		<article className="prose mx-auto py-16 prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
 			<h1>The Generative Part of Generative Art</h1>
 			<p>
 				Part of the creation of the Craft Lab brand has involved generative
@@ -219,6 +219,9 @@ export default function Screen() {
 				dangerouslySetInnerHTML={{ __html: exampleTwo }}
 				className="text-sm"
 			/>
+
+			<DemoTwo />
+
 			<p>
 				Okay, now we're cooking! We have color generation and size generation.
 				However, just because we are generating randomized values that are
@@ -251,8 +254,55 @@ export default function Screen() {
 				dangerouslySetInnerHTML={{ __html: exampleThree }}
 				className="text-sm"
 			/>
+
+			<DemoThree />
+
 			<h2>Random, but Repeatable</h2>
 		</article>
+	)
+}
+
+function DemoWrapper({
+	children,
+	onClick,
+	className = '',
+}: PropsWithChildren<{ onClick(): void; className?: string }>) {
+	return (
+		<div
+			className={clsx(
+				className,
+				'relative flex w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12',
+			)}
+		>
+			{children}
+			<button
+				onClick={onClick}
+				className="group absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 font-mono text-xs hover:bg-gray-200"
+			>
+				<svg
+					className="absolute -right-px -top-px h-[24px] w-[24px] rotate-0"
+					viewBox="0 0 4 4"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<rect
+						className="fill-transparent group-hover:fill-gray-100"
+						x="0"
+						y="0"
+						width="4"
+						height="4"
+					/>
+					<path
+						d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+						className="fill-transparent group-hover:fill-gray-200"
+					/>
+				</svg>
+				<span>Refresh Example</span>
+				<span className="h-auto w-4 transition group-hover:rotate-90">
+					<RefreshIcon />
+				</span>
+			</button>
+		</div>
 	)
 }
 
@@ -289,15 +339,169 @@ function DemoOne() {
 	}
 
 	return (
-		<div className="relative flex w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12">
+		<DemoWrapper onClick={() => setColor(generateColor())}>
 			<div className={clsx(color, 'h-12 w-12')} />
-			<button
-				onClick={() => setColor(generateColor())}
-				className="group absolute bottom-4 right-4 w-10 p-2 transition hover:rotate-90"
+		</DemoWrapper>
+	)
+}
+
+function DemoTwo() {
+	const [rows, setRows] = useState(
+		createArrayOfLength(getRandomPositiveIntWithin(100)),
+	)
+	const [columns, setColumns] = useState(
+		createArrayOfLength(getRandomPositiveIntWithin(50)),
+	)
+	const boxSize = 6
+	/**
+	 * This function is used to return a random positive integer (whole number)
+	 * that will never be any larger than the max integer you pass in.
+	 * This is extremely useful when trying to get a randomized value from
+	 * an array.
+	 **/
+	function getRandomPositiveIntWithin(max: number) {
+		return Math.floor(Math.random() * max)
+	}
+
+	/**
+	 * This function will give us a random color from the array of colors
+	 * we have defined using the `getRandomPositiveIntWithin`. We use the
+	 * length of the colors array to make sure the index lookup will be
+	 * guaranteed to find a match.
+	 **/
+	function generateColor() {
+		const colors = [
+			'fill-pink',
+			'fill-orange',
+			'fill-yellow',
+			'fill-lime',
+			'fill-green',
+			'fill-blue',
+			'fill-purple',
+		]
+		return colors[getRandomPositiveIntWithin(colors.length)]
+	}
+
+	function createArrayOfLength(length: number): number[] {
+		return Array.from(Array(length), (_, i) => i)
+	}
+
+	function ColorBox(props: ComponentProps<'rect'>) {
+		const color = generateColor()
+		return <rect {...props} className={color} />
+	}
+
+	return (
+		<DemoWrapper
+			className="min-h-96"
+			onClick={() => {
+				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
+				setColumns(createArrayOfLength(getRandomPositiveIntWithin(50)))
+			}}
+		>
+			<svg
+				width={rows.length * boxSize}
+				height={columns.length * boxSize}
+				viewBox={`0 0 ${rows.length} ${columns.length}`}
 			>
-				<span className="sr-only">Refresh Example</span>
-				<RefreshIcon />
-			</button>
-		</div>
+				{rows.map(x =>
+					columns.map(y => (
+						<ColorBox
+							x={x}
+							y={y}
+							width="1"
+							height="1"
+							key={`pixel-${x}-${y}`}
+						/>
+					)),
+				)}
+			</svg>
+		</DemoWrapper>
+	)
+}
+
+function DemoThree() {
+	const [rows, setRows] = useState(
+		createArrayOfLength(getRandomPositiveIntWithin(100)),
+	)
+	const [columns, setColumns] = useState(
+		createArrayOfLength(getRandomPositiveIntWithin(50)),
+	)
+	const boxSize = 6
+
+	const colors = [
+		['fill-blue', 'fill-purple', 'fill-purple'],
+		['fill-green', 'fill-blue', 'fill-purple'],
+		['fill-green', 'fill-blue', 'fill-purple'],
+		['fill-lime', 'fill-green', 'fill-blue'],
+		['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
+		['fill-yellow', 'fill-lime', 'fill-green'],
+		['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
+		['fill-pink', 'fill-yellow', 'fill-lime'],
+		['fill-pink', 'fill-orange', 'fill-yellow'],
+		['fill-pink', 'fill-orange', 'fill-orange'],
+	]
+
+	/**
+	 * This function is used to return a random positive integer (whole number)
+	 * that will never be any larger than the max integer you pass in.
+	 * This is extremely useful when trying to get a randomized value from
+	 * an array.
+	 **/
+	function getRandomPositiveIntWithin(max: number) {
+		return Math.floor(Math.random() * max)
+	}
+
+	/**
+	 * This function will give us a random color from the array of colors
+	 * we have defined using the `getRandomPositiveIntWithin`. We use the
+	 * length of the colors array to make sure the index lookup will be
+	 * guaranteed to find a match.
+	 **/
+	function generateColor(colors: string[]) {
+		return colors[getRandomPositiveIntWithin(colors.length)]
+	}
+
+	function createArrayOfLength(length: number): number[] {
+		return Array.from(Array(length), (_, i) => i)
+	}
+
+	function ColorBox({
+		xPercent,
+		yPercent,
+		...props
+	}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
+		const color = generateColor([...colors[xPercent], ...colors[yPercent]])
+		return <rect {...props} className={color} />
+	}
+
+	return (
+		<DemoWrapper
+			className="min-h-96"
+			onClick={() => {
+				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
+				setColumns(createArrayOfLength(getRandomPositiveIntWithin(50)))
+			}}
+		>
+			<svg
+				width={rows.length * boxSize}
+				height={columns.length * boxSize}
+				viewBox={`0 0 ${rows.length} ${columns.length}`}
+			>
+				{rows.map(x =>
+					columns.map(y => (
+						<ColorBox
+							x={x}
+							y={y}
+							xPercent={Math.floor((x / rows.length) * colors.length)}
+							yPercent={Math.floor((y / columns.length) * colors.length)}
+							width="1"
+							height="1"
+							key={`pixel-${x}-${y}`}
+						/>
+					)),
+				)}
+			</svg>
+		</DemoWrapper>
 	)
 }
