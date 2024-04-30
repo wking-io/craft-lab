@@ -257,7 +257,109 @@ export default function Screen() {
 
 			<DemoThree />
 
+			<p>
+				Okay, now the output of our visual algorithm is feeling more intentional
+				and designed. There is one more constraint concept that I want to
+				introduce you to. Our color example is very easy to hardcode our
+				available values and select them, but as you introduce more complex
+				variables like distance or size in your work how can we add constraints
+				without needing to manually enter and control every available value?
+			</p>
+
+			<h3>Pattern Algorithms</h3>
+
+			<p>
+				In generative art there are a huge library of common visual /
+				mathematical algorithms that allow you to create patterns that have a
+				feeling of intention and direction by adding constraints to the
+				randomness in your work.
+			</p>
+
+			<p>Here are a list of some commonly used ones:</p>
+
+			<ul>
+				<li>Simplex Noise</li>
+				<li>Perlin Noise</li>
+				<li>Fibonacci Sequence</li>
+				<li>L-System</li>
+				<li>Truchet Tiles</li>
+			</ul>
+
+			<p>
+				However, there is a wide world of available pattern algorithms to
+				experiment with.
+			</p>
+
+			<p>
+				For demonstration let me show you how we can use Simplex Noise in the
+				example we have been building vs manually grouping colors.
+			</p>
+
+			<div className="callout">
+				Simplex Noise is an algorithm created by Ken Perlin. It is most commonly
+				used in video games topography and generative art…obviously.
+			</div>
+
+			{/** Add Demo Four here **/}
+
+			<p>
+				We are just substituting our random number with the noise value that
+				gets output by the simplex algorithm, and since the simplex algorithm is
+				a very well know algorithm it has a library that exists we can use
+				without needing to write our own.
+			</p>
+
 			<h2>Random, but Repeatable</h2>
+
+			<p>
+				As I close out this article there is one more VERY important detail.
+				What happens in the examples about when you hit the rerun button? You
+				get a brand new output! What if when you press the button you really
+				like the output. What happens if your dev environment crashes or your
+				browser tab gets closed? That version that you really liked is gone.
+				Most likely forever because of the probabilities of so many completely
+				random values being used.
+			</p>
+
+			<p>
+				So the question is, how to generate art that is random, but repeatable?
+			</p>
+
+			<h3>The Mighty Seed</h3>
+			<p>
+				In generative art the ability to create repeatable outputs is captured
+				in two concepts. A Pseudo Random Number Generator (PRNG) and a seed.
+			</p>
+			<p>
+				A PRNG is exactly like it sounds. It is an algorithm (like{' '}
+				<code>Math.random()</code> under the hood) that outputs a randomized
+				number. We will be using the sfc32 algorithm. It is a very simple and
+				fast PRNG.
+			</p>
+			<div className="callout">
+				The ALEA PRNG is another really good algorithm especially when you know
+				you will be generating a large number of randomized data.
+			</div>
+			<p>
+				However, the big difference between Math.random and using a “real” PRNG
+				is the ability to accept a seed.
+			</p>
+			<p>
+				A seed is just a number or in our case a set of four numbers that we
+				pass to the PRNG that guarantee that the numbers that are output are
+				always the same. Let’s take an interactive look real quick.
+			</p>
+
+			{/** Add Demo Five here **/}
+
+			<p>
+				See? With repeatable randomness it means we can save and track inputs
+				that make great outputs with the visual algorithms we are building.
+				Let's implement seeding with our latest example for our color grid using
+				simplex noise.
+			</p>
+
+			{/** Add Demo Six here **/}
 		</article>
 	)
 }

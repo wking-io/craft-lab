@@ -91,6 +91,7 @@
     "litefs-js": "^1.1.2",
     "lru-cache": "^10.2.0",
     "morgan": "^1.10.0",
+    "open-simplex-noise": "^2.5.0",
     "p5": "^1.9.2",
     "prisma": "^5.11.0",
     "qrcode": "^1.5.3",
