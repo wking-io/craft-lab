@@ -522,10 +522,10 @@ export default function Screen() {
 				example we have been building vs manually grouping colors.
 			</p>
 
-			<div className="callout">
+			<Callout>
 				Simplex Noise is an algorithm created by Ken Perlin. It is most commonly
 				used in video games topography and generative art…obviously.
-			</div>
+			</Callout>
 
 			<div
 				dangerouslySetInnerHTML={{ __html: exampleFour }}
@@ -611,7 +611,11 @@ export default function Screen() {
 				there are some great topics that will help you expand your capability to
 				create visual algorithms.
 			</p>
-
+			<div className="mt-16 flex items-center gap-3">
+				<div className="h-px w-16 bg-foreground md:-ml-10 lg:-ml-12" />
+				<div className=" h-px w-4 bg-foreground" />
+				<div className=" h-px w-1 bg-foreground" />
+			</div>
 			<h2>More Resources:</h2>
 			<div className="grid lg:grid-cols-2">
 				<div>
@@ -1218,6 +1222,26 @@ function DemoSix() {
 					className="w-28 rounded-none border border-foreground px-1.5 py-0.5"
 				/>
 			</div>
+		</div>
+	)
+}
+
+function Callout({ children }: PropsWithChildren<{}>) {
+	return (
+		<div className="dark relative bg-background p-8 text-foreground">
+			<svg
+				className="absolute right-0 top-0 h-[24px] w-[24px] rotate-0"
+				viewBox="0 0 4 4"
+				fill="none"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<rect className="fill-foreground" x="0" y="0" width="4" height="4" />
+				<path
+					d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+					className="fill-background"
+				/>
+			</svg>
+			{children}
 		</div>
 	)
 }
