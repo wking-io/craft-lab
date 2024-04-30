@@ -1043,15 +1043,15 @@ function DemoSix() {
 	const generator = useMemo(() => {
 		return Alea(seed)
 	}, [seed])
+	const noise2D = useMemo(() => makeNoise2D(seed), [seed])
 
-	const rowRandomNumber = generator()
-	const columnRandomNumber = generator()
+	const rowRandomNumber = useMemo(() => generator(), [generator])
+	const columnRandomNumber = useMemo(() => generator(), [generator])
 	const rows = createArrayOfLength(Math.floor(rowRandomNumber * 100))
 	const columns = createArrayOfLength(Math.floor(columnRandomNumber * 50))
 
 	const [xSmoothness, setXSmoothness] = useState(20)
 	const [ySmoothness, setYSmoothness] = useState(20)
-	const noise2D = useMemo(() => makeNoise2D(seed), [seed])
 
 	const boxSize = 6
 
