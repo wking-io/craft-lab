@@ -64,6 +64,7 @@
     "@sentry/profiling-node": "^7.107.0",
     "@sentry/remix": "^7.107.0",
     "address": "^2.0.2",
+    "alea": "^1.0.1",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.4.3",
     "chalk": "^5.3.0",

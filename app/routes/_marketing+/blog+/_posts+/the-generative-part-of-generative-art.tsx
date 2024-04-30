@@ -1,5 +1,6 @@
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
+import Alea from 'alea'
 import clsx from 'clsx'
 import { makeNoise2D } from 'open-simplex-noise'
 import {
@@ -275,6 +276,89 @@ function ColorGrid() {
   )
 }`
 
+const exampleSix = `import { makeNoise2D } from 'open-simplex-noise'
+
+/** 
+* Here we are just going back to our basic array of colors and will let the
+* simplex noise algorithm pick what colors are being selected from this array
+**/
+const colors = [
+	'fill-purple',
+	'fill-blue',
+	'fill-green',
+	'fill-lime',
+	'fill-yellow',
+	'fill-pink',
+	'fill-orange',
+]
+
+/** 
+* This function is used to return a random positive integer (whole number) 
+* that will never be any larger than the max integer you pass in. 
+* This is extremely useful when trying to get a randomized value from 
+* an array.
+**/
+function getRandomPositiveIntWithin(max: number) { 
+  return Math.floor(Math.random() * max)
+} 
+
+/** 
+* This function will give us a random color from the array of colors
+* we have defined using the \`getRandomPositiveIntWithin\`. We use the
+* length of the colors array to make sure the index lookup will be
+* guaranteed to find a match.
+**/
+function generateColor(colors: string[]) {
+  return colors[getRandomPositiveIntWithin(colors.length)]
+}
+
+/** 
+* This function will allow us to pass a length we need and array to be
+* and will return an array where each value in the array is its index.
+* Useful for creating rows and columns as seen below.
+**/
+function createArrayOfLength(length: number): number[] {
+	return Array.from(Array(length), (_, i) => i)
+}
+
+function ColorBox({
+	xPercent,
+	yPercent,
+	...props
+}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
+	const color = generateColor([...colors[xPercent], ...colors[yPercent]])
+	return <rect {...props} className={color} />
+}
+
+function ColorGrid() { 
+  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(50))
+  const boxSize = 6
+  const xSmoothness = 20
+  const ySmoothness = 20
+  const noise2D = makeNoise2D(Math.random())
+  return (
+    <svg
+		width={rows.length * boxSize}
+		height={columns.length * boxSize}
+		viewBox={\`0 0 \${rows.length} \${columns.length}\`}
+	>
+		{rows.map(x =>
+			columns.map(y => (
+				<ColorBox
+					x={x}
+					y={y}
+					noise={noise2D(x / xSmoothness, y / ySmoothness)}
+					width="1"
+					height="1"
+					key={\`pixel-\${x}-\${y}\`}
+				/>
+			)),
+		)}
+	</svg>
+  )
+}`
+
 export async function loader() {
 	const highlighter = await getHighlighter({
 		themes: [theme],
@@ -298,11 +382,15 @@ export async function loader() {
 			lang: 'tsx',
 			theme,
 		}),
+		exampleSix: highlighter.codeToHtml(exampleSix, {
+			lang: 'tsx',
+			theme,
+		}),
 	})
 }
 
 export default function Screen() {
-	const { exampleOne, exampleTwo, exampleThree, exampleFour } =
+	const { exampleOne, exampleTwo, exampleThree, exampleFour, exampleSix } =
 		useLoaderData<typeof loader>()
 	return (
 		<article className="prose mx-auto py-16 prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
@@ -507,7 +595,12 @@ export default function Screen() {
 				simplex noise.
 			</p>
 
-			{/** Add Demo Six here **/}
+			<div
+				dangerouslySetInnerHTML={{ __html: exampleSix }}
+				className="text-sm"
+			/>
+
+			<DemoSix />
 
 			<h2>Go Forth and Generate</h2>
 			<p>
@@ -736,7 +829,7 @@ function DemoTwo() {
 							y={y}
 							width="1"
 							height="1"
-							key={`pixel-${x}-${y}`}
+							key={`demo-2-pixel-${x}-${y}`}
 						/>
 					)),
 				)}
@@ -822,7 +915,7 @@ function DemoThree() {
 							yPercent={Math.floor((y / columns.length) * colors.length)}
 							width="1"
 							height="1"
-							key={`pixel-${x}-${y}`}
+							key={`demo-3-pixel-${x}-${y}`}
 						/>
 					)),
 				)}
@@ -908,7 +1001,7 @@ function DemoFour() {
 							noise={noise2D(x / xSmoothness, y / ySmoothness)}
 							width="1"
 							height="1"
-							key={`pixel-${x}-${y}`}
+							key={`demo-4-pixel-${x}-${y}`}
 						/>
 					)),
 				)}
@@ -942,5 +1035,118 @@ function DemoFour() {
 				</div>
 			</div>
 		</DemoWrapper>
+	)
+}
+
+function DemoSix() {
+	const [seed, setSeed] = useState<number>(1234560349)
+	const generator = useMemo(() => {
+		return Alea(seed)
+	}, [seed])
+
+	const rowRandomNumber = generator()
+	const columnRandomNumber = generator()
+	const rows = createArrayOfLength(Math.floor(rowRandomNumber * 100))
+	const columns = createArrayOfLength(Math.floor(columnRandomNumber * 50))
+
+	const [xSmoothness, setXSmoothness] = useState(20)
+	const [ySmoothness, setYSmoothness] = useState(20)
+	const noise2D = useMemo(() => makeNoise2D(seed), [seed])
+
+	const boxSize = 6
+
+	const colors = [
+		'fill-purple',
+		'fill-blue',
+		'fill-green',
+		'fill-lime',
+		'fill-yellow',
+		'fill-pink',
+		'fill-orange',
+	]
+
+	/**
+	 * Simplex Noise generates a value between -1 and 1, but we are working with an
+	 * array that will not accept a negative index. We will be converting the original
+	 * noise range to fit the 0 to 1 scale we need.
+	 **/
+	function getColorByNoise(noise: number) {
+		return colors[Math.floor(((noise + 1) / 2) * colors.length)]
+	}
+
+	function createArrayOfLength(length: number): number[] {
+		return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
+	}
+
+	function ColorBox({
+		noise,
+		...props
+	}: ComponentProps<'rect'> & { noise: number }) {
+		const color = getColorByNoise(noise)
+		return <rect {...props} className={color} />
+	}
+
+	return (
+		<div className="relative flex min-h-[410px] w-full items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12">
+			<svg
+				width={rows.length * boxSize}
+				height={columns.length * boxSize}
+				viewBox={`0 0 ${rows.length} ${columns.length}`}
+			>
+				{rows.map(x =>
+					columns.map(y => (
+						<ColorBox
+							x={x}
+							y={y}
+							noise={noise2D(x / xSmoothness, y / ySmoothness)}
+							width="1"
+							height="1"
+							key={`demo-6-pixel-${x}-${y}`}
+						/>
+					)),
+				)}
+			</svg>
+			<div className="absolute bottom-4 left-4 flex flex-col gap-1 font-mono text-xs">
+				<div className="flex items-center gap-2">
+					<input
+						type="range"
+						id="xSmoothness"
+						name="xSmoothness"
+						min="1"
+						max="30"
+						value={xSmoothness}
+						onChange={e => setXSmoothness(e.target.valueAsNumber)}
+						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--pink))]"
+					/>
+					<label htmlFor="xSmoothness">X Smoothness</label>
+				</div>
+				<div className="flex items-center gap-2">
+					<input
+						type="range"
+						id="ySmoothness"
+						name="ySmoothness"
+						min="1"
+						max="30"
+						value={ySmoothness}
+						onChange={e => setYSmoothness(e.target.valueAsNumber)}
+						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--blue))]"
+					/>
+					<label htmlFor="ySmoothness">Y Smoothness</label>
+				</div>
+			</div>
+			<div className="absolute bottom-4 right-4 flex items-center gap-2 font-mono text-xs">
+				<label htmlFor="seed">Seed</label>
+				<input
+					type="number"
+					min="1"
+					max="999999999"
+					id="seed"
+					name="seed"
+					value={seed}
+					onChange={e => setSeed(e.target.valueAsNumber)}
+					className="rounded-none border border-foreground px-1.5 py-0.5"
+				/>
+			</div>
+		</div>
 	)
 }
