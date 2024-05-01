@@ -26,6 +26,7 @@ import * as Fathom from 'fathom-client'
 import { useEffect, useRef } from 'react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
+import { CanonicalLink } from './components/canonical-link.tsx'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { Logo, type Seed, makeFavicon } from './components/logo.tsx'
 import { useToast } from './components/toaster.tsx'
@@ -205,6 +206,7 @@ function Document({
 		<html lang="en" className={`${theme} h-full overflow-x-hidden`}>
 			<head>
 				<ClientHintCheck nonce={nonce} />
+				<CanonicalLink />
 				<Meta />
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width,initial-scale=1" />
