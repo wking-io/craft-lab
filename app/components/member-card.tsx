@@ -1,3 +1,4 @@
+import Alea from 'alea'
 import clsx from 'clsx'
 import {
 	type MotionStyle,
@@ -8,7 +9,7 @@ import {
 	type MotionValue,
 } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
-import { sfc32, type Seed } from '#app/utils/random.js'
+import { type Seed } from './logo'
 
 type CustomStyle = MotionStyle & {
 	'--background-y'?: MotionValue<string>
@@ -197,7 +198,7 @@ function Cubes({
 	height: number
 	seed: Seed
 }) {
-	const generator = sfc32(seed)
+	const generator = Alea(seed)
 	const config = {
 		size: 10,
 		originX: width - 50,

@@ -35,3 +35,4 @@ export type IconName =
 	| 'target'
 	| 'trash'
 	| 'update'
+	| 'x'

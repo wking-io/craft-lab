@@ -1,6 +1,8 @@
+import Alea from 'alea'
 import clsx from 'clsx'
 import { useMemo } from 'react'
-import { type Seed, sfc32 } from '#app/utils/random.js'
+
+export type Seed = number
 
 const ROWS = 8
 const COLUMNS = 8
@@ -69,7 +71,7 @@ const rowColors = [
 type BaseProps = { seed: Seed; className?: string }
 function Logo({ seed, className }: BaseProps) {
 	const randomNumbers = useMemo(() => {
-		const generator = sfc32(seed)
+		const generator = Alea(seed)
 		return Array.from({ length: ROWS * COLUMNS }, () => generator())
 	}, [seed])
 
@@ -118,7 +120,7 @@ function Logo({ seed, className }: BaseProps) {
 
 function makeFavicon(seed: Seed) {
 	if (window) {
-		const generator = sfc32(seed)
+		const generator = Alea(seed)
 		const randomNumbers = Array.from({ length: ROWS * COLUMNS }, () =>
 			generator(),
 		)
@@ -365,7 +367,7 @@ function shuffle<T>(array: T[]) {
 
 function PointLogo({ seed, className }: BaseProps) {
 	const randomNumbers = useMemo(() => {
-		const generator = sfc32(seed)
+		const generator = Alea(seed)
 		return Array.from({ length: ROWS * COLUMNS }, () => generator())
 	}, [seed])
 
@@ -424,7 +426,7 @@ function BlobLogo({ seed, className }: BaseProps) {
 					size: CANVAS_WIDTH,
 					growth: 1 + i * 0.85,
 					edges: 8,
-					seed: seed[0] + i,
+					seed: seed + i,
 				})
 				return (
 					<path
@@ -453,7 +455,7 @@ function BlobLineLogo({ seed, className }: BaseProps) {
 	const paths = circleLineGenerator({
 		size: CANVAS_WIDTH,
 		colors: best,
-		seed: seed[0],
+		seed,
 	})
 	return (
 		<svg

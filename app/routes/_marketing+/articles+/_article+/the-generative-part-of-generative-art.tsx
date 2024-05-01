@@ -1,3 +1,4 @@
+import { Radio, RadioGroup } from '@headlessui/react'
 import { json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import Alea from 'alea'
@@ -11,6 +12,7 @@ import {
 } from 'react'
 import { getHighlighter } from 'shiki'
 import { RefreshIcon } from '#app/components/two-tone-icon.js'
+import { Icon } from '#app/components/ui/icon.js'
 import { theme } from '#app/utils/shiki.js'
 
 const exampleOne = `/** 
@@ -390,9 +392,33 @@ export async function loader() {
 export default function Screen() {
 	const { exampleOne, exampleTwo, exampleThree, exampleFour, exampleSix } =
 		useLoaderData<typeof loader>()
+	const [exampleFontSize, setExampleFontSize] = useState<
+		'text-sm' | 'text-base' | 'text-lg'
+	>('text-sm')
+
 	return (
-		<article className="prose mx-auto px-8 py-16 prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
-			<h1>The Generative Part of Generative Art</h1>
+		<article className="prose prose-sm mx-auto px-4 py-16 md:prose-base prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
+			<div className="flex items-center gap-2 font-mono text-sm">
+				<p className="">
+					<time dateTime="05-01-2024">May 1, 2024</time>
+				</p>
+				<div className="ml-2 h-px w-6 bg-foreground" />
+				<div className="mr-2 h-px w-2 bg-foreground" />
+				<p>Will King</p>
+				<p className="not-prose">
+					<a
+						className="-m-1 px-2 pb-1 pt-0.5 hover:bg-gray-100"
+						href="https://x.com/wking__"
+					>
+						<span className="sr-only">X Profile</span>
+						<Icon name="x" size="xs" />
+					</a>
+				</p>
+			</div>
+			<h1 className="mt-12 lg:mt-16">
+				The Generative Part of Generative <span className="sr-only">Art</span>
+				<Art />
+			</h1>
 			<p>
 				Part of the creation of the Craft Lab brand has involved generative
 				elements. I have always been interested in them, and thought what better
@@ -435,7 +461,11 @@ export default function Screen() {
 				<Code>Math.random()</Code> to pick a single color.
 			</p>
 
-			<CodeBlock code={exampleOne} />
+			<CodeBlock
+				size={exampleFontSize}
+				setSize={setExampleFontSize}
+				code={exampleOne}
+			/>
 
 			<DemoOne />
 
@@ -448,7 +478,11 @@ export default function Screen() {
 				What if we want a grid of colors where the size of that grid is also
 				generative?
 			</p>
-			<CodeBlock code={exampleTwo} />
+			<CodeBlock
+				size={exampleFontSize}
+				setSize={setExampleFontSize}
+				code={exampleTwo}
+			/>
 
 			<DemoTwo />
 
@@ -493,7 +527,11 @@ export default function Screen() {
 				colors in the top left and moves to warmer colors in the bottom right.
 			</p>
 
-			<CodeBlock code={exampleThree} />
+			<CodeBlock
+				size={exampleFontSize}
+				setSize={setExampleFontSize}
+				code={exampleThree}
+			/>
 
 			<DemoThree />
 
@@ -543,7 +581,11 @@ export default function Screen() {
 				used in video games topography and generative art…obviously.
 			</Callout>
 
-			<CodeBlock code={exampleFour} />
+			<CodeBlock
+				size={exampleFontSize}
+				setSize={setExampleFontSize}
+				code={exampleFour}
+			/>
 
 			<DemoFour />
 
@@ -615,7 +657,11 @@ export default function Screen() {
 				our color grid that is using simplex noise.
 			</p>
 
-			<CodeBlock code={exampleSix} />
+			<CodeBlock
+				size={exampleFontSize}
+				setSize={setExampleFontSize}
+				code={exampleSix}
+			/>
 
 			<DemoSix />
 
@@ -701,6 +747,40 @@ export default function Screen() {
 	)
 }
 
+/**
+ * COMPONENTS
+ */
+function Art() {
+	const xSmoothness = 10
+	const ySmoothness = 10
+	const noise2D = makeNoise2D(Math.random() * Date.now())
+
+	return (
+		<svg
+			id="craft-lab-logo"
+			viewBox="0 0 17 8"
+			width="17"
+			height="8"
+			xmlns="http://www.w3.org/2000/svg"
+			className="-mt-2 ml-1 inline-block h-auto w-20"
+		>
+			{coordinates.map(([y, x]) => {
+				return (
+					<NoiseRect
+						x={x}
+						y={y}
+						colors={simpleColorsFill}
+						noise={noise2D(x / xSmoothness, y / ySmoothness)}
+						width="1"
+						height="1"
+						key={`demo-4-pixel-${x}-${y}`}
+					/>
+				)
+			})}
+		</svg>
+	)
+}
+
 function DemoWrapper({
 	children,
 	onClick,
@@ -736,7 +816,7 @@ function DemoWrapper({
 						className="fill-transparent group-hover:fill-gray-200"
 					/>
 				</svg>
-				<span>Refresh Example</span>
+				<span>Refresh</span>
 				<span className="h-auto w-4 transition group-hover:rotate-90">
 					<RefreshIcon />
 				</span>
@@ -749,7 +829,10 @@ function DemoOne() {
 	const [color, setColor] = useState(generateColor(simpleColorsBg))
 
 	return (
-		<DemoWrapper onClick={() => setColor(generateColor(simpleColorsBg))}>
+		<DemoWrapper
+			className="min-h-64"
+			onClick={() => setColor(generateColor(simpleColorsBg))}
+		>
 			<div className={clsx(color, 'h-12 w-12')} />
 		</DemoWrapper>
 	)
@@ -991,6 +1074,104 @@ function DemoFive() {
 	)
 }
 
+export function DemoPreview() {
+	const [rows, setRows] = useState(
+		createArrayOfLength(getRandomPositiveIntWithin(100)),
+	)
+	const [columns, setColumns] = useState(
+		createArrayOfLength(getRandomPositiveIntWithin(25)),
+	)
+	const [xSmoothness, setXSmoothness] = useState(20)
+	const [ySmoothness, setYSmoothness] = useState(20)
+	const [noiseSeed, setNoiseSeed] = useState<number>(Math.random())
+	const noise2D = useMemo(() => makeNoise2D(noiseSeed), [noiseSeed])
+	const boxSize = 3
+
+	return (
+		<div className="relative flex min-h-[205px] items-center justify-center border-b border-gray-200 bg-gray-100 p-6">
+			<svg
+				className="-mt-12"
+				width={rows.length * boxSize}
+				height={columns.length * boxSize}
+				viewBox={`0 0 ${rows.length} ${columns.length}`}
+			>
+				{rows.map(x =>
+					columns.map(y => (
+						<NoiseRect
+							x={x}
+							y={y}
+							colors={simpleColorsFill}
+							noise={noise2D(x / xSmoothness, y / ySmoothness)}
+							width="1"
+							height="1"
+							key={`demo-preview-pixel-${x}-${y}`}
+						/>
+					)),
+				)}
+			</svg>
+			<div className="absolute bottom-4 left-4 flex flex-col gap-1 font-mono text-xs">
+				<div className="flex items-center gap-2">
+					<input
+						type="range"
+						id="xSmoothness"
+						name="xSmoothness"
+						min="1"
+						max="30"
+						value={xSmoothness}
+						onChange={e => setXSmoothness(e.target.valueAsNumber)}
+						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--pink))]"
+					/>
+					<label htmlFor="xSmoothness">X Smoothness</label>
+				</div>
+				<div className="flex items-center gap-2">
+					<input
+						type="range"
+						id="ySmoothness"
+						name="ySmoothness"
+						min="1"
+						max="30"
+						value={ySmoothness}
+						onChange={e => setYSmoothness(e.target.valueAsNumber)}
+						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--blue))]"
+					/>
+					<label htmlFor="ySmoothness">Y Smoothness</label>
+				</div>
+			</div>
+			<button
+				onClick={() => {
+					setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
+					setColumns(createArrayOfLength(getRandomPositiveIntWithin(25)))
+					setNoiseSeed(Math.random())
+				}}
+				className="group absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 font-mono text-xs hover:bg-gray-200"
+			>
+				<svg
+					className="absolute -right-px -top-px h-[24px] w-[24px] rotate-0"
+					viewBox="0 0 4 4"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<rect
+						className="fill-transparent group-hover:fill-gray-100"
+						x="0"
+						y="0"
+						width="4"
+						height="4"
+					/>
+					<path
+						d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+						className="fill-transparent group-hover:fill-gray-200"
+					/>
+				</svg>
+				<span>Refresh</span>
+				<span className="h-auto w-4 transition group-hover:rotate-90">
+					<RefreshIcon />
+				</span>
+			</button>
+		</div>
+	)
+}
+
 function DemoSix() {
 	const [seed, setSeed] = useState<number>(99)
 
@@ -1113,12 +1294,67 @@ function NoiseRect({
 	return <rect {...props} className={color} />
 }
 
-function CodeBlock({ code }: { code: string }) {
+function CodeBlock({
+	code,
+	size,
+	setSize,
+}: {
+	code: string
+	size: 'text-sm' | 'text-base' | 'text-lg'
+	setSize(v: 'text-sm' | 'text-base' | 'text-lg'): void
+}) {
 	return (
-		<div
-			dangerouslySetInnerHTML={{ __html: code }}
-			className="text-sm md:-mx-10 lg:-mx-12 [&>*]:rounded-xl [&>*]:border [&>*]:border-gray-200"
-		/>
+		<div className="relative md:-mx-10 lg:-mx-12">
+			<div
+				dangerouslySetInnerHTML={{ __html: code }}
+				className={clsx(
+					size,
+					'[&>*]:rounded-xl [&>*]:border [&>*]:border-gray-200',
+				)}
+			/>
+			<form className="absolute right-4 top-4">
+				<RadioGroup
+					name="size"
+					value={size}
+					onChange={v => setSize(v)}
+					className="flex rounded border border-foreground p-0.5 font-mono text-xs"
+				>
+					<Radio
+						value="text-sm"
+						className={clsx(
+							size === 'text-sm'
+								? 'bg-foreground text-background'
+								: 'bg-transparent',
+							'cursor-pointer rounded-[2px] px-1.5 pb-0.5',
+						)}
+					>
+						sm
+					</Radio>
+					<Radio
+						value="text-base"
+						className={clsx(
+							size === 'text-base'
+								? 'bg-foreground text-background'
+								: 'bg-transparent',
+							'cursor-pointer rounded-[2px] px-1.5 pb-0.5',
+						)}
+					>
+						md
+					</Radio>
+					<Radio
+						value="text-lg"
+						className={clsx(
+							size === 'text-lg'
+								? 'bg-foreground text-background'
+								: 'bg-transparent',
+							'cursor-pointer rounded-[2px] px-1.5 pb-0.5',
+						)}
+					>
+						lg
+					</Radio>
+				</RadioGroup>
+			</form>
+		</div>
 	)
 }
 
@@ -1133,39 +1369,6 @@ function Code({ children }: PropsWithChildren) {
 /**
  * UTILS
  */
-
-const simpleColorsBg = [
-	'bg-pink',
-	'bg-orange',
-	'bg-yellow',
-	'bg-lime',
-	'bg-green',
-	'bg-blue',
-	'bg-purple',
-]
-
-const manualColorsFill = [
-	['fill-blue', 'fill-purple', 'fill-purple'],
-	['fill-green', 'fill-blue', 'fill-purple'],
-	['fill-green', 'fill-blue', 'fill-purple'],
-	['fill-lime', 'fill-green', 'fill-blue'],
-	['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
-	['fill-yellow', 'fill-lime', 'fill-green'],
-	['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
-	['fill-pink', 'fill-yellow', 'fill-lime'],
-	['fill-pink', 'fill-orange', 'fill-yellow'],
-	['fill-pink', 'fill-orange', 'fill-orange'],
-]
-
-const simpleColorsFill = [
-	'fill-purple',
-	'fill-blue',
-	'fill-green',
-	'fill-lime',
-	'fill-yellow',
-	'fill-pink',
-	'fill-orange',
-]
 
 /**
  * This function will give us a random color from the array of colors
@@ -1199,3 +1402,108 @@ function createArrayOfLength(length: number): number[] {
 function getColorByNoise(colors: string[], noise: number) {
 	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
 }
+
+/**
+ * DATA
+ */
+const simpleColorsBg = [
+	'bg-purple',
+	'bg-blue',
+	'bg-green',
+	'bg-lime',
+	'bg-yellow',
+	'bg-pink',
+	'bg-orange',
+]
+
+const manualColorsFill = [
+	['fill-blue', 'fill-purple', 'fill-purple'],
+	['fill-green', 'fill-blue', 'fill-purple'],
+	['fill-green', 'fill-blue', 'fill-purple'],
+	['fill-lime', 'fill-green', 'fill-blue'],
+	['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
+	['fill-yellow', 'fill-lime', 'fill-green'],
+	['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
+	['fill-pink', 'fill-yellow', 'fill-lime'],
+	['fill-pink', 'fill-orange', 'fill-yellow'],
+	['fill-pink', 'fill-orange', 'fill-orange'],
+]
+
+const simpleColorsFill = [
+	'fill-purple',
+	'fill-blue',
+	'fill-green',
+	'fill-lime',
+	'fill-yellow',
+	'fill-pink',
+	'fill-orange',
+]
+
+const coordinates: Array<[number, number]> = [
+	[0, 3],
+	[0, 4],
+	[0, 15],
+	[1, 2],
+	[1, 3],
+	[1, 4],
+	[1, 5],
+	[1, 14],
+	[1, 15],
+	[2, 1],
+	[2, 2],
+	[2, 4],
+	[2, 5],
+	[2, 8],
+	[2, 13],
+	[2, 14],
+	[2, 15],
+	[2, 16],
+	[3, 0],
+	[3, 1],
+	[3, 4],
+	[3, 5],
+	[3, 7],
+	[3, 8],
+	[3, 10],
+	[3, 11],
+	[3, 12],
+	[3, 14],
+	[3, 15],
+	[4, 0],
+	[4, 1],
+	[4, 4],
+	[4, 5],
+	[4, 7],
+	[4, 8],
+	[4, 9],
+	[4, 11],
+	[4, 12],
+	[4, 14],
+	[4, 15],
+	[5, 0],
+	[5, 1],
+	[5, 2],
+	[5, 3],
+	[5, 4],
+	[5, 5],
+	[5, 7],
+	[5, 8],
+	[5, 14],
+	[5, 15],
+	[6, 0],
+	[6, 1],
+	[6, 4],
+	[6, 5],
+	[6, 7],
+	[6, 8],
+	[6, 14],
+	[6, 15],
+	[7, 0],
+	[7, 1],
+	[7, 4],
+	[7, 5],
+	[7, 7],
+	[7, 8],
+	[7, 13],
+	[7, 14],
+]

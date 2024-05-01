@@ -10,6 +10,7 @@ import {
 	type MetaFunction,
 } from '@remix-run/node'
 import {
+	Link,
 	Links,
 	Meta,
 	Outlet,
@@ -26,7 +27,7 @@ import { useEffect, useRef } from 'react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
-import { makeFavicon } from './components/logo.tsx'
+import { Logo, type Seed, makeFavicon } from './components/logo.tsx'
 import { useToast } from './components/toaster.tsx'
 import { href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
@@ -39,7 +40,6 @@ import { getEnv } from './utils/env.server.ts'
 import { honeypot } from './utils/honeypot.server.ts'
 import { combineHeaders, getDomainUrl } from './utils/misc.tsx'
 import { useNonce } from './utils/nonce-provider.ts'
-import { type Seed } from './utils/random.ts'
 import { useRequestInfo } from './utils/request-info.ts'
 import { type RouteID } from './utils/route-id.ts'
 import { seoData } from './utils/seo.ts'
@@ -86,10 +86,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return seoData({ title, description })
 }
 
-function genSeed() {
-	return Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 1
-}
-
 export async function loader({ request }: LoaderFunctionArgs) {
 	const allowedPaths = ['/', '/verify', '/waitlist/success']
 	const url = new URL(request.url)
@@ -134,7 +130,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	return json(
 		{
-			seed: [genSeed(), genSeed(), genSeed(), genSeed()] satisfies Seed,
+			seed: Math.random(),
 			account,
 			requestInfo: {
 				hints: getHints(request),
@@ -187,12 +183,14 @@ export async function action({ request }: ActionFunctionArgs) {
 function Document({
 	children,
 	nonce,
+	seed,
 	theme = 'light',
 	env = {},
 	allowIndexing = true,
 }: {
 	children: React.ReactNode
 	nonce: string
+	seed: Seed
 	theme?: Theme
 	env?: Record<string, string>
 	allowIndexing?: boolean
@@ -209,8 +207,19 @@ function Document({
 				)}
 				<Links />
 			</head>
-			<body className="grid min-h-screen bg-background text-foreground">
+			<body className="bg-background text-foreground">
 				{children}
+				<footer className="flex items-center justify-between gap-8 border-t border-foreground p-2">
+					<p className="flex items-center gap-2 text-sm font-semibold">
+						<Logo seed={seed} className="h-auto w-5" /> Craft Lab ©{' '}
+						{new Date().getFullYear()}
+					</p>
+					<nav className="font-mono text-xs">
+						<Link to="/articles" className="hover:text-lime">
+							Articles
+						</Link>
+					</nav>
+				</footer>
 				<script
 					nonce={nonce}
 					dangerouslySetInnerHTML={{
@@ -264,8 +273,9 @@ function App() {
 			theme={theme}
 			allowIndexing={allowIndexing}
 			env={data.ENV}
+			seed={data.seed}
 		>
-			<div>
+			<div className="flex min-h-screen flex-col">
 				<Outlet />
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />
@@ -379,7 +389,7 @@ export function ErrorBoundary() {
 	// to give the account a better UX.
 
 	return (
-		<Document nonce={nonce}>
+		<Document seed={39909} nonce={nonce}>
 			<GeneralErrorBoundary />
 		</Document>
 	)
