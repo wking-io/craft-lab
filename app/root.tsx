@@ -203,7 +203,7 @@ function Document({
 	allowIndexing?: boolean
 }) {
 	return (
-		<html lang="en" className={`${theme} h-full overflow-x-hidden`}>
+		<html lang="en" className={`${theme}`}>
 			<head>
 				<ClientHintCheck nonce={nonce} />
 				<CanonicalLink />
@@ -283,7 +283,7 @@ function App() {
 			env={data.ENV}
 			seed={data.seed}
 		>
-			<div className="flex min-h-screen flex-col">
+			<div className="min-h-screen">
 				<Outlet />
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />

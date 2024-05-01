@@ -435,7 +435,7 @@ export default function Screen() {
 	>('text-sm')
 
 	return (
-		<article className="prose prose-sm mx-auto px-4 py-16 md:prose-base prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
+		<article className="prose prose-sm mx-auto px-4 py-8 md:prose-base prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime md:py-16 lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
 			<div className="flex items-center gap-2 font-mono text-sm">
 				<p className="">
 					<time dateTime="05-01-2024">May 1, 2024</time>
@@ -453,7 +453,7 @@ export default function Screen() {
 					</a>
 				</p>
 			</div>
-			<h1 className="mt-12 lg:mt-16">
+			<h1 className="mt-4 md:mt-12 lg:mt-16">
 				The Generative Part of Generative <span className="sr-only">Art</span>
 				<Art />
 			</h1>
@@ -495,7 +495,7 @@ export default function Screen() {
 			</p>
 
 			<p>
-				We will do this using JavaScript’s built in random number function
+				We will do this using JavaScript’s built in random number function{' '}
 				<Code>Math.random()</Code> to pick a single color.
 			</p>
 
@@ -1053,7 +1053,7 @@ function DemoFive() {
 	}, [seedTwo])
 
 	return (
-		<div className="relative grid grid-cols-2 items-center rounded-xl border border-gray-200 bg-gray-100 p-12 md:-mx-10 lg:-mx-12">
+		<div className="relative grid items-center gap-6 rounded-xl border border-gray-200 bg-gray-100 p-12 md:-mx-10 md:grid-cols-2 lg:-mx-12">
 			<div>
 				<div className="flex items-center gap-2 font-mono text-xs">
 					<label htmlFor="seed">Seed One</label>
@@ -1347,15 +1347,15 @@ function CodeBlock({
 				dangerouslySetInnerHTML={{ __html: code }}
 				className={clsx(
 					size,
-					'[&>*]:rounded-xl [&>*]:border [&>*]:border-gray-200',
+					'[&>*]:rounded-xl [&>*]:border [&>*]:border-gray-200 [&>*]:pt-4',
 				)}
 			/>
-			<form className="absolute right-4 top-4">
+			<form className="absolute right-2 top-2">
 				<RadioGroup
 					name="size"
 					value={size}
 					onChange={v => setSize(v)}
-					className="flex rounded border border-foreground p-0.5 font-mono text-xs"
+					className="flex rounded-md border border-foreground p-0.5 font-mono text-xs backdrop-blur"
 				>
 					<Radio
 						value="text-sm"
@@ -1363,7 +1363,7 @@ function CodeBlock({
 							size === 'text-sm'
 								? 'bg-foreground text-background'
 								: 'bg-transparent',
-							'cursor-pointer rounded-[2px] px-1.5 pb-0.5',
+							'cursor-pointer rounded-sm px-1.5 pb-0.5',
 						)}
 					>
 						sm
@@ -1374,7 +1374,7 @@ function CodeBlock({
 							size === 'text-base'
 								? 'bg-foreground text-background'
 								: 'bg-transparent',
-							'cursor-pointer rounded-[2px] px-1.5 pb-0.5',
+							'cursor-pointer rounded-sm px-1.5 pb-0.5',
 						)}
 					>
 						md
@@ -1385,7 +1385,7 @@ function CodeBlock({
 							size === 'text-lg'
 								? 'bg-foreground text-background'
 								: 'bg-transparent',
-							'cursor-pointer rounded-[2px] px-1.5 pb-0.5',
+							'cursor-pointer rounded-sm px-1.5 pb-0.5',
 						)}
 					>
 						lg

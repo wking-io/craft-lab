@@ -3,7 +3,7 @@ import { DemoPreview } from './_article+/the-generative-part-of-generative-art'
 
 export default function Screen() {
 	return (
-		<div className="container mt-8 flex-1 px-4 md:mt-12">
+		<div className="container mt-8 px-4 md:mt-12">
 			<h1 className="font-mono text-sm font-semibold">
 				Articles, Guides, and more...eventually
 			</h1>
