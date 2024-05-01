@@ -391,17 +391,17 @@ export default function Screen() {
 	const { exampleOne, exampleTwo, exampleThree, exampleFour, exampleSix } =
 		useLoaderData<typeof loader>()
 	return (
-		<article className="prose mx-auto py-16 prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
+		<article className="prose mx-auto px-8 py-16 prose-headings:font-semibold prose-p:text-pretty prose-p:text-foreground/70 hover:prose-a:text-lime lg:py-24 lg:text-lg prose-h1:lg:text-5xl">
 			<h1>The Generative Part of Generative Art</h1>
 			<p>
 				Part of the creation of the Craft Lab brand has involved generative
 				elements. I have always been interested in them, and thought what better
 				opportunity to explore and enforce my experience with generative art
-				than a community platform built for design enineers.
+				than a community platform built for design engineers.
 			</p>
 			<p>
-				After going through multiple pieces of generative art I want to document
-				what I have learned so that if this is something you are interested in
+				After building multiple pieces of generative art I want to document what
+				I have learned so that if this is something you are interested in
 				exploring maybe this will expedite your understanding.
 			</p>
 			<h2>Random Values</h2>
@@ -414,17 +414,25 @@ export default function Screen() {
 
 			<p>
 				Visual Algorithm is just an easier way to refer to the function (or
-				functions) that you use to take in the randomized data, apply some rules
-				to that data, and output the visual you have designed.
+				functions) that you use to take in randomized data, apply some rules to
+				that data, and output a designed visual that reacts to the data.
+			</p>
+			<p>
+				There is a lot to unpack in what I just said, and that is what we are
+				here to do. We are going to break what it means to build a visual
+				algorithm down the most basic example I can think of and then build on
+				top of that to slowly introduce more concepts that make a complete
+				visual algorithm.
 			</p>
 			<h2>Applying Values to Visuals</h2>
 			<p>
-				Well we're not just going to leave it there. Let's dig into how to go
-				about building your visual algorithm using concrete examples.
+				The place we’re going to start at is applying a random value to a single
+				visual output.
 			</p>
-			<h3>A Basic Example</h3>
+
 			<p>
-				We will start by explaining a very simple example. Let's pick a color.
+				We will do this using JavaScript’s built in random number function
+				<Code>Math.random()</Code> to pick a single color.
 			</p>
 
 			<CodeBlock code={exampleOne} />
@@ -450,26 +458,39 @@ export default function Screen() {
 				influencing our output the question is:
 			</p>
 			<blockquote>Is this good?</blockquote>
+			<p>No. The answer is no.</p>
 			<h2>Contraints Breed Craft</h2>
 			<p>
-				The answer is no. Objectively speaking it isn't anything special, yet.
-				It has allowed us to learn some important concepts and is interesting,
-				but, as with a lot of great art and design, it is missing constraints.
-				Constraints breed craft. They allow you to guide the randomness of
-				generative art in a way that keeps what is interesting while still
-				controlling the visual output to fit within parameters of “good” art.
+				Objectively speaking it isn't anything special, yet. It has allowed us
+				to learn some important concepts and is interesting, but, as with a lot
+				of great art and design, it is missing constraints. Constraints breed
+				craft. They allow you to guide the randomness of generative art in a way
+				that keeps what is interesting while still controlling the visual output
+				to fit within a pattern that will resonate with you and the people
+				viewing your art.
 			</p>
 			<h3>Color Constraint</h3>
 			<p>
-				Let's take a look at this in practice. In the example that we have been
-				building color for each square is completely random. It could be any of
-				the available colors. How can we take the idea of constraint to increase
-				the quality of the art that our visual algorithm is creating?
+				Let's look at how we can use constraint on a single dimension, color,
+				using two different methods to get very different outputs.
 			</p>
 			<p>
-				There are a lot of approaches we could take, but we are going to update
-				our visual algorithm so that the output has cooler colors in the top
-				left and moves to warmer colors in the bottom right.
+				In the example that we have been building so far the color for each
+				square is completely random. It could be any of the available colors.
+				How can we take the idea of constraint to increase the quality of the
+				art that our visual algorithm is creating?
+			</p>
+			<p>
+				There are a lot of approaches we could take, but a common approach to
+				more visually pleasing color is using a gradient. Instead of complete
+				chaos, we can add a feeling of flows moving from one side to another by
+				limiting what colors are available based on the x and y coordinates of
+				the pixel being rendered.
+			</p>
+
+			<p>
+				So, let’s update our visual algorithm so that the output has cooler
+				colors in the top left and moves to warmer colors in the bottom right.
 			</p>
 
 			<CodeBlock code={exampleThree} />
@@ -478,11 +499,11 @@ export default function Screen() {
 
 			<p>
 				Okay, now the output of our visual algorithm is feeling more intentional
-				and designed. There is one more constraint concept that I want to
-				introduce you to. Our color example is very easy to hardcode our
-				available values and select them, but as you introduce more complex
-				variables like distance or size in your work how can we add constraints
-				without needing to manually enter and control every available value?
+				and designed. With this approach we manually hardcoded our available
+				values at each stage of the gradient. However, as you introduce more
+				complex variables like distance or size in your work how can we add
+				constraints without needing to manually enter and control every
+				available value?
 			</p>
 
 			<h3>Pattern Algorithms</h3>
@@ -497,16 +518,19 @@ export default function Screen() {
 			<p>Here are a list of some commonly used ones:</p>
 
 			<ul>
-				<li>Simplex Noise</li>
-				<li>Perlin Noise</li>
+				<li>Simplex / Perlin Noise</li>
 				<li>Fibonacci Sequence</li>
 				<li>L-System</li>
 				<li>Truchet Tiles</li>
 			</ul>
 
 			<p>
-				However, there is a wide world of available pattern algorithms to
-				experiment with.
+				There is a wide world of available pattern algorithms to experiment
+				with, and{' '}
+				<a href="https://www.mattdesl.com/sferics">
+					literally a wide world of natural patterns
+				</a>{' '}
+				that you can draw inspiration from.
 			</p>
 
 			<p>
@@ -524,22 +548,34 @@ export default function Screen() {
 			<DemoFour />
 
 			<p>
-				We are just substituting our random number with the noise value that
-				gets output by the simplex algorithm, and since the simplex algorithm is
-				a very well know algorithm it has a library that exists we can use
-				without needing to write our own.
+				By substituting our <Code>Math.random()</Code> value out with a value
+				generated from our simplex algorithm we have enforced a constraint that
+				is apparent in the colors selected across the coordinates of our visual
+				algorithms output.
+			</p>
+
+			<p>
+				The smoothness controls allow us to change the scale at which our noise
+				is changing. If you drag the smoothness all the way to the left you will
+				be able to see what the output looks like with the raw noise values.
+				Since the noise is changing so quickly at that scale it looks barely
+				better than completely random values.
 			</p>
 
 			<h2>Random, but Repeatable</h2>
 
 			<p>
 				As I close out this article there is one more VERY important detail.
-				What happens in the examples about when you hit the rerun button? You
-				get a brand new output! What if when you press the button you really
-				like the output. What happens if your dev environment crashes or your
-				browser tab gets closed? That version that you really liked is gone.
-				Most likely forever because of the probabilities of so many completely
-				random values being used.
+				What happens in the examples above when you hit the refresh button? You
+				get a brand new output!
+			</p>
+			<p>
+				What if when you press the button you really like the output? What
+				happens if your dev environment crashes or your browser tab gets closed?
+			</p>
+			<p>
+				That version that you really liked is gone. Most likely forever because
+				of the probabilities of so many completely random values being used.
 			</p>
 
 			<p>
@@ -553,10 +589,8 @@ export default function Screen() {
 			</p>
 			<p>
 				A PRNG is exactly like it sounds. It is an algorithm (like{' '}
-				<code className="inline-block bg-gray-100 text-sm text-purple before:hidden after:hidden">
-					Math.random()
-				</code>{' '}
-				under the hood) that outputs a randomized number.
+				<Code>Math.random()</Code> under the hood) that outputs a randomized
+				number.
 			</p>
 			<p>
 				However, the big difference between Math.random and using a “real” PRNG
@@ -565,7 +599,7 @@ export default function Screen() {
 			<p>
 				A seed is just a number that we pass to the PRNG that guarantee that the
 				numbers that are output are always the same. Let’s take an interactive
-				look at how that will work real quick.
+				look at this concept.
 			</p>
 			<p>
 				The example below uses the Alea PRNG, and when we pass the same seed you
@@ -1085,6 +1119,14 @@ function CodeBlock({ code }: { code: string }) {
 			dangerouslySetInnerHTML={{ __html: code }}
 			className="text-sm md:-mx-10 lg:-mx-12 [&>*]:rounded-xl [&>*]:border [&>*]:border-gray-200"
 		/>
+	)
+}
+
+function Code({ children }: PropsWithChildren) {
+	return (
+		<code className="inline-block bg-gray-100 text-sm text-purple before:hidden after:hidden">
+			{children}
+		</code>
 	)
 }
 

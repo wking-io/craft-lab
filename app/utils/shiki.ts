@@ -161,7 +161,7 @@ export const theme: ThemeRegistration = {
 		'terminal.ansiMagenta': '#FF75DD',
 		'terminal.ansiRed': '#ee6666',
 		'terminal.ansiWhite': '#09090B',
-		'terminal.ansiYellow': '#F0BF2F',
+		'terminal.ansiYellow': '#7ECC00',
 		'terminal.background': '#f3f4f6',
 		'terminal.foreground': '#09090B',
 		'titleBar.activeBackground': '#262626',
@@ -232,7 +232,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['entity.name.filename'],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -265,7 +265,7 @@ export const theme: ThemeRegistration = {
 			scope: ['markup.italic'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -305,7 +305,7 @@ export const theme: ThemeRegistration = {
 			scope: ['entity.name.directive.restructuredtext', 'markup.quote'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -354,7 +354,7 @@ export const theme: ThemeRegistration = {
 				'markup.quote.markdown meta.paragraph.markdown punctuation.definition.string.end',
 			],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -709,7 +709,7 @@ export const theme: ThemeRegistration = {
 				'constant.character.escape.backslash.regexp',
 			],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -757,7 +757,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['string'],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -766,7 +766,7 @@ export const theme: ThemeRegistration = {
 				'punctuation.definition.string.end',
 			],
 			settings: {
-				foreground: '#dee492',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -826,7 +826,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['meta.selectionset.graphql variable'],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -877,13 +877,13 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['meta.scope.prerequisites.makefile'],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
 			scope: ['meta.attribute-selector.scss'],
 			settings: {
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 		{
@@ -912,7 +912,7 @@ export const theme: ThemeRegistration = {
 			scope: ['log.warning'],
 			settings: {
 				fontStyle: 'bold',
-				foreground: '#F0BF2F',
+				foreground: '#7ECC00',
 			},
 		},
 	],
