@@ -1,5 +1,5 @@
 import { Radio, RadioGroup } from '@headlessui/react'
-import { json } from '@remix-run/node'
+import { type MetaFunction, json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import Alea from 'alea'
 import clsx from 'clsx'
@@ -13,7 +13,45 @@ import {
 import { getHighlighter } from 'shiki'
 import { RefreshIcon } from '#app/components/two-tone-icon.js'
 import { Icon } from '#app/components/ui/icon.js'
+import { seoData } from '#app/utils/seo.js'
 import { theme } from '#app/utils/shiki.js'
+
+export const meta: MetaFunction = () => [
+	...seoData({
+		title: 'The Generative Part of Generative Art - Craft Lab',
+		description:
+			'An interactive guide sharing what I have learned about Generative Art to help you go from zero to one faster.',
+		image:
+			'https://res.cloudinary.com/dzqdvin5s/image/upload/v1714586250/generative-part-og.jpg',
+	}),
+	{
+		'script:ld+json': {
+			'@context': 'https://schema.org',
+			'@type': 'Article',
+			name: 'The Generative Part of Generative Art',
+			author: {
+				'@type': 'Person',
+				name: 'Will King',
+			},
+			datePublished: '2024-05-01',
+			description:
+				'An interactive guide sharing what I have learned about Generative Art to help you go from zero to one faster.',
+			publisher: {
+				'@type': 'Organization',
+				name: 'Craft Lab',
+				logo: {
+					'@type': 'ImageObject',
+					url: 'https://res.cloudinary.com/dzqdvin5s/image/upload/v1714587213/craft-lab-icon.png',
+				},
+			},
+			mainEntityOfPage: {
+				'@type': 'WebPage',
+				'@id':
+					'https://www.craftlab.fun/articles/the-generative-part-of-generative-art',
+			},
+		},
+	},
+]
 
 const exampleOne = `/** 
 * This function is used to return a random positive integer (whole number) 

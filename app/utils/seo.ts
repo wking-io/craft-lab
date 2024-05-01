@@ -1,9 +1,11 @@
 export function seoData({
 	title,
 	description,
+	image = 'https://res.cloudinary.com/dzqdvin5s/image/upload/v1714077475/craft-lab-og-v2.jpg',
 }: {
 	title: string
 	description: string
+	image?: string
 }) {
 	return [
 		{ title },
@@ -21,8 +23,7 @@ export function seoData({
 		},
 		{
 			property: 'og:image',
-			content:
-				'https://res.cloudinary.com/dzqdvin5s/image/upload/v1714077475/craft-lab-og-v2.jpg',
+			content: image,
 		},
 		{
 			property: 'og:type',
