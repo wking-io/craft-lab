@@ -87,7 +87,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const allowedPaths = ['/', '/verify', '/waitlist/success']
+	const allowedPaths = [
+		'/',
+		'/verify',
+		'/waitlist/success',
+		'/articles',
+		'/articles/the-generative-part-of-generative-art',
+	]
 	const url = new URL(request.url)
 	if (
 		process.env.SKIP_ALLOWED_PATHS !== 'true' &&
