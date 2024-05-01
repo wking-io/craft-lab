@@ -11,21 +11,21 @@ export const theme: ThemeRegistration = {
 		'editor.selectionBackground': '#44475A',
 		'editor.selectionHighlightBackground': '#424450',
 		'editor.snippetFinalTabstopHighlightBackground': '#f3f4f6',
-		'editor.snippetFinalTabstopHighlightBorder': '#62e884',
+		'editor.snippetFinalTabstopHighlightBorder': '#35C097',
 		'editor.snippetTabstopHighlightBackground': '#f3f4f6',
 		'editor.snippetTabstopHighlightBorder': '#9ca3af',
 		'editor.wordHighlightBackground': '#8BE9FD50',
 		'editor.wordHighlightStrongBackground': '#50FA7B50',
 		'editorBracketHighlight.foreground1': '#09090B',
-		'editorBracketHighlight.foreground2': '#f286c4',
-		'editorBracketHighlight.foreground3': '#97e1f1',
-		'editorBracketHighlight.foreground4': '#62e884',
-		'editorBracketHighlight.foreground5': '#bf9eee',
-		'editorBracketHighlight.foreground6': '#FFB86C',
+		'editorBracketHighlight.foreground2': '#FF75DD',
+		'editorBracketHighlight.foreground3': '#3177F6',
+		'editorBracketHighlight.foreground4': '#35C097',
+		'editorBracketHighlight.foreground5': '#7561FA',
+		'editorBracketHighlight.foreground6': '#F28D45',
 		'editorBracketHighlight.unexpectedBracket.foreground': '#ee6666',
 		'editorCodeLens.foreground': '#9ca3af',
 		'editorError.foreground': '#ee6666',
-		'editorGroup.border': '#bf9eee',
+		'editorGroup.border': '#7561FA',
 		'editorGroup.dropBackground': '#44475A70',
 		'editorGroupHeader.tabsBackground': '#191A21',
 		'editorGutter.addedBackground': '#50FA7B80',
@@ -36,25 +36,25 @@ export const theme: ThemeRegistration = {
 		'editorIndentGuide.activeBackground': '#FFFFFF45',
 		'editorIndentGuide.background': '#FFFFFF1A',
 		'editorLineNumber.foreground': '#9ca3af',
-		'editorLink.activeForeground': '#97e1f1',
+		'editorLink.activeForeground': '#3177F6',
 		'editorMarkerNavigation.background': '#262626',
 		'editorOverviewRuler.addedForeground': '#50FA7B80',
 		'editorOverviewRuler.border': '#191A21',
-		'editorOverviewRuler.currentContentForeground': '#62e884',
+		'editorOverviewRuler.currentContentForeground': '#35C097',
 		'editorOverviewRuler.deletedForeground': '#FF555580',
 		'editorOverviewRuler.errorForeground': '#FF555580',
-		'editorOverviewRuler.incomingContentForeground': '#bf9eee',
+		'editorOverviewRuler.incomingContentForeground': '#7561FA',
 		'editorOverviewRuler.infoForeground': '#8BE9FD80',
 		'editorOverviewRuler.modifiedForeground': '#8BE9FD80',
-		'editorOverviewRuler.selectionHighlightForeground': '#FFB86C',
-		'editorOverviewRuler.warningForeground': '#FFB86C80',
-		'editorOverviewRuler.wordHighlightForeground': '#97e1f1',
-		'editorOverviewRuler.wordHighlightStrongForeground': '#62e884',
+		'editorOverviewRuler.selectionHighlightForeground': '#F28D45',
+		'editorOverviewRuler.warningForeground': '#F28D4580',
+		'editorOverviewRuler.wordHighlightForeground': '#3177F6',
+		'editorOverviewRuler.wordHighlightStrongForeground': '#35C097',
 		'editorRuler.foreground': '#FFFFFF1A',
 		'editorSuggestWidget.background': '#262626',
 		'editorSuggestWidget.foreground': '#09090B',
 		'editorSuggestWidget.selectedBackground': '#44475A',
-		'editorWarning.foreground': '#97e1f1',
+		'editorWarning.foreground': '#3177F6',
 		'editorWhitespace.foreground': '#FFFFFF1A',
 		'editorWidget.background': '#262626',
 		errorForeground: '#ee6666',
@@ -63,37 +63,37 @@ export const theme: ThemeRegistration = {
 		'extensionButton.prominentHoverBackground': '#50FA7B60',
 		focusBorder: '#9ca3af',
 		foreground: '#09090B',
-		'gitDecoration.conflictingResourceForeground': '#FFB86C',
+		'gitDecoration.conflictingResourceForeground': '#F28D45',
 		'gitDecoration.deletedResourceForeground': '#ee6666',
 		'gitDecoration.ignoredResourceForeground': '#9ca3af',
-		'gitDecoration.modifiedResourceForeground': '#97e1f1',
-		'gitDecoration.untrackedResourceForeground': '#62e884',
+		'gitDecoration.modifiedResourceForeground': '#3177F6',
+		'gitDecoration.untrackedResourceForeground': '#35C097',
 		'inlineChat.regionHighlight': '#343746',
 		'input.background': '#f3f4f6',
 		'input.border': '#191A21',
 		'input.foreground': '#09090B',
 		'input.placeholderForeground': '#9ca3af',
-		'inputOption.activeBorder': '#bf9eee',
+		'inputOption.activeBorder': '#7561FA',
 		'inputValidation.errorBorder': '#ee6666',
-		'inputValidation.infoBorder': '#f286c4',
-		'inputValidation.warningBorder': '#FFB86C',
+		'inputValidation.infoBorder': '#FF75DD',
+		'inputValidation.warningBorder': '#F28D45',
 		'list.activeSelectionBackground': '#44475A',
 		'list.activeSelectionForeground': '#09090B',
 		'list.dropBackground': '#44475A',
 		'list.errorForeground': '#ee6666',
 		'list.focusBackground': '#44475A75',
-		'list.highlightForeground': '#97e1f1',
+		'list.highlightForeground': '#3177F6',
 		'list.hoverBackground': '#44475A75',
 		'list.inactiveSelectionBackground': '#44475A75',
-		'list.warningForeground': '#FFB86C',
+		'list.warningForeground': '#F28D45',
 		'listFilterWidget.background': '#343746',
 		'listFilterWidget.noMatchesOutline': '#ee6666',
 		'listFilterWidget.outline': '#424450',
 		'merge.currentHeaderBackground': '#50FA7B90',
 		'merge.incomingHeaderBackground': '#BD93F990',
 		'panel.background': '#f3f4f6',
-		'panel.border': '#bf9eee',
-		'panelTitle.activeBorder': '#f286c4',
+		'panel.border': '#7561FA',
+		'panelTitle.activeBorder': '#FF75DD',
 		'panelTitle.activeForeground': '#09090B',
 		'panelTitle.inactiveForeground': '#9ca3af',
 		'peekView.border': '#44475A',
@@ -108,10 +108,10 @@ export const theme: ThemeRegistration = {
 		'peekViewTitle.background': '#191A21',
 		'peekViewTitleDescription.foreground': '#9ca3af',
 		'peekViewTitleLabel.foreground': '#09090B',
-		'pickerGroup.border': '#bf9eee',
-		'pickerGroup.foreground': '#97e1f1',
-		'progressBar.background': '#f286c4',
-		'selection.background': '#bf9eee',
+		'pickerGroup.border': '#7561FA',
+		'pickerGroup.foreground': '#3177F6',
+		'progressBar.background': '#FF75DD',
+		'selection.background': '#7561FA',
 		'settings.checkboxBackground': '#262626',
 		'settings.checkboxBorder': '#191A21',
 		'settings.checkboxForeground': '#09090B',
@@ -119,7 +119,7 @@ export const theme: ThemeRegistration = {
 		'settings.dropdownBorder': '#191A21',
 		'settings.dropdownForeground': '#09090B',
 		'settings.headerForeground': '#09090B',
-		'settings.modifiedItemIndicator': '#FFB86C',
+		'settings.modifiedItemIndicator': '#F28D45',
 		'settings.numberInputBackground': '#262626',
 		'settings.numberInputBorder': '#191A21',
 		'settings.numberInputForeground': '#09090B',
@@ -137,8 +137,8 @@ export const theme: ThemeRegistration = {
 		'statusBar.noFolderBackground': '#191A21',
 		'statusBar.noFolderForeground': '#09090B',
 		'statusBarItem.prominentBackground': '#ee6666',
-		'statusBarItem.prominentHoverBackground': '#FFB86C',
-		'statusBarItem.remoteBackground': '#bf9eee',
+		'statusBarItem.prominentHoverBackground': '#F28D45',
+		'statusBarItem.remoteBackground': '#7561FA',
 		'statusBarItem.remoteForeground': '#f3f4f6',
 		'tab.activeBackground': '#f3f4f6',
 		'tab.activeBorderTop': '#FF79C680',
@@ -147,7 +147,7 @@ export const theme: ThemeRegistration = {
 		'tab.inactiveBackground': '#262626',
 		'tab.inactiveForeground': '#9ca3af',
 		'terminal.ansiBlack': '#262626',
-		'terminal.ansiBlue': '#bf9eee',
+		'terminal.ansiBlue': '#7561FA',
 		'terminal.ansiBrightBlack': '#9ca3af',
 		'terminal.ansiBrightBlue': '#d6b4f7',
 		'terminal.ansiBrightCyan': '#adf6f6',
@@ -156,12 +156,12 @@ export const theme: ThemeRegistration = {
 		'terminal.ansiBrightRed': '#f07c7c',
 		'terminal.ansiBrightWhite': '#ffffff',
 		'terminal.ansiBrightYellow': '#f6f6ae',
-		'terminal.ansiCyan': '#97e1f1',
-		'terminal.ansiGreen': '#62e884',
-		'terminal.ansiMagenta': '#f286c4',
+		'terminal.ansiCyan': '#3177F6',
+		'terminal.ansiGreen': '#35C097',
+		'terminal.ansiMagenta': '#FF75DD',
 		'terminal.ansiRed': '#ee6666',
 		'terminal.ansiWhite': '#09090B',
-		'terminal.ansiYellow': '#e7ee98',
+		'terminal.ansiYellow': '#F0BF2F',
 		'terminal.background': '#f3f4f6',
 		'terminal.foreground': '#09090B',
 		'titleBar.activeBackground': '#262626',
@@ -188,7 +188,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['header'],
 			settings: {
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
@@ -200,7 +200,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['markup.inserted'],
 			settings: {
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
@@ -212,7 +212,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['markup.changed'],
 			settings: {
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
@@ -232,7 +232,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['entity.name.filename'],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
@@ -251,21 +251,21 @@ export const theme: ThemeRegistration = {
 			scope: ['markup.bold'],
 			settings: {
 				fontStyle: 'bold',
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
 			scope: ['markup.heading'],
 			settings: {
 				fontStyle: 'bold',
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
 			scope: ['markup.italic'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
@@ -275,19 +275,19 @@ export const theme: ThemeRegistration = {
 				'punctuation.definition.link.restructuredtext',
 			],
 			settings: {
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
 			scope: ['markup.inline.raw', 'markup.raw.restructuredtext'],
 			settings: {
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
 			scope: ['markup.underline.link', 'markup.underline.link.image'],
 			settings: {
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -298,14 +298,14 @@ export const theme: ThemeRegistration = {
 				'string.other.link.title',
 			],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
 			scope: ['entity.name.directive.restructuredtext', 'markup.quote'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
@@ -321,13 +321,13 @@ export const theme: ThemeRegistration = {
 				'markup.fenced_code.block.markdown punctuation.definition.markdown',
 			],
 			settings: {
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
 			scope: ['punctuation.definition.constant.restructuredtext'],
 			settings: {
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
@@ -336,7 +336,7 @@ export const theme: ThemeRegistration = {
 				'markup.heading.markdown punctuation.definition.string.end',
 			],
 			settings: {
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
@@ -354,14 +354,14 @@ export const theme: ThemeRegistration = {
 				'markup.quote.markdown meta.paragraph.markdown punctuation.definition.string.end',
 			],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
 			scope: ['entity.name.type.class', 'entity.name.class'],
 			settings: {
 				fontStyle: 'normal',
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -375,14 +375,14 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
 			scope: ['entity.other.inherited-class'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -403,14 +403,14 @@ export const theme: ThemeRegistration = {
 				'comment.block.documentation storage.type.class',
 			],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
 			scope: ['comment.block.documentation entity.name.type'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -418,20 +418,20 @@ export const theme: ThemeRegistration = {
 				'comment.block.documentation entity.name.type punctuation.definition.bracket',
 			],
 			settings: {
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
 			scope: ['comment.block.documentation variable'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
 			scope: ['constant', 'variable.other.constant'],
 			settings: {
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
@@ -441,26 +441,26 @@ export const theme: ThemeRegistration = {
 				'constant.regexp',
 			],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
 			scope: ['entity.name.tag'],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
 			scope: ['entity.other.attribute-name.parent-selector'],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
 			scope: ['entity.other.attribute-name'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
@@ -475,7 +475,7 @@ export const theme: ThemeRegistration = {
 				'keyword.operator.function.infix',
 			],
 			settings: {
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
@@ -489,7 +489,7 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
@@ -499,19 +499,19 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
 			scope: ['meta.decorator variable.other.object'],
 			settings: {
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
 			scope: ['keyword', 'punctuation.definition.keyword'],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
@@ -523,14 +523,14 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['meta.selector'],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
 			scope: ['support'],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -541,7 +541,7 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'regular',
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
@@ -578,7 +578,7 @@ export const theme: ThemeRegistration = {
 				'punctuation.separator.annotation',
 			],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
@@ -620,7 +620,7 @@ export const theme: ThemeRegistration = {
 				'punctuation.definition.variable.makefile',
 			],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
@@ -631,20 +631,20 @@ export const theme: ThemeRegistration = {
 				'variable.other.key.toml',
 			],
 			settings: {
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
 			scope: ['constant.other.date', 'constant.other.timestamp'],
 			settings: {
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
 			scope: ['variable.other.alias.yaml'],
 			settings: {
 				fontStyle: 'italic underline',
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
@@ -656,7 +656,7 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'regular',
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
@@ -683,7 +683,7 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -693,13 +693,13 @@ export const theme: ThemeRegistration = {
 				'meta.type.parameters entity.name.type',
 			],
 			settings: {
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
 			scope: ['storage.modifier'],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
@@ -709,13 +709,13 @@ export const theme: ThemeRegistration = {
 				'constant.character.escape.backslash.regexp',
 			],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
 			scope: ['punctuation.definition.group.capture.regexp'],
 			settings: {
-				foreground: '#f286c4',
+				foreground: '#FF75DD',
 			},
 		},
 		{
@@ -730,13 +730,13 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['punctuation.definition.character-class.regexp'],
 			settings: {
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
 			scope: ['punctuation.definition.group.regexp'],
 			settings: {
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
@@ -751,13 +751,13 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['meta.assertion.look-ahead.regexp'],
 			settings: {
-				foreground: '#62e884',
+				foreground: '#35C097',
 			},
 		},
 		{
 			scope: ['string'],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
@@ -809,7 +809,7 @@ export const theme: ThemeRegistration = {
 			],
 			settings: {
 				fontStyle: 'italic',
-				foreground: '#FFB86C',
+				foreground: '#F28D45',
 			},
 		},
 		{
@@ -826,7 +826,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['meta.selectionset.graphql variable'],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
@@ -838,7 +838,7 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['entity.name.fragment.graphql', 'variable.fragment.graphql'],
 			settings: {
-				foreground: '#97e1f1',
+				foreground: '#3177F6',
 			},
 		},
 		{
@@ -864,26 +864,26 @@ export const theme: ThemeRegistration = {
 		{
 			scope: ['source.shell variable.other'],
 			settings: {
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
 			scope: ['support.constant'],
 			settings: {
 				fontStyle: 'normal',
-				foreground: '#bf9eee',
+				foreground: '#7561FA',
 			},
 		},
 		{
 			scope: ['meta.scope.prerequisites.makefile'],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
 			scope: ['meta.attribute-selector.scss'],
 			settings: {
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 		{
@@ -912,7 +912,7 @@ export const theme: ThemeRegistration = {
 			scope: ['log.warning'],
 			settings: {
 				fontStyle: 'bold',
-				foreground: '#e7ee98',
+				foreground: '#F0BF2F',
 			},
 		},
 	],

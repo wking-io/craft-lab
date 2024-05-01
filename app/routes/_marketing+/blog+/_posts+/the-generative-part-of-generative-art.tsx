@@ -89,7 +89,7 @@ function ColorBox(props: ComponentProps<'rect'>) {
 
 function ColorGrid() { 
   const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(50))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
   const boxSize = 6
   return (
     <svg 
@@ -168,7 +168,7 @@ function ColorBox({
 
 function ColorGrid() { 
   const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(50))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
   const boxSize = 6
   return (
     <svg
@@ -247,7 +247,7 @@ function ColorBox({
 
 function ColorGrid() { 
   const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(50))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
   const boxSize = 6
   const xSmoothness = 20
   const ySmoothness = 20
@@ -330,7 +330,7 @@ function ColorGrid() {
 	const seed = 99
 	const generator = Alea(seed)
 	const rows = createArrayOfLength(getRandomPositiveIntWithin(generator(), 100))
-	const columns = createArrayOfLength(getRandomPositiveIntWithin(generator(), 50))
+	const columns = createArrayOfLength(getRandomPositiveIntWithin(generator(), 40))
 	const boxSize = 6
 	const xSmoothness = 20
 	const ySmoothness = 20
@@ -426,10 +426,8 @@ export default function Screen() {
 			<p>
 				We will start by explaining a very simple example. Let's pick a color.
 			</p>
-			<div
-				dangerouslySetInnerHTML={{ __html: exampleOne }}
-				className="text-sm md:-mx-10 lg:-mx-12"
-			/>
+
+			<CodeBlock code={exampleOne} />
 
 			<DemoOne />
 
@@ -442,10 +440,7 @@ export default function Screen() {
 				What if we want a grid of colors where the size of that grid is also
 				generative?
 			</p>
-			<div
-				dangerouslySetInnerHTML={{ __html: exampleTwo }}
-				className="text-sm md:-mx-10 lg:-mx-12"
-			/>
+			<CodeBlock code={exampleTwo} />
 
 			<DemoTwo />
 
@@ -477,10 +472,7 @@ export default function Screen() {
 				left and moves to warmer colors in the bottom right.
 			</p>
 
-			<div
-				dangerouslySetInnerHTML={{ __html: exampleThree }}
-				className="text-sm md:-mx-10 lg:-mx-12"
-			/>
+			<CodeBlock code={exampleThree} />
 
 			<DemoThree />
 
@@ -527,10 +519,7 @@ export default function Screen() {
 				used in video games topography and generative art…obviously.
 			</Callout>
 
-			<div
-				dangerouslySetInnerHTML={{ __html: exampleFour }}
-				className="text-sm md:-mx-10 lg:-mx-12"
-			/>
+			<CodeBlock code={exampleFour} />
 
 			<DemoFour />
 
@@ -592,10 +581,7 @@ export default function Screen() {
 				our color grid that is using simplex noise.
 			</p>
 
-			<div
-				dangerouslySetInnerHTML={{ __html: exampleSix }}
-				className="text-sm md:-mx-10 lg:-mx-12"
-			/>
+			<CodeBlock code={exampleSix} />
 
 			<DemoSix />
 
@@ -726,39 +712,10 @@ function DemoWrapper({
 }
 
 function DemoOne() {
-	const [color, setColor] = useState(generateColor())
-
-	/**
-	 * This function is used to return a random positive integer (whole number)
-	 * that will never be any larger than the max integer you pass in.
-	 * This is extremely useful when trying to get a randomized value from
-	 * an array.
-	 **/
-	function getRandomPositiveIntWithin(max: number) {
-		return Math.floor(Math.random() * max)
-	}
-
-	/**
-	 * This function will give us a random color from the array of colors
-	 * we have defined using the `getRandomPositiveIntWithin`. We use the
-	 * length of the colors array to make sure the index lookup will be
-	 * guaranteed to find a match.
-	 **/
-	function generateColor() {
-		const colors = [
-			'bg-pink',
-			'bg-orange',
-			'bg-yellow',
-			'bg-lime',
-			'bg-green',
-			'bg-blue',
-			'bg-purple',
-		]
-		return colors[getRandomPositiveIntWithin(colors.length)]
-	}
+	const [color, setColor] = useState(generateColor(simpleColorsBg))
 
 	return (
-		<DemoWrapper onClick={() => setColor(generateColor())}>
+		<DemoWrapper onClick={() => setColor(generateColor(simpleColorsBg))}>
 			<div className={clsx(color, 'h-12 w-12')} />
 		</DemoWrapper>
 	)
@@ -769,53 +726,16 @@ function DemoTwo() {
 		createArrayOfLength(getRandomPositiveIntWithin(100)),
 	)
 	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(50)),
+		createArrayOfLength(getRandomPositiveIntWithin(40)),
 	)
 	const boxSize = 6
-	/**
-	 * This function is used to return a random positive integer (whole number)
-	 * that will never be any larger than the max integer you pass in.
-	 * This is extremely useful when trying to get a randomized value from
-	 * an array.
-	 **/
-	function getRandomPositiveIntWithin(max: number) {
-		return Math.floor(Math.random() * max)
-	}
-
-	/**
-	 * This function will give us a random color from the array of colors
-	 * we have defined using the `getRandomPositiveIntWithin`. We use the
-	 * length of the colors array to make sure the index lookup will be
-	 * guaranteed to find a match.
-	 **/
-	function generateColor() {
-		const colors = [
-			'fill-pink',
-			'fill-orange',
-			'fill-yellow',
-			'fill-lime',
-			'fill-green',
-			'fill-blue',
-			'fill-purple',
-		]
-		return colors[getRandomPositiveIntWithin(colors.length)]
-	}
-
-	function createArrayOfLength(length: number): number[] {
-		return Array.from(Array(length), (_, i) => i)
-	}
-
-	function ColorBox(props: ComponentProps<'rect'>) {
-		const color = generateColor()
-		return <rect {...props} className={color} />
-	}
 
 	return (
 		<DemoWrapper
 			className="min-h-96"
 			onClick={() => {
 				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-				setColumns(createArrayOfLength(getRandomPositiveIntWithin(50)))
+				setColumns(createArrayOfLength(getRandomPositiveIntWithin(40)))
 			}}
 		>
 			<svg
@@ -825,9 +745,10 @@ function DemoTwo() {
 			>
 				{rows.map(x =>
 					columns.map(y => (
-						<ColorBox
+						<ColorRect
 							x={x}
 							y={y}
+							colors={simpleColorsFill}
 							width="1"
 							height="1"
 							key={`demo-2-pixel-${x}-${y}`}
@@ -844,62 +765,16 @@ function DemoThree() {
 		createArrayOfLength(getRandomPositiveIntWithin(100)),
 	)
 	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(50)),
+		createArrayOfLength(getRandomPositiveIntWithin(40)),
 	)
 	const boxSize = 6
-
-	const colors = [
-		['fill-blue', 'fill-purple', 'fill-purple'],
-		['fill-green', 'fill-blue', 'fill-purple'],
-		['fill-green', 'fill-blue', 'fill-purple'],
-		['fill-lime', 'fill-green', 'fill-blue'],
-		['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
-		['fill-yellow', 'fill-lime', 'fill-green'],
-		['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
-		['fill-pink', 'fill-yellow', 'fill-lime'],
-		['fill-pink', 'fill-orange', 'fill-yellow'],
-		['fill-pink', 'fill-orange', 'fill-orange'],
-	]
-
-	/**
-	 * This function is used to return a random positive integer (whole number)
-	 * that will never be any larger than the max integer you pass in.
-	 * This is extremely useful when trying to get a randomized value from
-	 * an array.
-	 **/
-	function getRandomPositiveIntWithin(max: number) {
-		return Math.floor(Math.random() * max)
-	}
-
-	/**
-	 * This function will give us a random color from the array of colors
-	 * we have defined using the `getRandomPositiveIntWithin`. We use the
-	 * length of the colors array to make sure the index lookup will be
-	 * guaranteed to find a match.
-	 **/
-	function generateColor(colors: string[]) {
-		return colors[getRandomPositiveIntWithin(colors.length)]
-	}
-
-	function createArrayOfLength(length: number): number[] {
-		return Array.from(Array(length), (_, i) => i)
-	}
-
-	function ColorBox({
-		xPercent,
-		yPercent,
-		...props
-	}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
-		const color = generateColor([...colors[xPercent], ...colors[yPercent]])
-		return <rect {...props} className={color} />
-	}
 
 	return (
 		<DemoWrapper
 			className="min-h-96"
 			onClick={() => {
 				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-				setColumns(createArrayOfLength(getRandomPositiveIntWithin(50)))
+				setColumns(createArrayOfLength(getRandomPositiveIntWithin(40)))
 			}}
 		>
 			<svg
@@ -908,17 +783,27 @@ function DemoThree() {
 				viewBox={`0 0 ${rows.length} ${columns.length}`}
 			>
 				{rows.map(x =>
-					columns.map(y => (
-						<ColorBox
-							x={x}
-							y={y}
-							xPercent={Math.floor((x / rows.length) * colors.length)}
-							yPercent={Math.floor((y / columns.length) * colors.length)}
-							width="1"
-							height="1"
-							key={`demo-3-pixel-${x}-${y}`}
-						/>
-					)),
+					columns.map(y => {
+						const xIndex = Math.floor(
+							(x / rows.length) * manualColorsFill.length,
+						)
+						const yIndex = Math.floor(
+							(y / columns.length) * manualColorsFill.length,
+						)
+						return (
+							<ColorRect
+								x={x}
+								y={y}
+								colors={[
+									...manualColorsFill[xIndex],
+									...manualColorsFill[yIndex],
+								]}
+								width="1"
+								height="1"
+								key={`demo-3-pixel-${x}-${y}`}
+							/>
+						)
+					}),
 				)}
 			</svg>
 		</DemoWrapper>
@@ -930,62 +815,20 @@ function DemoFour() {
 		createArrayOfLength(getRandomPositiveIntWithin(100)),
 	)
 	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(50)),
+		createArrayOfLength(getRandomPositiveIntWithin(40)),
 	)
 	const [xSmoothness, setXSmoothness] = useState(20)
 	const [ySmoothness, setYSmoothness] = useState(20)
 	const [noiseSeed, setNoiseSeed] = useState<number>(Math.random())
 	const noise2D = useMemo(() => makeNoise2D(noiseSeed), [noiseSeed])
-
 	const boxSize = 6
-
-	const colors = [
-		'fill-purple',
-		'fill-blue',
-		'fill-green',
-		'fill-lime',
-		'fill-yellow',
-		'fill-pink',
-		'fill-orange',
-	]
-
-	/**
-	 * This function is used to return a random positive integer (whole number)
-	 * that will never be any larger than the max integer you pass in.
-	 * This is extremely useful when trying to get a randomized value from
-	 * an array.
-	 **/
-	function getRandomPositiveIntWithin(max: number) {
-		return Math.floor(Math.random() * max)
-	}
-
-	/**
-	 * Simplex Noise generates a value between -1 and 1, but we are working with an
-	 * array that will not accept a negative index. We will be converting the original
-	 * noise range to fit the 0 to 1 scale we need.
-	 **/
-	function getColorByNoise(noise: number) {
-		return colors[Math.floor(((noise + 1) / 2) * colors.length)]
-	}
-
-	function createArrayOfLength(length: number): number[] {
-		return Array.from(Array(length), (_, i) => i)
-	}
-
-	function ColorBox({
-		noise,
-		...props
-	}: ComponentProps<'rect'> & { noise: number }) {
-		const color = getColorByNoise(noise)
-		return <rect {...props} className={color} />
-	}
 
 	return (
 		<DemoWrapper
 			className="min-h-[410px]"
 			onClick={() => {
 				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-				setColumns(createArrayOfLength(getRandomPositiveIntWithin(50)))
+				setColumns(createArrayOfLength(getRandomPositiveIntWithin(40)))
 				setNoiseSeed(Math.random())
 			}}
 		>
@@ -996,9 +839,10 @@ function DemoFour() {
 			>
 				{rows.map(x =>
 					columns.map(y => (
-						<ColorBox
+						<NoiseRect
 							x={x}
 							y={y}
+							colors={simpleColorsFill}
 							noise={noise2D(x / xSmoothness, y / ySmoothness)}
 							width="1"
 							height="1"
@@ -1115,51 +959,22 @@ function DemoFive() {
 
 function DemoSix() {
 	const [seed, setSeed] = useState<number>(99)
+
 	const generator = useMemo(() => {
 		return Alea(seed)
 	}, [seed])
+
 	const noise2D = useMemo(() => makeNoise2D(seed), [seed])
 
 	const rowRandomNumber = useMemo(() => generator(), [generator])
 	const columnRandomNumber = useMemo(() => generator(), [generator])
 	const rows = createArrayOfLength(Math.floor(rowRandomNumber * 100))
-	const columns = createArrayOfLength(Math.floor(columnRandomNumber * 50))
+	const columns = createArrayOfLength(Math.floor(columnRandomNumber * 40))
 
 	const [xSmoothness, setXSmoothness] = useState(20)
 	const [ySmoothness, setYSmoothness] = useState(20)
 
 	const boxSize = 6
-
-	const colors = [
-		'fill-purple',
-		'fill-blue',
-		'fill-green',
-		'fill-lime',
-		'fill-yellow',
-		'fill-pink',
-		'fill-orange',
-	]
-
-	/**
-	 * Simplex Noise generates a value between -1 and 1, but we are working with an
-	 * array that will not accept a negative index. We will be converting the original
-	 * noise range to fit the 0 to 1 scale we need.
-	 **/
-	function getColorByNoise(noise: number) {
-		return colors[Math.floor(((noise + 1) / 2) * colors.length)]
-	}
-
-	function createArrayOfLength(length: number): number[] {
-		return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
-	}
-
-	function ColorBox({
-		noise,
-		...props
-	}: ComponentProps<'rect'> & { noise: number }) {
-		const color = getColorByNoise(noise)
-		return <rect {...props} className={color} />
-	}
 
 	return (
 		<div className="relative flex min-h-[410px] items-center justify-center rounded-xl border border-gray-200 bg-gray-100 p-12 md:-mx-10 lg:-mx-12">
@@ -1170,9 +985,10 @@ function DemoSix() {
 			>
 				{rows.map(x =>
 					columns.map(y => (
-						<ColorBox
+						<NoiseRect
 							x={x}
 							y={y}
+							colors={simpleColorsFill}
 							noise={noise2D(x / xSmoothness, y / ySmoothness)}
 							width="1"
 							height="1"
@@ -1244,4 +1060,100 @@ function Callout({ children }: PropsWithChildren<{}>) {
 			{children}
 		</div>
 	)
+}
+
+function ColorRect({
+	colors,
+	...props
+}: ComponentProps<'rect'> & { colors: string[] }) {
+	const color = generateColor(colors)
+	return <rect {...props} className={color} />
+}
+
+function NoiseRect({
+	noise,
+	colors,
+	...props
+}: ComponentProps<'rect'> & { noise: number; colors: string[] }) {
+	const color = getColorByNoise(colors, noise)
+	return <rect {...props} className={color} />
+}
+
+function CodeBlock({ code }: { code: string }) {
+	return (
+		<div
+			dangerouslySetInnerHTML={{ __html: code }}
+			className="text-sm md:-mx-10 lg:-mx-12 [&>*]:rounded-xl [&>*]:border [&>*]:border-gray-200"
+		/>
+	)
+}
+
+/**
+ * UTILS
+ */
+
+const simpleColorsBg = [
+	'bg-pink',
+	'bg-orange',
+	'bg-yellow',
+	'bg-lime',
+	'bg-green',
+	'bg-blue',
+	'bg-purple',
+]
+
+const manualColorsFill = [
+	['fill-blue', 'fill-purple', 'fill-purple'],
+	['fill-green', 'fill-blue', 'fill-purple'],
+	['fill-green', 'fill-blue', 'fill-purple'],
+	['fill-lime', 'fill-green', 'fill-blue'],
+	['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
+	['fill-yellow', 'fill-lime', 'fill-green'],
+	['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
+	['fill-pink', 'fill-yellow', 'fill-lime'],
+	['fill-pink', 'fill-orange', 'fill-yellow'],
+	['fill-pink', 'fill-orange', 'fill-orange'],
+]
+
+const simpleColorsFill = [
+	'fill-purple',
+	'fill-blue',
+	'fill-green',
+	'fill-lime',
+	'fill-yellow',
+	'fill-pink',
+	'fill-orange',
+]
+
+/**
+ * This function will give us a random color from the array of colors
+ * we have defined using the `getRandomPositiveIntWithin`. We use the
+ * length of the colors array to make sure the index lookup will be
+ * guaranteed to find a match.
+ **/
+function generateColor(colors: string[]) {
+	return colors[getRandomPositiveIntWithin(colors.length)]
+}
+
+/**
+ * This function is used to return a random positive integer (whole number)
+ * that will never be any larger than the max integer you pass in.
+ * This is extremely useful when trying to get a randomized value from
+ * an array.
+ **/
+function getRandomPositiveIntWithin(max: number) {
+	return Math.floor(Math.random() * max)
+}
+
+function createArrayOfLength(length: number): number[] {
+	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
+}
+
+/**
+ * Simplex Noise generates a value between -1 and 1, but we are working with an
+ * array that will not accept a negative index. We will be converting the original
+ * noise range to fit the 0 to 1 scale we need.
+ **/
+function getColorByNoise(colors: string[], noise: number) {
+	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
 }
