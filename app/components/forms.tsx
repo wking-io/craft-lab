@@ -1,7 +1,7 @@
 import { useInputControl } from '@conform-to/react'
 import React, { useId } from 'react'
 import { Checkbox, type CheckboxProps } from './ui/checkbox.tsx'
-import { Label } from './ui/fieldset.tsx'
+import { Label, Field } from './ui/fieldset.tsx'
 import { Input } from './ui/input.tsx'
 import { Textarea } from './ui/textarea.tsx'
 
@@ -27,7 +27,7 @@ export function ErrorList({
 	)
 }
 
-export function Field({
+export function TextField({
 	labelProps,
 	inputProps,
 	errors,
@@ -42,7 +42,7 @@ export function Field({
 	const id = inputProps.id ?? fallbackId
 	const errorId = errors?.length ? `${id}-error` : undefined
 	return (
-		<div className={className}>
+		<Field className={className}>
 			<Label htmlFor={id} {...labelProps} />
 			<Input
 				id={id}
@@ -53,7 +53,7 @@ export function Field({
 			<div className="min-h-[32px] px-4 pb-3 pt-1">
 				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
 			</div>
-		</div>
+		</Field>
 	)
 }
 
@@ -72,7 +72,7 @@ export function TextareaField({
 	const id = textareaProps.id ?? textareaProps.name ?? fallbackId
 	const errorId = errors?.length ? `${id}-error` : undefined
 	return (
-		<div className={className}>
+		<Field className={className}>
 			<Label htmlFor={id} {...labelProps} />
 			<Textarea
 				id={id}
@@ -83,7 +83,7 @@ export function TextareaField({
 			<div className="min-h-[32px] px-4 pb-3 pt-1">
 				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
 			</div>
-		</div>
+		</Field>
 	)
 }
 

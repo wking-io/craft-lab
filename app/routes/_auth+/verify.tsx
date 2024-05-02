@@ -38,7 +38,7 @@ export const VerifySchema = z.object({
 
 export const meta: MetaFunction = () =>
 	seoData({
-		title: 'Craft Lab — Verify one-time code',
+		title: 'Craft Lab • Verify one-time code',
 		description:
 			'Help us build a space where we learn and share everything about our craft and have fun doing it.',
 	})

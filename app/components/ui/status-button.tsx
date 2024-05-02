@@ -1,7 +1,11 @@
+import {
+	Button as HeadlessButton,
+	type ButtonProps as HeadlessButtonProps,
+} from '@headlessui/react'
 import { type LinkProps, Link } from '@remix-run/react'
+import clsx from 'clsx'
 import * as React from 'react'
 import { useSpinDelay } from 'spin-delay'
-import { cn } from '#app/utils/misc.tsx'
 import { Icon } from './icon.tsx'
 import {
 	Tooltip,
@@ -10,82 +14,149 @@ import {
 	TooltipTrigger,
 } from './tooltip.tsx'
 
+const styles = {
+	base: [
+		// Base
+		'group relative isolate inline-flex items-center justify-center gap-4 font-medium border',
+
+		// Sizing
+		'py-2 pl-5 pr-6',
+
+		// Focus
+		'focus:outline-none data-[focus]:outline data-[focus]:outline-2 data-[focus]:outline-offset-2 data-[focus]:outline-blue-500',
+
+		// Disabled
+		'data-[disabled]:opacity-50 data-[disabled]:pointer-events-none',
+	],
+	solid: ['border-transparent'],
+	outline: ['border-foreground'],
+	colors: {
+		default: 'bg-foreground text-background',
+	},
+}
+
+type Props =
+	| { color?: keyof typeof styles.colors; outline?: never }
+	| { color?: never; outline: true }
+
 export const StatusButton = React.forwardRef<
 	HTMLButtonElement,
-	React.ComponentPropsWithoutRef<'button'> &
-		React.PropsWithChildren<{
-			className?: string
-			status: 'pending' | 'success' | 'error' | 'idle'
-			message?: string | null
-			spinDelay?: Parameters<typeof useSpinDelay>[1]
-		}>
->(({ message, status, className, children, spinDelay, ...props }, ref) => {
-	const delayedPending = useSpinDelay(status === 'pending', {
-		delay: 400,
-		minDuration: 300,
-		...spinDelay,
-	})
-	const companion = {
-		pending: delayedPending ? (
-			<div className="inline-flex h-6 w-6 items-center justify-center">
-				<Icon name="update" className="animate-spin" />
-			</div>
-		) : null,
-		success: (
-			<div className="inline-flex h-6 w-6 items-center justify-center">
-				<Icon name="check" />
-			</div>
-		),
-		error: null,
-		idle: null,
-	}[status]
-
-	return (
-		<button
-			ref={ref}
-			className={cn(
-				status === 'error' && 'border-red',
-				'group relative flex justify-center gap-4 border border-transparent bg-primary py-2 pl-5 pr-6 font-medium text-primary-foreground',
-				className,
-			)}
-			{...props}
+	HeadlessButtonProps &
+		React.PropsWithChildren<
+			Props & {
+				className?: string
+				status: 'pending' | 'success' | 'error' | 'idle'
+				message?: string | null
+				spinDelay?: Parameters<typeof useSpinDelay>[1]
+			}
 		>
-			<svg
-				className="absolute -bottom-px -right-px h-[24px] w-[24px] rotate-90 sm:-top-px sm:bottom-auto sm:rotate-0"
-				viewBox="0 0 4 4"
-				fill="none"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<rect
-					className="fill-current text-background"
-					x="0"
-					y="0"
-					width="4"
-					height="4"
-				/>
-				<path
-					d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
-					className="fill-current text-foreground"
-				/>
-			</svg>
-			<HoverSVG className="absolute -bottom-px -right-px -scale-y-100 opacity-0 transition duration-200 group-hover:opacity-100 sm:-top-px sm:bottom-auto sm:scale-y-100" />
+>(
+	(
+		{
+			message,
+			status,
+			className,
+			children,
+			spinDelay,
+			outline,
+			color,
+			...props
+		},
+		ref,
+	) => {
+		const delayedPending = useSpinDelay(status === 'pending', {
+			delay: 400,
+			minDuration: 300,
+			...spinDelay,
+		})
+		const companion = {
+			pending: delayedPending ? (
+				<div className="inline-flex h-6 w-6 items-center justify-center">
+					<Icon name="update" className="animate-spin" />
+				</div>
+			) : null,
+			success: (
+				<div className="inline-flex h-6 w-6 items-center justify-center">
+					<Icon name="check" />
+				</div>
+			),
+			error: null,
+			idle: null,
+		}[status]
 
-			<span className="relative inline-flex items-center justify-center gap-2">
-				{children}
-			</span>
-			{message ? (
-				<TooltipProvider>
-					<Tooltip>
-						<TooltipTrigger>{companion}</TooltipTrigger>
-						<TooltipContent>{message}</TooltipContent>
-					</Tooltip>
-				</TooltipProvider>
-			) : (
-				companion
-			)}
-		</button>
-	)
-})
+		const classes = clsx(
+			className,
+			status === 'error' && 'border-red',
+			styles.base,
+			outline
+				? styles.outline
+				: clsx(styles.solid, styles.colors[color ?? 'default']),
+		)
+
+		return (
+			<HeadlessButton ref={ref} className={classes} {...props}>
+				{outline ? (
+					<svg
+						className="absolute -right-px -top-px z-10 h-[24px] w-[24px]"
+						viewBox="0 0 4 4"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M 2 0 H 2 V 1 H 3 V 2 H 4 V 0 H 0 Z"
+							className="fill-background"
+							strokeWidth="0"
+						/>
+						<path
+							d="M 2 0 H 2 V 1 H 3 V 2 H 4"
+							className="stroke-foreground"
+							strokeWidth=".125"
+						/>
+					</svg>
+				) : (
+					<svg
+						className="absolute -bottom-px -right-px h-[24px] w-[24px] rotate-90 sm:-top-px sm:bottom-auto sm:rotate-0"
+						viewBox="0 0 4 4"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<rect
+							className="fill-background"
+							x="0"
+							y="0"
+							width="4"
+							height="4"
+						/>
+						<path
+							d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+							className="fill-foreground"
+						/>
+					</svg>
+				)}
+				<HoverSVG
+					className={clsx(
+						outline ? 'group-hover:opacity-50' : 'group-hover:opacity-100',
+						'absolute -bottom-px -right-px -scale-y-100 opacity-0 transition duration-200 sm:-top-px sm:bottom-auto sm:scale-y-100',
+					)}
+				/>
+
+				<span className="relative inline-flex items-center justify-center gap-2">
+					{children}
+				</span>
+				{message ? (
+					<TooltipProvider>
+						<Tooltip>
+							<TooltipTrigger>{companion}</TooltipTrigger>
+							<TooltipContent>{message}</TooltipContent>
+						</Tooltip>
+					</TooltipProvider>
+				) : (
+					companion
+				)}
+			</HeadlessButton>
+		)
+	},
+)
 StatusButton.displayName = 'Button'
 
 export const MarketingButton = React.forwardRef<
@@ -98,7 +169,7 @@ export const MarketingButton = React.forwardRef<
 	return (
 		<Link
 			ref={ref}
-			className={cn(
+			className={clsx(
 				'group relative flex justify-center gap-4 border border-transparent bg-primary py-2 pl-5 pr-6 font-medium text-primary-foreground',
 				className,
 			)}

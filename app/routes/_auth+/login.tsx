@@ -11,7 +11,7 @@ import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
+import { CheckboxField, ErrorList, TextField } from '#app/components/forms.tsx'
 import { StatusButton } from '#app/components/ui/status-button.js'
 import { PasswordSchema, HandleSchema } from '#app/utils/account-validation.js'
 import { login, requireAnonymous } from '#app/utils/auth.server.ts'
@@ -21,6 +21,7 @@ import {
 } from '#app/utils/connections.tsx'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
+import { seoData } from '#app/utils/seo.js'
 import { handleNewSession } from './login.server.ts'
 
 const LoginFormSchema = z.object({
@@ -110,7 +111,7 @@ export default function LoginPage() {
 					<div className="mx-auto w-full max-w-md px-8">
 						<Form method="POST" {...getFormProps(form)}>
 							<HoneypotInputs />
-							<Field
+							<TextField
 								labelProps={{ children: 'Handle' }}
 								inputProps={{
 									...getInputProps(fields.handle, { type: 'text' }),
@@ -121,7 +122,7 @@ export default function LoginPage() {
 								errors={fields.handle.errors}
 							/>
 
-							<Field
+							<TextField
 								labelProps={{ children: 'Password' }}
 								inputProps={{
 									...getInputProps(fields.password, {
@@ -188,7 +189,10 @@ export default function LoginPage() {
 }
 
 export const meta: MetaFunction = () => {
-	return [{ title: 'Login to Epic Notes' }]
+	return seoData({
+		title: 'Login • Craft Lab',
+		description: 'Login to the Craft Lab community for Design Engineers.',
+	})
 }
 
 export function ErrorBoundary() {

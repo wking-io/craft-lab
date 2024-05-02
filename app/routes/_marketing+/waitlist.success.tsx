@@ -8,7 +8,7 @@ import { seoData } from '#app/utils/seo.js'
 
 export const meta: MetaFunction = () =>
 	seoData({
-		title: 'Craft Lab — A community built for Incredible Design Engineers',
+		title: 'Craft Lab • A community built for Incredible Design Engineers',
 		description:
 			'Help us build a space where we learn and share everything about our craft and have fun doing it.',
 	})

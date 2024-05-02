@@ -43,6 +43,7 @@ export function ProviderConnectionForm({
 			<StatusButton
 				type="submit"
 				className="w-full"
+				outline
 				status={isPending ? 'pending' : 'idle'}
 			>
 				<span className="inline-flex items-center gap-1.5">
