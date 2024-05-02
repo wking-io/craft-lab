@@ -1,33 +1,15 @@
-import { getFormProps, getInputProps, useForm } from '@conform-to/react'
-import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { Field, Input } from '@headlessui/react'
-import * as E from '@react-email/components'
 import { type ActionFunctionArgs, type MetaFunction } from '@remix-run/node'
-import {
-	Form,
-	json,
-	redirect,
-	useActionData,
-	useLoaderData,
-} from '@remix-run/react'
+import { json, useLoaderData } from '@remix-run/react'
 import clsx from 'clsx'
 import QR from 'qrcode'
-import { useId, type PropsWithChildren } from 'react'
-import { HoneypotInputs } from 'remix-utils/honeypot/react'
-import { z } from 'zod'
+import { type PropsWithChildren } from 'react'
 import MemberCard from '#app/components/member-card.js'
 import { Nav } from '#app/components/nav.js'
-import { ErrorMessage } from '#app/components/ui/fieldset.js'
-import { StatusButton } from '#app/components/ui/status-button.js'
+import { WaitlistForm } from '#app/components/waitlist.js'
 import { rootRouteId } from '#app/root.js'
-import { EmailSchema } from '#app/utils/account-validation.js'
-import { prisma } from '#app/utils/db.server.js'
-import { sendEmail } from '#app/utils/email.server.js'
-import { checkHoneypot } from '#app/utils/honeypot.server.js'
-import { useIsPending } from '#app/utils/misc.js'
 import { useRouteIdLoaderData } from '#app/utils/route-id.js'
 import { seoData } from '#app/utils/seo.js'
-import { prepareVerification } from '../_auth+/verify.server'
+import { submitWaitlist } from '#app/utils/waitlist.server.js'
 
 export const meta: MetaFunction = () =>
 	seoData({
@@ -43,123 +25,9 @@ export async function loader() {
 		}),
 	})
 }
-const WaitlistFormSchema = z.object({
-	email: EmailSchema,
-})
 
 export async function action({ request }: ActionFunctionArgs) {
-	const formData = await request.formData()
-
-	checkHoneypot(formData)
-
-	console.log('HERE')
-	const submission = await parseWithZod(formData, {
-		schema: WaitlistFormSchema.superRefine(async (data, ctx) => {
-			const pExistingAccount = prisma.account.findUnique({
-				where: { email: data.email },
-				select: { id: true },
-			})
-			const pExistingWaitlistMember = prisma.waitlistMember.findUnique({
-				where: { email: data.email },
-				select: { id: true },
-			})
-
-			const [existingAccount, existingWaitlistMember] = await Promise.all([
-				pExistingAccount,
-				pExistingWaitlistMember,
-			])
-
-			if (existingAccount) {
-				ctx.addIssue({
-					path: ['email'],
-					code: z.ZodIssueCode.custom,
-					message: 'A account already exists with this email',
-				})
-				return
-			}
-
-			if (existingWaitlistMember) {
-				ctx.addIssue({
-					path: ['email'],
-					code: z.ZodIssueCode.custom,
-					message: 'A waitlist member already exists with this email',
-				})
-				return
-			}
-		}),
-		async: true,
-	})
-
-	if (submission.status !== 'success') {
-		return json(
-			{ result: submission.reply() },
-			{ status: submission.status === 'error' ? 400 : 200 },
-		)
-	}
-	const { email } = submission.value
-
-	const { verifyUrl, redirectTo, otp } = await prepareVerification({
-		period: 10 * 60,
-		request,
-		type: 'waitlist',
-		target: email,
-	})
-
-	const response = await sendEmail({
-		to: email,
-		subject: `Verify email to lock in your waitlist reward!`,
-		react: (
-			<WaitlistEmail waitlistVerificationUrl={verifyUrl.toString()} otp={otp} />
-		),
-	})
-
-	if (response.status === 'success') {
-		return redirect(redirectTo.toString())
-	} else {
-		return json(
-			{
-				result: submission.reply({ formErrors: [response.error.message] }),
-			},
-			{
-				status: 500,
-			},
-		)
-	}
-}
-
-export function WaitlistEmail({
-	waitlistVerificationUrl,
-	otp,
-}: {
-	waitlistVerificationUrl: string
-	otp: string
-}) {
-	return (
-		<E.Html lang="en" dir="ltr">
-			<E.Container>
-				<h1>
-					<E.Text>OHHhh yeah!</E.Text>
-				</h1>
-				<p>
-					<E.Text>
-						Please verify your email! This community is going to be a blast, and
-						I cannot wait for you to see it.
-					</E.Text>
-				</p>
-				<p>
-					<E.Text>
-						Here's your verification code: <strong>{otp}</strong>
-					</E.Text>
-				</p>
-				<p>
-					<E.Text>Or click the link to get started:</E.Text>
-				</p>
-				<E.Link href={waitlistVerificationUrl}>
-					{waitlistVerificationUrl}
-				</E.Link>
-			</E.Container>
-		</E.Html>
-	)
+	return submitWaitlist({ request })
 }
 
 export default function Index() {
@@ -393,81 +261,5 @@ function PlaygroundHoverSVG({ className }: { className?: string }) {
 			<rect x="42" y="36" width="6" height="6" fill="white" fillOpacity="0.2" />
 			<rect x="36" y="30" width="6" height="6" fill="white" fillOpacity="0.2" />
 		</svg>
-	)
-}
-
-function WaitlistForm() {
-	const actionData = useActionData<typeof action>()
-	const isPending = useIsPending()
-	const id = useId()
-
-	const [form, fields] = useForm({
-		id: `waitlist-form-${id}`,
-		constraint: getZodConstraint(WaitlistFormSchema),
-		lastResult: actionData?.result,
-		onValidate({ formData }) {
-			console.log(Object.fromEntries(formData))
-			return parseWithZod(formData, { schema: WaitlistFormSchema })
-		},
-		shouldRevalidate: 'onBlur',
-	})
-
-	return (
-		<Form
-			method="POST"
-			{...getFormProps(form)}
-			className={clsx(
-				'group relative isolate mt-8 w-full max-w-2xl transition lg:mt-12',
-			)}
-		>
-			<svg
-				className="absolute -left-1.5 -top-1.5 -z-10 hidden h-[42px] w-auto -scale-y-100 text-zinc-950/5 opacity-0 transition group-focus-within:text-blue/10 group-focus-within:opacity-100 group-hover:opacity-100 sm:top-1.5 sm:block sm:scale-y-100"
-				viewBox="0 0 125 7"
-			>
-				{/* Layer one */}
-				<rect x="0" y="0" width="1" height="1" className="fill-current " />
-				<rect x="0" y="2" width="1" height="5" className="fill-current" />
-				<rect x="1" y="6" width="80" height="1" className="fill-current" />
-				<rect x="83" y="6" width="2" height="1" className="fill-current" />
-				<rect x="86" y="6" width="1" height="1" className="fill-current" />
-				<rect x="88" y="6" width="1" height="1" className="fill-current" />
-				{/* Layer two */}
-				<rect x="0" y="2" width="1" height="1" className="fill-current" />
-				<rect x="0" y="4" width="1" height="3" className="fill-current" />
-				<rect x="1" y="6" width="40" height="1" className="fill-current" />
-				<rect x="44" y="6" width="4" height="1" className="fill-current" />
-				<rect x="48" y="6" width="2" height="1" className="fill-current" />
-				<rect x="52" y="6" width="1" height="1" className="fill-current" />
-				{/* Layer three */}
-				<rect x="0" y="6" width="8" height="1" className="fill-current" />
-				<rect x="10" y="6" width="4" height="1" className="fill-current" />
-				<rect x="16" y="6" width="2" height="1" className="fill-current" />
-				<rect x="19" y="6" width="1" height="1" className="fill-current" />
-			</svg>
-			<HoneypotInputs />
-			<Field className="flex w-full flex-col items-start sm:flex-row">
-				<label className="sr-only" htmlFor={fields.email.id}>
-					Email
-				</label>
-				<div className="w-full flex-1">
-					<Input
-						{...getInputProps(fields.email, { type: 'email' })}
-						placeholder="design@engineer.awesome"
-						invalid={Boolean(fields.email.errors?.length)}
-						className="w-full rounded-none border border-primary px-4 py-2 focus:outline-none"
-					/>
-					<ErrorMessage errors={fields.email.errors} />
-					<ErrorMessage errors={form.errors} id={form.errorId} />
-				</div>
-				<StatusButton
-					className="min-w-[30% w-full sm:w-auto"
-					status={isPending ? 'pending' : form.status ?? 'idle'}
-					type="submit"
-					disabled={isPending}
-				>
-					Join The Waitlist
-				</StatusButton>
-			</Field>
-		</Form>
 	)
 }

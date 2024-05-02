@@ -1,5 +1,9 @@
 import { Radio, RadioGroup } from '@headlessui/react'
-import { type MetaFunction, json } from '@remix-run/node'
+import {
+	type MetaFunction,
+	json,
+	type ActionFunctionArgs,
+} from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import Alea from 'alea'
 import clsx from 'clsx'
@@ -14,8 +18,10 @@ import { getHighlighter } from 'shiki'
 import { createNoise2D } from 'simplex-noise'
 import { RefreshIcon } from '#app/components/two-tone-icon.js'
 import { Icon } from '#app/components/ui/icon.js'
+import { WaitlistForm } from '#app/components/waitlist.js'
 import { seoData } from '#app/utils/seo.js'
 import { theme } from '#app/utils/shiki.js'
+import { submitWaitlist } from '#app/utils/waitlist.server.js'
 
 export const meta: MetaFunction = () => [
 	...seoData({
@@ -54,350 +60,6 @@ export const meta: MetaFunction = () => [
 	},
 ]
 
-const exampleOne = `/** 
-* This function is used to return a random positive integer (whole number) 
-* that will never be any larger than the max integer you pass in. 
-* This is extremely useful when trying to get a randomized value from 
-* an array.
-**/
-function getRandomPositiveIntWithin(max: number) { 
-  return Math.floor(Math.random() * max)
-} 
-
-/** 
-* This function will give us a random color from the array of colors
-* we have defined using the \`getRandomPositiveIntWithin\`. We use the
-* length of the colors array to make sure the index lookup will be
-* guaranteed to find a match.
-**/
-function generateColor() {
-  const colors = []
-  return colors[getRandomPositiveIntWithin(colors.length)]
-}
-
-function ColorBox() { 
-  const color = generateColor() 
-  return <div className="w-12 h-12" style={{ backgroundColor: color }} />
-}`
-
-const exampleTwo = `/**
- * I am using tailwind classes for existing color variables on my site, but
- * you can use hex codes, hsl values, or any supported color property
- **/
-const colors = [
-	'bg-pink',
-	'bg-orange',
-	'bg-yellow',
-	'bg-lime',
-	'bg-green',
-	'bg-blue',
-	'bg-purple',
-]
-
-/** 
-* This function is used to return a random positive integer (whole number) 
-* that will never be any larger than the max integer you pass in. 
-* This is extremely useful when trying to get a randomized value from 
-* an array.
-**/
-function getRandomPositiveIntWithin(max: number) { 
-  return Math.floor(Math.random() * max)
-} 
-
-/** 
-* This function will give us a random color from the array of colors
-* we have defined using the \`getRandomPositiveIntWithin\`. We use the
-* length of the colors array to make sure the index lookup will be
-* guaranteed to find a match.
-**/
-function generateColor() {
-  return colors[getRandomPositiveIntWithin(colors.length)]
-}
-
-/** 
-* This function will allow us to pass a length we need and array to be
-* and will return an array where each value in the array is its index.
-* Useful for creating rows and columns as seen below.
-**/
-function createArrayOfLength(length: number): number[] {
-	return Array.from(Array(length), (_, i) => i)
-}
-
-function ColorBox(props: ComponentProps<'rect'>) { 
-  const color = generateColor() 
-  return <rect {...props} className={color} />
-}
-
-function ColorGrid() { 
-  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
-  const boxSize = 6
-  return (
-    <svg 
-      width={rows * boxSize} 
-      height={columns * boxSize} 
-      viewBox={\`0 0 \${rows} \${columns}\`}
-    > 
-      {rows.map((x => columns.map(y => {
-        <ColorBox
-          x={x} 
-          y={y}
-          width="1"
-          height="1"
-          key={\`pixel-\${x}-\${y}\`}
-        />
-      ))
-    </svg>
-  )
-}`
-
-const exampleThree = `/** 
-* Here is a manually setup array of colors that will map to percentages.
-* There are 10 indexed positions that will allow us to have a color grouping 
-* for every 10th of either the x or y axis.
-**/
-const colors = [
-	['fill-blue', 'fill-purple', 'fill-purple'],
-	['fill-green', 'fill-blue', 'fill-purple'],
-	['fill-green', 'fill-blue', 'fill-purple'],
-	['fill-lime', 'fill-green', 'fill-blue'],
-	['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
-	['fill-yellow', 'fill-lime', 'fill-green'],
-	['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
-	['fill-pink', 'fill-yellow', 'fill-lime'],
-	['fill-pink', 'fill-orange', 'fill-yellow'],
-	['fill-pink', 'fill-orange', 'fill-orange'],
-]
-
-/** 
-* This function is used to return a random positive integer (whole number) 
-* that will never be any larger than the max integer you pass in. 
-* This is extremely useful when trying to get a randomized value from 
-* an array.
-**/
-function getRandomPositiveIntWithin(max: number) { 
-  return Math.floor(Math.random() * max)
-} 
-
-/** 
-* This function will give us a random color from the array of colors
-* we have defined using the \`getRandomPositiveIntWithin\`. We use the
-* length of the colors array to make sure the index lookup will be
-* guaranteed to find a match.
-**/
-function generateColor(colors: string[]) {
-  return colors[getRandomPositiveIntWithin(colors.length)]
-}
-
-/** 
-* This function will allow us to pass a length we need and array to be
-* and will return an array where each value in the array is its index.
-* Useful for creating rows and columns as seen below.
-**/
-function createArrayOfLength(length: number): number[] {
-	return Array.from(Array(length), (_, i) => i)
-}
-
-function ColorBox({
-	xPercent,
-	yPercent,
-	...props
-}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
-	const color = generateColor([...colors[xPercent], ...colors[yPercent]])
-	return <rect {...props} className={color} />
-}
-
-function ColorGrid() { 
-  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
-  const boxSize = 6
-  return (
-    <svg
-		width={rows.length * boxSize}
-		height={columns.length * boxSize}
-		viewBox={\`0 0 \${rows.length} \${columns.length}\`}
-	>
-		{rows.map(x =>
-			columns.map(y => (
-				<ColorBox
-					x={x}
-					y={y}
-					xPercent={Math.floor((x / rows.length) * colors.length)}
-					yPercent={Math.floor((y / columns.length) * colors.length)}
-					width="1"
-					height="1"
-					key={\`pixel-\${x}-\${y}\`}
-				/>
-			)),
-		)}
-	</svg>
-  )
-}`
-
-const exampleFour = `import { makeNoise2D } from 'open-simplex-noise'
-
-/** 
-* Here we are just going back to our basic array of colors and will let the
-* simplex noise algorithm pick what colors are being selected from this array
-**/
-const colors = [
-	'fill-purple',
-	'fill-blue',
-	'fill-green',
-	'fill-lime',
-	'fill-yellow',
-	'fill-pink',
-	'fill-orange',
-]
-
-/** 
-* This function is used to return a random positive integer (whole number) 
-* that will never be any larger than the max integer you pass in. 
-* This is extremely useful when trying to get a randomized value from 
-* an array.
-**/
-function getRandomPositiveIntWithin(max: number) { 
-  return Math.floor(Math.random() * max)
-}
-
-/**
- * Simplex Noise generates a value between -1 and 1, but we are working with an
- * array that will not accept a negative index. We will be converting the original
- * noise range to fit the 0 to 1 scale we need.
- **/
-function getColorByNoise(noise: number) {
-	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
-}
-
-/** 
-* This function will allow us to pass a length we need and array to be
-* and will return an array where each value in the array is its index.
-* Useful for creating rows and columns as seen below.
-**/
-function createArrayOfLength(length: number): number[] {
-	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
-}
-
-function ColorBox({
-	noise,
-	...props
-}: ComponentProps<'rect'> & { noise: number }) {
-	const color = getColorByNoise(noise)
-	return <rect {...props} className={color} />
-}
-
-function ColorGrid() { 
-  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
-  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
-  const boxSize = 6
-  const xSmoothness = 20
-  const ySmoothness = 20
-  const noise2D = makeNoise2D(Math.random())
-  return (
-    <svg
-		width={rows.length * boxSize}
-		height={columns.length * boxSize}
-		viewBox={\`0 0 \${rows.length} \${columns.length}\`}
-	>
-		{rows.map(x =>
-			columns.map(y => (
-				<ColorBox
-					x={x}
-					y={y}
-					noise={noise2D(x / xSmoothness, y / ySmoothness)}
-					width="1"
-					height="1"
-					key={\`pixel-\${x}-\${y}\`}
-				/>
-			)),
-		)}
-	</svg>
-  )
-}`
-
-const exampleSix = `import Alea from 'alea'
-import { makeNoise2D } from 'open-simplex-noise'
-
-/** 
-* Here we are just going back to our basic array of colors and will let the
-* simplex noise algorithm pick what colors are being selected from this array
-**/
-const colors = [
-	'fill-purple',
-	'fill-blue',
-	'fill-green',
-	'fill-lime',
-	'fill-yellow',
-	'fill-pink',
-	'fill-orange',
-]
-
-/** 
-* This function is now updated to accept the random number and the max. This
-* allows us to make sure that we are passing in a number we know is connected
-* to our seeded PRNG.
-**/
-function getRandomPositiveIntWithin(randomNum: number, max: number) { 
-  return Math.floor(randomNum * max)
-} 
-
-/**
- * Simplex Noise generates a value between -1 and 1, but we are working with an
- * array that will not accept a negative index. We will be converting the original
- * noise range to fit the 0 to 1 scale we need.
- **/
-function getColorByNoise(noise: number) {
-	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
-}
-
-/** 
-* This function will allow us to pass a length we need and array to be
-* and will return an array where each value in the array is its index.
-* Useful for creating rows and columns as seen below.
-**/
-function createArrayOfLength(length: number): number[] {
-	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
-}
-
-function ColorBox({
-	noise,
-	...props
-}: ComponentProps<'rect'> & { noise: number }) {
-	const color = getColorByNoise(noise)
-	return <rect {...props} className={color} />
-}
-
-function ColorGrid() {
-	const seed = 99
-	const generator = Alea(seed)
-	const rows = createArrayOfLength(getRandomPositiveIntWithin(generator(), 100))
-	const columns = createArrayOfLength(getRandomPositiveIntWithin(generator(), 40))
-	const boxSize = 6
-	const xSmoothness = 20
-	const ySmoothness = 20
-	const noise2D = makeNoise2D(generator())
-	return (
-		<svg
-			width={rows.length * boxSize}
-			height={columns.length * boxSize}
-			viewBox={\`0 0 \${rows.length} \${columns.length}\`}
-		>
-			{rows.map(x =>
-				columns.map(y => (
-					<ColorBox
-						x={x}
-						y={y}
-						noise={noise2D(x / xSmoothness, y / ySmoothness)}
-						width="1"
-						height="1"
-						key={\`pixel-\${x}-\${y}\`}
-					/>
-				)),
-			)}
-		</svg>
-	)
-}`
-
 export async function loader() {
 	const highlighter = await getHighlighter({
 		themes: [theme],
@@ -426,6 +88,10 @@ export async function loader() {
 			theme,
 		}),
 	})
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+	return submitWaitlist({ request })
 }
 
 export default function Screen() {
@@ -460,9 +126,9 @@ export default function Screen() {
 			</h1>
 			<p>
 				Part of the creation of the Craft Lab brand has involved generative
-				elements. I have always been interested in them, and thought what better
-				opportunity to explore and enforce my experience with generative art
-				than a community platform built for design engineers.
+				elements. I have always been interested in them, and a community
+				platform built for design engineers felt like the perfect opportunity to
+				explore and enforce my experience with generative art.
 			</p>
 			<p>
 				After building multiple pieces of generative art I want to document what
@@ -478,25 +144,22 @@ export default function Screen() {
 			</p>
 
 			<p>
-				Visual Algorithm is just an easier way to refer to the function (or
+				A Visual Algorithm is just an easier way to refer to the function (or
 				functions) that you use to take in randomized data, apply some rules to
 				that data, and output a designed visual that reacts to the data.
 			</p>
 			<p>
 				There is a lot to unpack in what I just said, and that is what we are
-				here to do. We are going to break what it means to build a visual
-				algorithm down the most basic example I can think of and then build on
-				top of that to slowly introduce more concepts that make a complete
-				visual algorithm.
+				here to do. We are going to break down what it means to build a visual
+				algorithm down the most basic example I can think of. Then build on top
+				of that to slowly introduce more concepts that make a complete visual
+				algorithm.
 			</p>
 			<h2>Applying Values to Visuals</h2>
-			<p>
-				The place we’re going to start at is applying a random value to a single
-				visual output.
-			</p>
+			<p>Let's start by applying a random value to a single visual output.</p>
 
 			<p>
-				We will do this using JavaScript’s built in random number function{' '}
+				We will do this using JavaScript’s built-in random number function{' '}
 				<Code>Math.random()</Code> to pick a single color.
 			</p>
 
@@ -513,9 +176,9 @@ export default function Screen() {
 			<h3>Let’s take it a little further</h3>
 
 			<p>
-				We have randomized color, what if we want to do more than one color?
-				What if we want a grid of colors where the size of that grid is also
-				generative?
+				We implemented randomized color selection, but what if we want to do
+				more than one color? What if we want a grid of colors where the size of
+				that grid is also generative?
 			</p>
 			<CodeBlock
 				size={exampleFontSize}
@@ -532,7 +195,7 @@ export default function Screen() {
 			</p>
 			<blockquote>Is this good?</blockquote>
 			<p>No. The answer is no.</p>
-			<h2>Contraints Breed Craft</h2>
+			<h2>Constraints Breed Craft</h2>
 			<p>
 				Objectively speaking it isn't anything special, yet. It has allowed us
 				to learn some important concepts and is interesting, but, as with a lot
@@ -544,8 +207,9 @@ export default function Screen() {
 			</p>
 			<h3>Color Constraint</h3>
 			<p>
-				Let's look at how we can use constraint on a single dimension, color,
-				using two different methods to get very different outputs.
+				Let's look at how we can use constraints on a single dimension &mdash;
+				color. We will use two different methods to get two very different
+				outputs.
 			</p>
 			<p>
 				In the example that we have been building so far the color for each
@@ -576,7 +240,7 @@ export default function Screen() {
 
 			<p>
 				Okay, now the output of our visual algorithm is feeling more intentional
-				and designed. With this approach we manually hardcoded our available
+				and designed. With this approach, we manually hardcoded our available
 				values at each stage of the gradient. However, as you introduce more
 				complex variables like distance or size in your work how can we add
 				constraints without needing to manually enter and control every
@@ -586,13 +250,13 @@ export default function Screen() {
 			<h3>Pattern Algorithms</h3>
 
 			<p>
-				In generative art there are a huge library of common visual /
+				In generative art, there is a large set of common visual and
 				mathematical algorithms that allow you to create patterns that have a
 				feeling of intention and direction by adding constraints to the
 				randomness in your work.
 			</p>
 
-			<p>Here are a list of some commonly used ones:</p>
+			<p>Here is a list of some commonly used ones:</p>
 
 			<ul>
 				<li>Simplex / Perlin Noise</li>
@@ -603,7 +267,7 @@ export default function Screen() {
 
 			<p>
 				There is a wide world of available pattern algorithms to experiment
-				with, and{' '}
+				with. I'm not kidding. There is{' '}
 				<a href="https://www.mattdesl.com/sferics">
 					literally a wide world of natural patterns
 				</a>{' '}
@@ -617,7 +281,7 @@ export default function Screen() {
 
 			<Callout>
 				Simplex Noise is an algorithm created by Ken Perlin. It is most commonly
-				used in video games topography and generative art…obviously.
+				used in video game topography and generative art…obviously.
 			</Callout>
 
 			<CodeBlock
@@ -637,10 +301,10 @@ export default function Screen() {
 
 			<p>
 				The smoothness controls allow us to change the scale at which our noise
-				is changing. If you drag the smoothness all the way to the left you will
-				be able to see what the output looks like with the raw noise values.
-				Since the noise is changing so quickly at that scale it looks barely
-				better than completely random values.
+				is changing. If you drag the smoothness to the far left you will be able
+				to see what the output looks like with the raw noise values. Since the
+				noise is changing so quickly at that scale it looks barely better than
+				completely random values.
 			</p>
 
 			<h2>Random, but Repeatable</h2>
@@ -651,12 +315,12 @@ export default function Screen() {
 				get a brand new output!
 			</p>
 			<p>
-				What if when you press the button you really like the output? What
-				happens if your dev environment crashes or your browser tab gets closed?
+				What if when you press the button you like the output? What happens if
+				your dev environment crashes or your browser tab gets closed?
 			</p>
 			<p>
-				That version that you really liked is gone. Most likely forever because
-				of the probabilities of so many completely random values being used.
+				That version that you liked is gone. Most likely forever because of the
+				probabilities of so many completely random values being used.
 			</p>
 
 			<p>
@@ -665,7 +329,7 @@ export default function Screen() {
 
 			<h3>The Mighty Seed</h3>
 			<p>
-				In generative art the ability to create repeatable outputs is captured
+				In generative art, the ability to create repeatable outputs is captured
 				in two concepts. A Pseudo Random Number Generator (PRNG) and a seed.
 			</p>
 			<p>
@@ -674,13 +338,13 @@ export default function Screen() {
 				number.
 			</p>
 			<p>
-				However, the big difference between Math.random and using a “real” PRNG
-				is the ability to accept a seed.
+				However, the big difference between <Code>Math.random()</Code> and using
+				a “real” PRNG is the ability to accept a seed.
 			</p>
 			<p>
-				A seed is just a number that we pass to the PRNG that guarantee that the
-				numbers that are output are always the same. Let’s take an interactive
-				look at this concept.
+				A seed is just a number that we pass to the PRNG that guarantees that
+				the numbers that are output are always the same. Let’s take an
+				interactive look at this concept.
 			</p>
 			<p>
 				The example below uses the Alea PRNG, and when we pass the same seed you
@@ -712,10 +376,24 @@ export default function Screen() {
 			<p>
 				The only real way to make great visual algorithms at this point is to
 				get out there and start building! You will learn so much when you try to
-				make your first one. However, if you would like to dive a little deeper
-				there are some great topics that will help you expand your capability to
-				create visual algorithms.
+				make your first one. If you would like to dive a little deeper, I have
+				added some extra resources and topics below that will help you expand
+				your capability to create visual algorithms.
 			</p>
+			<Callout>
+				<h2 className="!mb-3 !mt-0">
+					Your friends are your future.
+					<br />
+					Come make more Design Engineer ones.
+				</h2>
+				<p className="!mb-0">
+					Get updates when more content like this is released, as well as early
+					access news on the Craft Lab community by signing up below.
+				</p>
+				<div className="not-prose text-base">
+					<WaitlistForm className="mt-6" />
+				</div>
+			</Callout>
 			<div className="mt-16 flex items-center gap-3">
 				<div className="h-px w-16 bg-foreground md:-ml-10 lg:-ml-12" />
 				<div className=" h-px w-4 bg-foreground" />
@@ -1123,104 +801,6 @@ function DemoFive() {
 	)
 }
 
-export function DemoPreview() {
-	const [rows, setRows] = useState(createArrayOfLength(73))
-	const [columns, setColumns] = useState(createArrayOfLength(9))
-	const [xSmoothness, setXSmoothness] = useState(20)
-	const [ySmoothness, setYSmoothness] = useState(20)
-	const [noiseSeed, setNoiseSeed] = useState<number>(Math.random())
-	const noise2D = useMemo(() => createNoise2D(), [noiseSeed])
-	const boxSize = 3
-
-	return (
-		<div className="relative flex min-h-[205px] items-center justify-center border-b border-gray-200 bg-gray-100 p-6">
-			<svg
-				className="-mt-12"
-				width={rows.length * boxSize}
-				height={columns.length * boxSize}
-				viewBox={`0 0 ${rows.length} ${columns.length}`}
-			>
-				{rows.map(x =>
-					columns.map(y => (
-						<NoiseRect
-							x={x}
-							y={y}
-							colors={simpleColorsFill}
-							noise={noise2D(x / xSmoothness, y / ySmoothness)}
-							width="1"
-							height="1"
-							key={`demo-preview-pixel-${x}-${y}`}
-						/>
-					)),
-				)}
-			</svg>
-			<div className="absolute bottom-4 left-4 flex flex-col gap-1 font-mono text-xs">
-				<div className="flex items-center gap-2">
-					<input
-						type="range"
-						id="xSmoothness"
-						name="xSmoothness"
-						min="1"
-						max="30"
-						value={xSmoothness}
-						onChange={e => setXSmoothness(e.target.valueAsNumber)}
-						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--pink))]"
-					/>
-					<label htmlFor="xSmoothness">X Smoothness</label>
-				</div>
-				<div className="flex items-center gap-2">
-					<input
-						type="range"
-						id="ySmoothness"
-						name="ySmoothness"
-						min="1"
-						max="30"
-						value={ySmoothness}
-						onChange={e => setYSmoothness(e.target.valueAsNumber)}
-						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--blue))]"
-					/>
-					<label htmlFor="ySmoothness">Y Smoothness</label>
-				</div>
-			</div>
-			<button
-				onClick={() => {
-					setRows(
-						createArrayOfLength(getRandomPositiveIntWithin(Math.random, 100)),
-					)
-					setColumns(
-						createArrayOfLength(getRandomPositiveIntWithin(Math.random, 25)),
-					)
-					setNoiseSeed(Math.random())
-				}}
-				className="group absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 font-mono text-xs hover:bg-gray-200"
-			>
-				<svg
-					className="absolute -right-px -top-px h-[24px] w-[24px] rotate-0"
-					viewBox="0 0 4 4"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<rect
-						className="fill-transparent group-hover:fill-gray-100"
-						x="0"
-						y="0"
-						width="4"
-						height="4"
-					/>
-					<path
-						d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
-						className="fill-transparent group-hover:fill-gray-200"
-					/>
-				</svg>
-				<span>Refresh</span>
-				<span className="h-auto w-4 transition group-hover:rotate-90">
-					<RefreshIcon />
-				</span>
-			</button>
-		</div>
-	)
-}
-
 function DemoSix() {
 	const [seed, setSeed] = useState<number>(99)
 
@@ -1306,9 +886,110 @@ function DemoSix() {
 	)
 }
 
+export function DemoPreview() {
+	const [rows, setRows] = useState(createArrayOfLength(73))
+	const [columns, setColumns] = useState(createArrayOfLength(9))
+	const [xSmoothness, setXSmoothness] = useState(20)
+	const [ySmoothness, setYSmoothness] = useState(20)
+	const [useRandom, setUseRandom] = useState(false)
+	const noise2D = useMemo(
+		() => createNoise2D(useRandom ? Math.random : () => 0.1176),
+		[useRandom],
+	)
+	const boxSize = 3
+
+	return (
+		<div className="relative flex min-h-[205px] items-center justify-center border-b border-gray-200 bg-gray-100 p-6">
+			<svg
+				className="-mt-12"
+				width={rows.length * boxSize}
+				height={columns.length * boxSize}
+				viewBox={`0 0 ${rows.length} ${columns.length}`}
+			>
+				{rows.map(x =>
+					columns.map(y => (
+						<NoiseRect
+							x={x}
+							y={y}
+							colors={simpleColorsFill}
+							noise={noise2D(x / xSmoothness, y / ySmoothness)}
+							width="1"
+							height="1"
+							key={`demo-preview-pixel-${x}-${y}`}
+						/>
+					)),
+				)}
+			</svg>
+			<div className="absolute bottom-4 left-4 flex flex-col gap-1 font-mono text-xs">
+				<div className="flex items-center gap-2">
+					<input
+						type="range"
+						id="xSmoothness"
+						name="xSmoothness"
+						min="1"
+						max="30"
+						value={xSmoothness}
+						onChange={e => setXSmoothness(e.target.valueAsNumber)}
+						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--pink))]"
+					/>
+					<label htmlFor="xSmoothness">X Smoothness</label>
+				</div>
+				<div className="flex items-center gap-2">
+					<input
+						type="range"
+						id="ySmoothness"
+						name="ySmoothness"
+						min="1"
+						max="30"
+						value={ySmoothness}
+						onChange={e => setYSmoothness(e.target.valueAsNumber)}
+						className="h-2 w-24 cursor-pointer appearance-none overflow-hidden rounded-none bg-transparent outline-none [--c:hsl(var(--blue))]"
+					/>
+					<label htmlFor="ySmoothness">Y Smoothness</label>
+				</div>
+			</div>
+			<button
+				onClick={() => {
+					setRows(
+						createArrayOfLength(getRandomPositiveIntWithin(Math.random, 100)),
+					)
+					setColumns(
+						createArrayOfLength(getRandomPositiveIntWithin(Math.random, 25)),
+					)
+					setUseRandom(true)
+				}}
+				className="group absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 font-mono text-xs hover:bg-gray-200"
+			>
+				<svg
+					className="absolute -right-px -top-px h-[24px] w-[24px] rotate-0"
+					viewBox="0 0 4 4"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<rect
+						className="fill-transparent group-hover:fill-gray-100"
+						x="0"
+						y="0"
+						width="4"
+						height="4"
+					/>
+					<path
+						d="M 0 0 H 2 V 1 H 3 V 2 H 4 V 4 H 0 V 0 Z"
+						className="fill-transparent group-hover:fill-gray-200"
+					/>
+				</svg>
+				<span>Refresh</span>
+				<span className="h-auto w-4 transition group-hover:rotate-90">
+					<RefreshIcon />
+				</span>
+			</button>
+		</div>
+	)
+}
+
 function Callout({ children }: PropsWithChildren<{}>) {
 	return (
-		<div className="dark relative bg-background p-8 text-foreground">
+		<div className="dark prose-invert relative bg-background p-8 text-foreground">
 			<svg
 				className="absolute right-0 top-0 h-[24px] w-[24px] rotate-0"
 				viewBox="0 0 4 4"
@@ -1559,3 +1240,347 @@ const coordinates: Array<[number, number]> = [
 	[7, 13],
 	[7, 14],
 ]
+
+const exampleOne = `/** 
+* This function is used to return a random positive integer (whole number) 
+* that will never be any larger than the max integer you pass in. 
+* This is extremely useful when trying to get a randomized value from 
+* an array.
+**/
+function getRandomPositiveIntWithin(max: number) { 
+  return Math.floor(Math.random() * max)
+} 
+
+/** 
+* This function will give us a random color from the array of colors
+* we have defined using the \`getRandomPositiveIntWithin\`. We use the
+* length of the colors array to make sure the index lookup will be
+* guaranteed to find a match.
+**/
+function generateColor() {
+  const colors = []
+  return colors[getRandomPositiveIntWithin(colors.length)]
+}
+
+function ColorBox() { 
+  const color = generateColor() 
+  return <div className="w-12 h-12" style={{ backgroundColor: color }} />
+}`
+
+const exampleTwo = `/**
+ * I am using tailwind classes for existing color variables on my site, but
+ * you can use hex codes, hsl values, or any supported color property
+ **/
+const colors = [
+	'bg-pink',
+	'bg-orange',
+	'bg-yellow',
+	'bg-lime',
+	'bg-green',
+	'bg-blue',
+	'bg-purple',
+]
+
+/** 
+* This function is used to return a random positive integer (whole number) 
+* that will never be any larger than the max integer you pass in. 
+* This is extremely useful when trying to get a randomized value from 
+* an array.
+**/
+function getRandomPositiveIntWithin(max: number) { 
+  return Math.floor(Math.random() * max)
+} 
+
+/** 
+* This function will give us a random color from the array of colors
+* we have defined using the \`getRandomPositiveIntWithin\`. We use the
+* length of the colors array to make sure the index lookup will be
+* guaranteed to find a match.
+**/
+function generateColor() {
+  return colors[getRandomPositiveIntWithin(colors.length)]
+}
+
+/** 
+* This function will allow us to pass a length we need and array to be
+* and will return an array where each value in the array is its index.
+* Useful for creating rows and columns as seen below.
+**/
+function createArrayOfLength(length: number): number[] {
+	return Array.from(Array(length), (_, i) => i)
+}
+
+function ColorBox(props: ComponentProps<'rect'>) { 
+  const color = generateColor() 
+  return <rect {...props} className={color} />
+}
+
+function ColorGrid() { 
+  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
+  const boxSize = 6
+  return (
+    <svg 
+      width={rows * boxSize} 
+      height={columns * boxSize} 
+      viewBox={\`0 0 \${rows} \${columns}\`}
+    > 
+      {rows.map((x => columns.map(y => {
+        <ColorBox
+          x={x} 
+          y={y}
+          width="1"
+          height="1"
+          key={\`pixel-\${x}-\${y}\`}
+        />
+      ))
+    </svg>
+  )
+}`
+
+const exampleThree = `/** 
+* Here is a manually setup array of colors that will map to percentages.
+* There are 10 indexed positions that will allow us to have a color grouping 
+* for every 10th of either the x or y axis.
+**/
+const colors = [
+	['fill-blue', 'fill-purple', 'fill-purple'],
+	['fill-green', 'fill-blue', 'fill-purple'],
+	['fill-green', 'fill-blue', 'fill-purple'],
+	['fill-lime', 'fill-green', 'fill-blue'],
+	['fill-yellow', 'fill-lime', 'fill-green', 'fill-blue'],
+	['fill-yellow', 'fill-lime', 'fill-green'],
+	['fill-pink', 'fill-yellow', 'fill-lime', 'fill-green'],
+	['fill-pink', 'fill-yellow', 'fill-lime'],
+	['fill-pink', 'fill-orange', 'fill-yellow'],
+	['fill-pink', 'fill-orange', 'fill-orange'],
+]
+
+/** 
+* This function is used to return a random positive integer (whole number) 
+* that will never be any larger than the max integer you pass in. 
+* This is extremely useful when trying to get a randomized value from 
+* an array.
+**/
+function getRandomPositiveIntWithin(max: number) { 
+  return Math.floor(Math.random() * max)
+} 
+
+/** 
+* This function will give us a random color from the array of colors
+* we have defined using the \`getRandomPositiveIntWithin\`. We use the
+* length of the colors array to make sure the index lookup will be
+* guaranteed to find a match.
+**/
+function generateColor(colors: string[]) {
+  return colors[getRandomPositiveIntWithin(colors.length)]
+}
+
+/** 
+* This function will allow us to pass a length we need and array to be
+* and will return an array where each value in the array is its index.
+* Useful for creating rows and columns as seen below.
+**/
+function createArrayOfLength(length: number): number[] {
+	return Array.from(Array(length), (_, i) => i)
+}
+
+function ColorBox({
+	xPercent,
+	yPercent,
+	...props
+}: ComponentProps<'rect'> & { xPercent: number; yPercent: number }) {
+	const color = generateColor([...colors[xPercent], ...colors[yPercent]])
+	return <rect {...props} className={color} />
+}
+
+function ColorGrid() { 
+  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
+  const boxSize = 6
+  return (
+    <svg
+		width={rows.length * boxSize}
+		height={columns.length * boxSize}
+		viewBox={\`0 0 \${rows.length} \${columns.length}\`}
+	>
+		{rows.map(x =>
+			columns.map(y => (
+				<ColorBox
+					x={x}
+					y={y}
+					xPercent={Math.floor((x / rows.length) * colors.length)}
+					yPercent={Math.floor((y / columns.length) * colors.length)}
+					width="1"
+					height="1"
+					key={\`pixel-\${x}-\${y}\`}
+				/>
+			)),
+		)}
+	</svg>
+  )
+}`
+
+const exampleFour = `import { makeNoise2D } from 'open-simplex-noise'
+
+/** 
+* Here we are just going back to our basic array of colors and will let the
+* simplex noise algorithm pick what colors are being selected from this array
+**/
+const colors = [
+	'fill-purple',
+	'fill-blue',
+	'fill-green',
+	'fill-lime',
+	'fill-yellow',
+	'fill-pink',
+	'fill-orange',
+]
+
+/** 
+* This function is used to return a random positive integer (whole number) 
+* that will never be any larger than the max integer you pass in. 
+* This is extremely useful when trying to get a randomized value from 
+* an array.
+**/
+function getRandomPositiveIntWithin(max: number) { 
+  return Math.floor(Math.random() * max)
+}
+
+/**
+ * Simplex Noise generates a value between -1 and 1, but we are working with an
+ * array that will not accept a negative index. We will be converting the original
+ * noise range to fit the 0 to 1 scale we need.
+ **/
+function getColorByNoise(noise: number) {
+	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
+}
+
+/** 
+* This function will allow us to pass a length we need and array to be
+* and will return an array where each value in the array is its index.
+* Useful for creating rows and columns as seen below.
+**/
+function createArrayOfLength(length: number): number[] {
+	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
+}
+
+function ColorBox({
+	noise,
+	...props
+}: ComponentProps<'rect'> & { noise: number }) {
+	const color = getColorByNoise(noise)
+	return <rect {...props} className={color} />
+}
+
+function ColorGrid() { 
+  const rows = createArrayOfLength(getRandomPositiveIntWithin(100))
+  const columns = createArrayOfLength(getRandomPositiveIntWithin(40))
+  const boxSize = 6
+  const xSmoothness = 20
+  const ySmoothness = 20
+  const noise2D = makeNoise2D(Math.random())
+  return (
+    <svg
+		width={rows.length * boxSize}
+		height={columns.length * boxSize}
+		viewBox={\`0 0 \${rows.length} \${columns.length}\`}
+	>
+		{rows.map(x =>
+			columns.map(y => (
+				<ColorBox
+					x={x}
+					y={y}
+					noise={noise2D(x / xSmoothness, y / ySmoothness)}
+					width="1"
+					height="1"
+					key={\`pixel-\${x}-\${y}\`}
+				/>
+			)),
+		)}
+	</svg>
+  )
+}`
+
+const exampleSix = `import Alea from 'alea'
+import { makeNoise2D } from 'open-simplex-noise'
+
+/** 
+* Here we are just going back to our basic array of colors and will let the
+* simplex noise algorithm pick what colors are being selected from this array
+**/
+const colors = [
+	'fill-purple',
+	'fill-blue',
+	'fill-green',
+	'fill-lime',
+	'fill-yellow',
+	'fill-pink',
+	'fill-orange',
+]
+
+/** 
+* This function is now updated to accept the random number and the max. This
+* allows us to make sure that we are passing in a number we know is connected
+* to our seeded PRNG.
+**/
+function getRandomPositiveIntWithin(randomNum: number, max: number) { 
+  return Math.floor(randomNum * max)
+} 
+
+/**
+ * Simplex Noise generates a value between -1 and 1, but we are working with an
+ * array that will not accept a negative index. We will be converting the original
+ * noise range to fit the 0 to 1 scale we need.
+ **/
+function getColorByNoise(noise: number) {
+	return colors[Math.floor(((noise + 1) / 2) * colors.length)]
+}
+
+/** 
+* This function will allow us to pass a length we need and array to be
+* and will return an array where each value in the array is its index.
+* Useful for creating rows and columns as seen below.
+**/
+function createArrayOfLength(length: number): number[] {
+	return Array.from(Array(length === 0 ? 1 : length), (_, i) => i)
+}
+
+function ColorBox({
+	noise,
+	...props
+}: ComponentProps<'rect'> & { noise: number }) {
+	const color = getColorByNoise(noise)
+	return <rect {...props} className={color} />
+}
+
+function ColorGrid() {
+	const seed = 99
+	const generator = Alea(seed)
+	const rows = createArrayOfLength(getRandomPositiveIntWithin(generator(), 100))
+	const columns = createArrayOfLength(getRandomPositiveIntWithin(generator(), 40))
+	const boxSize = 6
+	const xSmoothness = 20
+	const ySmoothness = 20
+	const noise2D = makeNoise2D(generator())
+	return (
+		<svg
+			width={rows.length * boxSize}
+			height={columns.length * boxSize}
+			viewBox={\`0 0 \${rows.length} \${columns.length}\`}
+		>
+			{rows.map(x =>
+				columns.map(y => (
+					<ColorBox
+						x={x}
+						y={y}
+						noise={noise2D(x / xSmoothness, y / ySmoothness)}
+						width="1"
+						height="1"
+						key={\`pixel-\${x}-\${y}\`}
+					/>
+				)),
+			)}
+		</svg>
+	)
+}`

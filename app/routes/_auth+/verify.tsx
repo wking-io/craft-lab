@@ -103,7 +103,7 @@ export default function VerifyRoute() {
 	})
 
 	return (
-		<main className="dark flex h-full flex-col items-center justify-center bg-background pb-32 pt-20 text-primary">
+		<main className="dark flex min-h-screen flex-col items-center justify-center bg-background pb-32 pt-20 text-primary">
 			<div className="container px-6">
 				<div className="text-center">
 					{type ? headings[type] : 'Invalid Verification Type'}
@@ -234,7 +234,7 @@ export default function VerifyRoute() {
 									autoComplete="one-time-code"
 									placeholder="Enter code"
 									invalid={Boolean(fields[codeQueryParam].errors?.length)}
-									className="w-full border border-primary bg-background px-4 py-2 focus:outline-none"
+									className="w-full border border-foreground bg-background px-4 py-2 focus:outline-none"
 								/>
 								<ErrorMessage errors={fields[codeQueryParam].errors} />
 								<ErrorMessage errors={form.errors} id={form.errorId} />
