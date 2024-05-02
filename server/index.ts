@@ -122,7 +122,7 @@ app.use(
 				].filter(Boolean),
 				'font-src': ["'self'"],
 				'frame-src': ["'self'"],
-				'img-src': ["'self'", 'data:'],
+				'img-src': ["'self'", 'https: data:'],
 				'script-src': [
 					"'strict-dynamic'",
 					"'self'",
