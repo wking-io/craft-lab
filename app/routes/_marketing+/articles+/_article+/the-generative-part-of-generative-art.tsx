@@ -3,14 +3,15 @@ import { type MetaFunction, json } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import Alea from 'alea'
 import clsx from 'clsx'
-import { makeNoise2D } from 'open-simplex-noise'
 import {
 	type ComponentProps,
 	useState,
 	type PropsWithChildren,
 	useMemo,
+	useEffect,
 } from 'react'
 import { getHighlighter } from 'shiki'
+import { createNoise2D } from 'simplex-noise'
 import { RefreshIcon } from '#app/components/two-tone-icon.js'
 import { Icon } from '#app/components/ui/icon.js'
 import { seoData } from '#app/utils/seo.js'
@@ -791,7 +792,14 @@ export default function Screen() {
 function Art() {
 	const xSmoothness = 10
 	const ySmoothness = 10
-	const noise2D = makeNoise2D(Math.random() * Date.now())
+	const [useRandom, setUseRandom] = useState(false)
+	const noise2D = useMemo(() => {
+		return createNoise2D(useRandom ? Math.random : () => 0.26)
+	}, [useRandom])
+
+	useEffect(() => {
+		setTimeout(() => setUseRandom(true), 500)
+	}, [])
 
 	return (
 		<svg
@@ -811,7 +819,7 @@ function Art() {
 						noise={noise2D(x / xSmoothness, y / ySmoothness)}
 						width="1"
 						height="1"
-						key={`demo-4-pixel-${x}-${y}`}
+						key={`art-pixel-${x}-${y}`}
 					/>
 				)
 			})}
@@ -864,12 +872,12 @@ function DemoWrapper({
 }
 
 function DemoOne() {
-	const [color, setColor] = useState(generateColor(simpleColorsBg))
+	const [color, setColor] = useState(simpleColorsBg[0])
 
 	return (
 		<DemoWrapper
 			className="min-h-64"
-			onClick={() => setColor(generateColor(simpleColorsBg))}
+			onClick={() => setColor(generateColor(Math.random, simpleColorsBg))}
 		>
 			<div className={clsx(color, 'h-12 w-12')} />
 		</DemoWrapper>
@@ -877,20 +885,20 @@ function DemoOne() {
 }
 
 function DemoTwo() {
-	const [rows, setRows] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(100)),
-	)
-	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(40)),
-	)
+	const [rows, setRows] = useState(createArrayOfLength(75))
+	const [columns, setColumns] = useState(createArrayOfLength(37))
 	const boxSize = 6
 
 	return (
 		<DemoWrapper
 			className="min-h-96"
 			onClick={() => {
-				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-				setColumns(createArrayOfLength(getRandomPositiveIntWithin(40)))
+				setRows(
+					createArrayOfLength(getRandomPositiveIntWithin(Math.random, 100)),
+				)
+				setColumns(
+					createArrayOfLength(getRandomPositiveIntWithin(Math.random, 40)),
+				)
 			}}
 		>
 			<svg
@@ -916,20 +924,20 @@ function DemoTwo() {
 }
 
 function DemoThree() {
-	const [rows, setRows] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(100)),
-	)
-	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(40)),
-	)
+	const [rows, setRows] = useState(createArrayOfLength(63))
+	const [columns, setColumns] = useState(createArrayOfLength(24))
 	const boxSize = 6
 
 	return (
 		<DemoWrapper
 			className="min-h-96"
 			onClick={() => {
-				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-				setColumns(createArrayOfLength(getRandomPositiveIntWithin(40)))
+				setRows(
+					createArrayOfLength(getRandomPositiveIntWithin(Math.random, 100)),
+				)
+				setColumns(
+					createArrayOfLength(getRandomPositiveIntWithin(Math.random, 40)),
+				)
 			}}
 		>
 			<svg
@@ -966,25 +974,28 @@ function DemoThree() {
 }
 
 function DemoFour() {
-	const [rows, setRows] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(100)),
-	)
-	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(40)),
-	)
+	const [rows, setRows] = useState(createArrayOfLength(88))
+	const [columns, setColumns] = useState(createArrayOfLength(9))
 	const [xSmoothness, setXSmoothness] = useState(20)
 	const [ySmoothness, setYSmoothness] = useState(20)
-	const [noiseSeed, setNoiseSeed] = useState<number>(Math.random())
-	const noise2D = useMemo(() => makeNoise2D(noiseSeed), [noiseSeed])
+	const [useRandom, setUseRandom] = useState(false)
+	const noise2D = useMemo(
+		() => createNoise2D(useRandom ? Math.random : () => 0.26),
+		[useRandom],
+	)
 	const boxSize = 6
 
 	return (
 		<DemoWrapper
 			className="min-h-[410px]"
 			onClick={() => {
-				setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-				setColumns(createArrayOfLength(getRandomPositiveIntWithin(40)))
-				setNoiseSeed(Math.random())
+				setRows(
+					createArrayOfLength(getRandomPositiveIntWithin(Math.random, 100)),
+				)
+				setColumns(
+					createArrayOfLength(getRandomPositiveIntWithin(Math.random, 40)),
+				)
+				setUseRandom(true)
 			}}
 		>
 			<svg
@@ -1113,16 +1124,12 @@ function DemoFive() {
 }
 
 export function DemoPreview() {
-	const [rows, setRows] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(100)),
-	)
-	const [columns, setColumns] = useState(
-		createArrayOfLength(getRandomPositiveIntWithin(25)),
-	)
+	const [rows, setRows] = useState(createArrayOfLength(73))
+	const [columns, setColumns] = useState(createArrayOfLength(9))
 	const [xSmoothness, setXSmoothness] = useState(20)
 	const [ySmoothness, setYSmoothness] = useState(20)
 	const [noiseSeed, setNoiseSeed] = useState<number>(Math.random())
-	const noise2D = useMemo(() => makeNoise2D(noiseSeed), [noiseSeed])
+	const noise2D = useMemo(() => createNoise2D(), [noiseSeed])
 	const boxSize = 3
 
 	return (
@@ -1177,8 +1184,12 @@ export function DemoPreview() {
 			</div>
 			<button
 				onClick={() => {
-					setRows(createArrayOfLength(getRandomPositiveIntWithin(100)))
-					setColumns(createArrayOfLength(getRandomPositiveIntWithin(25)))
+					setRows(
+						createArrayOfLength(getRandomPositiveIntWithin(Math.random, 100)),
+					)
+					setColumns(
+						createArrayOfLength(getRandomPositiveIntWithin(Math.random, 25)),
+					)
 					setNoiseSeed(Math.random())
 				}}
 				className="group absolute bottom-4 right-4 flex items-center gap-2 px-4 py-2 font-mono text-xs hover:bg-gray-200"
@@ -1217,7 +1228,7 @@ function DemoSix() {
 		return Alea(seed)
 	}, [seed])
 
-	const noise2D = useMemo(() => makeNoise2D(seed), [seed])
+	const noise2D = useMemo(() => createNoise2D(generator), [generator])
 
 	const rowRandomNumber = useMemo(() => generator(), [generator])
 	const columnRandomNumber = useMemo(() => generator(), [generator])
@@ -1319,7 +1330,10 @@ function ColorRect({
 	colors,
 	...props
 }: ComponentProps<'rect'> & { colors: string[] }) {
-	const color = generateColor(colors)
+	const [color, setColor] = useState(colors[0])
+	useEffect(() => {
+		setColor(generateColor(Math.random, colors))
+	}, [colors])
 	return <rect {...props} className={color} />
 }
 
@@ -1414,8 +1428,8 @@ function Code({ children }: PropsWithChildren) {
  * length of the colors array to make sure the index lookup will be
  * guaranteed to find a match.
  **/
-function generateColor(colors: string[]) {
-	return colors[getRandomPositiveIntWithin(colors.length)]
+function generateColor(prng: () => number, colors: string[]) {
+	return colors[getRandomPositiveIntWithin(prng, colors.length)]
 }
 
 /**
@@ -1424,8 +1438,8 @@ function generateColor(colors: string[]) {
  * This is extremely useful when trying to get a randomized value from
  * an array.
  **/
-function getRandomPositiveIntWithin(max: number) {
-	return Math.floor(Math.random() * max)
+function getRandomPositiveIntWithin(prng: () => number, max: number) {
+	return Math.floor(prng() * max)
 }
 
 function createArrayOfLength(length: number): number[] {

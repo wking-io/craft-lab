@@ -15,8 +15,8 @@ import QR from 'qrcode'
 import { useId, type PropsWithChildren } from 'react'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
-import { Logo } from '#app/components/logo.js'
 import MemberCard from '#app/components/member-card.js'
+import { Nav } from '#app/components/nav.js'
 import { ErrorMessage } from '#app/components/ui/fieldset.js'
 import { StatusButton } from '#app/components/ui/status-button.js'
 import { rootRouteId } from '#app/root.js'
@@ -168,11 +168,8 @@ export default function Index() {
 
 	return (
 		<main className="h-full">
+			<Nav />
 			<div className="container flex flex-col overflow-x-hidden px-6 py-8 md:py-12 lg:py-16">
-				<div className={clsx('relative flex gap-3')}>
-					<Logo seed={seed} className="h-auto w-8" />
-					<p className="text-3xl font-semibold tracking-tight">Craft Lab</p>
-				</div>
 				<h1 className="relative mt-8 text-4xl font-semibold leading-tight md:text-5xl">
 					Your friends are your future.
 					<br className="hidden md:block" /> Come make more Design Engineer

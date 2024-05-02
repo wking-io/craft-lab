@@ -60,22 +60,20 @@ function BaseGrid({
 		>
 			{pixels.map((c, y) =>
 				c.map((pixel, x) => (
-					<>
-						<rect
-							x={x}
-							y={y}
-							width="1"
-							height="1"
-							className={
-								pixel === '□'
-									? 'fill-transparent'
-									: pixel === '◩'
-										? primary
-										: dark
-							}
-							key={`${x}-${y}-pixel`}
-						/>
-					</>
+					<rect
+						x={x}
+						y={y}
+						width="1"
+						height="1"
+						className={
+							pixel === '□'
+								? 'fill-transparent'
+								: pixel === '◩'
+									? primary
+									: dark
+						}
+						key={`${x}-${y}-two-tone-pixel`}
+					/>
 				)),
 			)}
 		</svg>
