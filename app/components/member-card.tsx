@@ -533,7 +533,7 @@ function getRandomScale(max: number, seed: number): number {
  * @param {Number} max maximum value to allow, default: 100
  * @returns {Number}
  */
-function clamp(value: number, min = 0, max = 100) {
+export function clamp(value: number, min = 0, max = 100) {
 	return Math.min(Math.max(value, min), max)
 }
 

@@ -273,7 +273,7 @@ function App() {
 		if (svg && favicon) {
 			favicon.setAttribute('href', svg)
 		}
-	})
+	}, [data.seed])
 
 	return (
 		<Document
